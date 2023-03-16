@@ -1,0 +1,81 @@
+<div class=" col-12">
+    <form [formGroup]="userForm" class="form" (ngSubmit)="saveUser(userForm.value)"
+        (keydown.enter)="handleEnter($event)">
+        <div class="row">
+            <div class="form-group col-md-6">
+                <mat-form-field class='col-12' appearance="outline">
+                    <mat-label>User Code</mat-label>
+                    <input [id]="'userCode'" matInput type="text" formControlName="userCode" name="userCode"
+                        (keydown.enter)="focusNext($event)">
+                </mat-form-field>
+            </div>
+            <div class="form-group col-md-6">
+                <mat-form-field class='col-12' appearance="outline">
+                    <mat-label>User Name</mat-label>
+                    <input [id]="'userName'" matInput type="text" formControlName="userName" name="userName"
+                        (keydown.enter)="focusNext($event)">
+                    <mat-error>Please Enter User Name</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="form-group col-md-6">
+                <mat-form-field class='col-12' appearance="outline">
+                    <mat-label>User Short</mat-label>
+                    <input [id]="'shortName'" matInput type="text" formControlName="userShortName" name="userShortName"
+                        (keydown.enter)="focusNext($event)">
+                    <mat-error>Please Enter Short Name</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="form-group col-md-6">
+                <mat-form-field class='col-12' appearance="outline">
+                    <mat-label>Password</mat-label>
+                    <input [id]="'password'" matInput type="text" formControlName="password" name="password"
+                        (keydown.enter)="focusNext($event)">
+                    <mat-error>Please Enter Password</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="form-group col-md-6">
+                <mat-form-field class='col-12' appearance="outline">
+                    <mat-label>Email</mat-label>
+                    <input [id]="'email'" matInput type="text" formControlName="email" name="email"
+                        (keydown.enter)="focusNext($event)">
+                </mat-form-field>
+            </div>
+            <div class="form-group col-md-6">
+                <mat-form-field class='col-12' appearance="outline">
+                    <mat-label>Role</mat-label>
+                    <input [id]="'role'" matInput [matAutocomplete]="auto" type="text" formControlName="role"
+                        name="role" (keydown.enter)="focusNext($event)">
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="roleDisplayFn">
+                        <mat-option *ngFor="let item of roleFilteredOption|async" [value]="item">
+                            {{item.roleName}}
+                        </mat-option>
+                    </mat-autocomplete>
+                    <mat-error>Please Select Role</mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="form-group">
+            <mat-checkbox class="example-margin" formControlName="active" name="active" color="primary">Active
+            </mat-checkbox>
+        </div>
+        <div class="example-button-row float-right">
+            <button *ngIf="!isMobile" color="primary" type="button" mat-raised-button (click)="onNew()">New</button>
+            <button [id]="'btnSave'" color="primary" type="submit" mat-raised-button>Save</button>
+            <button type="button" color="primary" mat-raised-button (click)="onClear()">Clear</button>
+            <button *ngIf="isMobile" color="primary" type="button" mat-raised-button (click)="onBackToList()">Back</button>
+        </div>
+        <div class="button-row ">
+          
+        </div>
+        <!-- <div class="form-group">
+            <button *ngIf="!isMobile" type="button" mat-raised-button class="form-btn col-12 col-md-1 col-lg-1 col-xl-1"
+                (click)="onNew()">New</button>
+            <button [id]="'btnSave'" type="submit" mat-raised-button
+                class="form-btn col-12 col-md-1 col-lg-1 col-xl-1">Save</button>
+            <button type="button" mat-raised-button class="form-btn col-12 col-md-1 col-lg-1 col-xl-1"
+                (click)="onClear()">Clear</button>
+            <button *ngIf="isMobile" type="button" mat-raised-button class="form-btn col-12 col-md-1 col-lg-1 col-xl-1"
+                (click)="onBackToList()">Back</button>
+        </div> -->
+    </form>
+</div>

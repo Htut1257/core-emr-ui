@@ -1,0 +1,28 @@
+.table-container {
+    margin-top: 25px;
+    height: 60vh;
+    overflow: auto;
+}
+
+th.mat-mdc-header-cell.cdk-header-cell {
+    font-size: large;
+    color: rgb(26, 17, 17);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center !important;
+    vertical-align: center;
+}
+
+.mat-mdc-header-row {
+    min-height: 30px !important;
+    height: 30px !important;
+}
+
+.mat-mdc-row {
+    min-height: auto !important;
+    height: auto !important;
+}
+
+.mat-mdc-header-cell {
+    min-height: 30px !important;
+    height: 30px !important;
+}

@@ -1,0 +1,16 @@
+:host {
+    background-color: #3f51b5;
+}
+
+.inside {
+    padding-left: 10%
+}
+
+.mat-list-item.active {
+    background-color: rgb(213, 213, 213);
+}
+
+.iconss{
+    float:right;
+    margin:5px 5px;
+}

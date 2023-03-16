@@ -1,0 +1,79 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~bootstrap/dist/css/bootstrap.css";
+@import 'ag-grid-community/styles/ag-grid.css';
+@import "ag-grid-autocomplete-editor/dist/main.css";
+@import 'ag-grid-community/styles/ag-theme-alpine.css';
+@import 'ag-grid-community/styles/ag-theme-balham.css';
+
+mat-form-field.mat-form-field {
+    font-size:12px;
+  }
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-size: 14px !important;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+/* scroll bar css */
+::-webkit-scrollbar-thumb {
+    background: grey !important;
+}
+
+::-webkit-scrollbar {
+    height: 4px;
+    width: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0.26) !important;
+}
+
+.float-right {
+    float: right;
+}
+
+.button-row {
+    display: table-cell;
+    max-width: 600px;
+}
+
+.button-row .mat-raised-button {
+    margin: 8px 8px 8px 0 !important;
+    height: 30px;
+    line-height: 25px;
+}
+
+#outer {
+    display: flex;
+    width: 95px;
+}
+
+.inner {
+    display: inline-block;
+}
+
+.div-small {
+    height: 40px;
+    min-height: 40px;
+}
+
+.example-button-row {
+    display: table-cell;
+    max-width: 600px;
+  }
+  
+  .example-button-row .mat-flat-button,.example-button-row .mat-raised-button {
+    margin: 8px 8px 8px 0;
+    height: 30px;
+    line-height: 25px;
+  }
+
+  .example-spacer {
+    flex: 1 1 auto;
+  }

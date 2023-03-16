@@ -1,0 +1,26 @@
+.success {
+    background-color: #198754;
+    color: white;
+    font-weight:lighter;
+    z-index: 1;
+  }
+  
+  .info {
+    background-color: #0d6efd;
+    color: white;
+    font-weight: lighter;
+
+  }
+  
+  .warning {
+    background-color: #ffc107;
+    color: white;
+    font-weight: lighter;
+  }
+  
+  .error {
+    background-color: #dc3545;
+    color: white;
+    font-weight: lighter;
+    z-index: 9;
+  }

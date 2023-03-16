@@ -1,0 +1,31 @@
+<app-main-header></app-main-header>
+<!-- <button mat-mini-fab color="primary" class="float" (click)="openDialog()">
+    <mat-icon>filter_list</mat-icon>
+</button> -->
+<div class="sticky-container">
+  <ul class="sticky">
+    <li>
+      <mat-icon>keyboard_arrow_left</mat-icon>
+      <p>Doctor</p>
+    </li>
+    <li>
+      <mat-icon>keyboard_arrow_left</mat-icon>
+      <p>Nurse</p>
+    </li>
+    <li>
+      <mat-icon>keyboard_arrow_left</mat-icon>
+      <p>CheckOut</p>
+    </li>
+  </ul>
+</div>
+<mat-drawer-container>
+  <mat-drawer #appDrawer mode="over">
+    <mat-nav-list>
+      <app-main-sidebar *ngFor="let item of items" [item]="item"></app-main-sidebar>
+    </mat-nav-list>
+  </mat-drawer>
+  <mat-drawer-content>
+    <router-outlet></router-outlet>
+    <app-toaster></app-toaster>
+  </mat-drawer-content>
+</mat-drawer-container>

@@ -1,0 +1,93 @@
+<div class="row mb-2">
+    <div class="row col-6">
+        <div class="col-4">
+            <mat-label>Reg No : </mat-label> <mat-label>0</mat-label>
+        </div>
+        <div class="col-4">
+            <mat-label>Adm No : </mat-label> <mat-label>0</mat-label>
+        </div>
+        <div class="col-4">
+            <mat-label>Name : </mat-label> <mat-label>ananymous</mat-label>
+        </div>
+    </div>
+    <div class="row col-6">
+        <div class="col-2">
+            <mat-label>Total Reg: </mat-label> <mat-label>0</mat-label>
+        </div>
+        <div class="col-2">
+            <mat-label>W/L: </mat-label> <mat-label>0</mat-label>
+        </div>
+        <div class="col-2">
+            <mat-label>CL: </mat-label> <mat-label>0</mat-label>
+        </div>
+        <div class="col-2">
+            <button mat-flat-button class="-2">break</button>
+        </div>
+        <div class="col-2">
+            <button mat-flat-button>clear</button>
+        </div>
+    </div>
+</div>
+<!-- <div class="col-12">
+    <button mat-flat-button (click)="isHide=!isHide">Hide Me</button>
+</div> -->
+
+<!-- <div class="row">
+     <div class="col-3">
+        <ag-grid-angular id="myGrid" (gridReady)="onGridReady($event)" class="ag-theme-balham"
+            style="height: 70vh;width:100%;" [rowData]="rowDatas" [columnDefs]="columnDefs"
+            (cellEditingStarted)="cellEditingStarted($event)" (cellEditingStopped)="cellEditingStopped($event)">
+        </ag-grid-angular>
+    </div>
+    <div class="col-3 d-flex">
+        <ag-grid-angular id="myGrid1" (gridReady)="onGridReady1($event)" class="ag-theme-balham"
+            style="height: 70vh;width:100%;" [rowData]="rowDatas" [columnDefs]="columnDefs"
+            (cellEditingStarted)="cellEditingStarted($event)" (cellEditingStopped)="cellEditingStopped($event)">
+        </ag-grid-angular>
+    </div>
+    <div class="col-3">
+        <ag-grid-angular id="myGrid1" (gridReady)="onGridReady1($event)" class="ag-theme-balham"
+            style="height: 70vh;width:100%;" [rowData]="rowDatas" [columnDefs]="columnDefs"
+            (cellEditingStarted)="cellEditingStarted($event)" (cellEditingStopped)="cellEditingStopped($event)">
+        </ag-grid-angular>
+    </div>
+    <div class="col-3"> 
+        <ag-grid-angular id="myGrid1" (gridReady)="onGridReady1($event)" class="ag-theme-balham"
+            style="height: 70vh;width:100%;" [rowData]="rowDatas" [columnDefs]="columnDefs"
+            (cellEditingStarted)="cellEditingStarted($event)" (cellEditingStopped)="cellEditingStopped($event)">
+        </ag-grid-angular>
+    </div>
+</div> -->
+
+<div class="d-flex flex-row">
+    <div class="col-3">
+        <ag-grid-angular id="myGrid" (gridReady)="onGridReady($event)" class="ag-theme-balham"
+            style="height: 70vh;width:100%;" [rowData]="rowDatas" [columnDefs]="columnDefs"
+            (cellEditingStarted)="cellEditingStarted($event)" (cellEditingStopped)="cellEditingStopped($event)">
+        </ag-grid-angular>
+    </div>
+    <div class="flex-fill">
+        <ag-grid-angular id="myGrid" (gridReady)="onGridReady($event)" class="ag-theme-balham"
+            style="height: 70vh;width:100%;" [rowData]="rowDatas" [columnDefs]="columnDefs"
+            (cellEditingStarted)="cellEditingStarted($event)" (cellEditingStopped)="cellEditingStopped($event)">
+        </ag-grid-angular>
+    </div>
+    <div class="col-3">
+        <div class="row">
+            <div class="col-12">
+                <mat-form-field class='d-flex' >
+                    <mat-label>Note</mat-label>
+                    <textarea style="height:100px" matInput placeholder="Ex. It makes me feel..." name="address"
+                        formControlName="address"></textarea>
+                </mat-form-field>
+            </div>
+            <div class="col-12">
+                <ag-grid-angular id="myGrid" (gridReady)="onGridReady($event)" class="ag-theme-balham"
+                    style="height: 50vh;width:100%;" [rowData]="rowDatas" [columnDefs]="columnDefs"
+                    (cellEditingStarted)="cellEditingStarted($event)" (cellEditingStopped)="cellEditingStopped($event)">
+                </ag-grid-angular>
+            </div>
+        </div>
+    </div>
+
+</div>

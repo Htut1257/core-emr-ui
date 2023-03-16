@@ -1,0 +1,30 @@
+<div class="row">
+    <div class="table-container">
+        <div class="table-container">
+            <table mat-table [dataSource]="dataSource" matSort>
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Dr Name</th>
+                    <td class="td-text" mat-cell *matCellDef="let element; let i = index">{{element.Name}}</td>
+                </ng-container>
+                <ng-container matColumnDef="session">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Session</th>
+                    <td class="td-text" mat-cell *matCellDef="let element">{{element.Session}}</td>
+                </ng-container>
+                <ng-container matColumnDef="regNo">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Total-Reg</th>
+                    <td class="td-text" mat-cell *matCellDef="let element">{{element.regNo}}</td>
+                </ng-container>
+                <ng-container matColumnDef="wl">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>W/L</th>
+                    <td class="td-text" mat-cell *matCellDef="let element">{{element.WL}}</td>
+                </ng-container>
+                <ng-container matColumnDef="cl">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>C/L</th>
+                    <td class="td-text" mat-cell *matCellDef="let element">{{element.CL}}</td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky:true"></tr>
+                <tr mat-row *matRowDef="let row;columns:displayedColumns"></tr>
+            </table>
+        </div>
+    </div>
+</div>

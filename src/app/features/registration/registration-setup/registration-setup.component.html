@@ -1,0 +1,162 @@
+
+<div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6">
+    <form [formGroup]="registrationForm" class="form" role="form" (ngSubmit)="saveRegis(registrationForm.value)">
+        <div class="row" style="font-size:10px">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                <mat-form-field class="col-12" appearance="outline">
+                    <mat-label>Registration-No</mat-label>
+                    <input [id]="'regNo'" matInput type="text" name="regNo" formControlName="regNo">
+                </mat-form-field>
+            </div>
+            <div style="font-size: 10px" class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                <mat-form-field class='col-12'  appearance="outline">
+                    <mat-label>Registration Date</mat-label>
+                    <input [id]="'regDate'" matInput [matDatepicker]="picker1" type="text" name="regDate" formControlName="regDate">
+                    <mat-hint>MM/DD/YYYY</mat-hint>
+                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                    <mat-datepicker #picker1></mat-datepicker>
+                </mat-form-field>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                <mat-form-field class='col-12' appearance="outline">
+                    <mat-label>Name</mat-label>
+                    <input [id]="'patientName'" matInput type="text" name="patientName" formControlName="patientName">
+                </mat-form-field>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                <mat-form-field class='col-12'  appearance="outline">
+                    <mat-label>Father Name</mat-label>
+                    <input [id]="'fatherName'" matInput type="text" name="fatherName" formControlName="fatherName">
+                </mat-form-field>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                <mat-form-field class='col-12'  appearance="outline">
+                    <mat-label>Contact No</mat-label>
+                    <input [id]="'contactNo'" matInput type="text" name="contactNo" formControlName="contactNo">
+                </mat-form-field>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                <mat-form-field class='col-12'  appearance="outline">
+                    <mat-label>DOB</mat-label>
+                    <input [id]="'dob'" matInput [matDatepicker]="picker2" type="text" name="dob" formControlName="dob">
+                    <mat-hint>MM/DD/YYYY</mat-hint>
+                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                    <mat-datepicker #picker2></mat-datepicker>
+                </mat-form-field>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                <div class="row">
+                    <div class="col-4">
+                        <mat-form-field class='col-12'  appearance="outline">
+                            <mat-label>Year</mat-label>
+                            <input [id]="'year'" matInput type="text" name="year" formControlName="year">
+                        </mat-form-field>
+                    </div>
+                    <div class="col-4">
+                        <mat-form-field class='col-12'  appearance="outline">
+                            <mat-label>Month</mat-label>
+                            <input [id]="'month'" matInput type="ptext" name="month" formControlName="month">
+                        </mat-form-field>
+                    </div>
+                    <div class="col-4">
+                        <mat-form-field class='col-12'  appearance="outline">
+                            <mat-label>Day</mat-label>
+                            <input [id]="'day'" matInput type="text" name="day" formControlName="day">
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                <mat-form-field class='col-12'  appearance="outline">
+                    <mat-label>Gender</mat-label>
+                    <input [id]="'gender'" matInput type="text" name="gender">
+                </mat-form-field>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                <mat-form-field class='col-12'  appearance="outline">
+                    <mat-label>NIRC</mat-label>
+                    <input [id]="'nirc'" matInput type="text" name="nirc" formControlName="nirc">
+                </mat-form-field>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                <mat-form-field class='col-12'  appearance="outline">
+                    <mat-label>Nationality</mat-label>
+                    <input [id]="'nationality'" matInput type="text" name="nationality" formControlName="nationality">
+                </mat-form-field>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                Status
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                <mat-form-field class='col-12'  appearance="outline">
+                    <mat-label>Regilion</mat-label>
+                    <input [id]="'religion'" matInput type="text" name="religion" formControlName="religion">
+                </mat-form-field>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                Status
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                <mat-form-field class='col-12'  appearance="outline">
+                    <mat-label>Doctor</mat-label>
+                    <input [id]="'doctor'" matInput [matAutocomplete]="auto" type="text" name="doctor"
+                        formControlName="doctor">
+                    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="DocDisplayFn">
+                        <mat-option *ngFor="let item of filteredDoc|async " [value]="item">
+                            {{item.doctorName}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                Age :
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                <mat-form-field class='col-12'  appearance="outline">
+                    <mat-label>Township</mat-label>
+                    <input [id]="'township'" matInput [matAutocomplete]="auto1" type="text" name="township"
+                        formControlName="township">
+                    <mat-autocomplete autoActiveFirstOption #auto1="matAutocomplete" [displayWith]="TownDisplayFn">
+                        <mat-option *ngFor="let item of filteredTown|async " [value]="item">
+                            {{item.townshipName}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                <mat-form-field class='col-12'  appearance="outline">
+                    <mat-label>Type</mat-label>
+                    <input [id]="'ptType'" matInput type="text" name="ptType" formControlName="ptType">
+                </mat-form-field>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                <mat-form-field class='col-12'  appearance="outline">
+                    <mat-label>Address</mat-label>
+                    <textarea matInput placeholder="Ex. It makes me feel..." name="address"
+                        formControlName="address"></textarea>
+                </mat-form-field>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                <mat-form-field class='col-12'  appearance="outline">
+                    <mat-label>Bill ID</mat-label>
+                    <input [id]="'billId'" matInput type="text" name="billId">
+                </mat-form-field>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                <mat-form-field class='col-12'  appearance="outline">
+                    <mat-label>Admission No</mat-label>
+                    <input [id]="'admissionNo'" matInput type="text" name="admissionNo">
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="example-button-row float-right">
+            <button mat-flat-button type="submit" color="primary">Save</button>
+            <button mat-flat-button type="submit" color="primary">clear</button>
+        </div>
+        <br>
+        <br>
+        
+    </form>
+
+</div>

@@ -1,0 +1,14 @@
+mat-card-content {
+    display: flex;
+}
+
+.classContainer {
+    flex: 1%;
+    margin: 0 2% 0 2%;
+   
+}
+.container{
+    flex: 50%;
+    margin: 0 2% 0 2%;
+
+}

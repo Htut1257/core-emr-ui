@@ -1,0 +1,51 @@
+<div class="row">
+    <div class="row mb-3">
+        <div class="col-lg-3 col-md-3 col-sm-12 pt-2">
+            <mat-label>Reg No: </mat-label>
+            <mat-label *ngIf="lab">{{lab.regNo}}</mat-label>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-12 pt-2">
+            <mat-label>Adm No: </mat-label>
+            <mat-label *ngIf="lab">{{lab.admNo}}</mat-label>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-12 pt-2">
+            <mat-label>Name: </mat-label>
+            <mat-label *ngIf="lab">{{lab.Name}}</mat-label>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-12">
+            <div class="button-row float-right ">
+                <button mat-flat-button color="primary" [routerLink]="['/main/opd/lab']">Back</button>
+            </div>
+        </div>
+    </div>
+    <div class="table-container">
+        <table mat-table [dataSource]="dataSource" matSort>
+            <ng-container matColumnDef="code">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Code </th>
+                <td class="td-number" mat-cell *matCellDef="let element;">{{element.code}}</td>
+            </ng-container>
+            <ng-container matColumnDef="test">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Lab Test</th>
+                <td class="td-text" mat-cell *matCellDef="let element">{{element.test}}</td>
+            </ng-container>
+            <ng-container matColumnDef="remark">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Dr Remark</th>
+                <td class="td-text" mat-cell *matCellDef="let element">{{element.remark}}</td>
+            </ng-container>
+            <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+                <td class="td-text" mat-cell *matCellDef="let element">
+                    <mat-checkbox color="primary" checked="{{element.status}}"></mat-checkbox>
+                    
+                </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky:true"></tr>
+            <tr mat-row *matRowDef="let row;columns:displayedColumns"></tr>
+        </table>
+    </div>
+    <div class="col-12">
+        <div class="button-row float-right">
+            <button mat-flat-button color="primary">Confirm</button>
+        </div>
+    </div>
+</div>

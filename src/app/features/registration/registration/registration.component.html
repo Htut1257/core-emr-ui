@@ -1,0 +1,29 @@
+<div class="">
+    <mat-tab-group [@.disabled]="true" >
+        <mat-tab label="Registration" >
+            <br>
+            <app-registration-setup></app-registration-setup>
+        </mat-tab>
+        <mat-tab label="Appointment">
+
+            <br>
+            <div class="row mt-2">
+                <div class="row  mt-2">
+                    <div class="col-12">
+                        <app-appointment-registration></app-appointment-registration>
+                    </div>
+                    <div class="col-12">
+                        <span>Appointment History</span>
+                        <app-appointment-history></app-appointment-history>
+                    </div>
+                </div>
+            </div>
+
+        </mat-tab>
+        <mat-tab label="New Features">
+
+            Coming soon
+
+        </mat-tab>
+    </mat-tab-group>
+</div>

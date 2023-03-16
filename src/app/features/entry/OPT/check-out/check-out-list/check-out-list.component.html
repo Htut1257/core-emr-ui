@@ -1,0 +1,38 @@
+<div class="row">
+    <div class="col-12 mb-3">
+        <mat-label><strong>Session : </strong></mat-label>
+        <mat-label><strong>2023151</strong></mat-label>
+    </div>
+    <div class="row col-12">
+        <div class="col-lg-6 col-md-4 col-sm-12">
+            <mat-form-field class="col-12">
+                <mat-label>Date</mat-label>
+                <input [id]="'remark'" matInput>
+            </mat-form-field>
+        </div>
+        <div class="col-lg-6 col-md-4 col-sm-12">
+            <mat-form-field class="col-12">
+                <mat-label>Filter</mat-label>
+                <input [id]="'remark'" matInput>
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="table-container">
+        <table mat-table [dataSource]="dataSource" matSort>
+            <ng-container matColumnDef="reg">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Reg No </th>
+                <td class="td-text" mat-cell *matCellDef="let element; let i = index">{{element.regNo}}</td>
+            </ng-container>
+            <ng-container matColumnDef="adm">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Adm No</th>
+                <td class="td-text" mat-cell *matCellDef="let element">{{element.admNo}}</td>
+            </ng-container>
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+                <td class="td-text" mat-cell *matCellDef="let element">{{element.Name}}</td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky:true"></tr>
+            <tr mat-row *matRowDef="let row;columns:displayedColumns" (dblclick)="getRowData(row)"></tr>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,18 @@
+@import 'ag-grid-community/styles/ag-grid.css';
+@import 'ag-grid-community/styles/ag-theme-alpine.css';
+
+
+mat-card-content {
+    display: flex;
+}
+
+.classContainer {
+    flex: 50%;
+    margin: 0 2% 0 2%;
+   
+}
+.container{
+    flex: 50%;
+    margin: 0 2% 0 2%;
+
+}

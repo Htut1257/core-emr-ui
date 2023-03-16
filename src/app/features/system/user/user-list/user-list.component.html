@@ -1,0 +1,20 @@
+<div class="auth-wrapper">
+    <div class="auth-content">
+        <mat-card class="row">
+            <mat-card-title>
+                <h4 class="mb-3 mt-3 f-w-400">User List</h4>
+            </mat-card-title>
+            <mat-card-content class="col-md-12">
+                <div class="classContainer">
+                    <ag-grid-angular style="width: 100%;height:500px;" class="ag-theme-alpine" [pagination]="false"
+                        [defaultColDef]="defaultColDef" [columnDefs]="columnDefs" [rowData]="rowData" [rowHeight]="30"
+                        (gridReady)="onGridReady($event)" (rowClicked)="onRowClicked($event)" (rowDoubleClicked)="onRowdblClicked($event)">
+                    </ag-grid-angular>
+                </div>
+                <div *ngIf="!isMobile" class="container">
+                    <app-user-setup ></app-user-setup>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

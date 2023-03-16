@@ -1,0 +1,53 @@
+import { Injectable, Inject, inject } from '@angular/core';
+import { Observable } from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { AbstractService } from '../abstract-service/abstract.service';
+import { ApiSetting } from 'src/app/api/api-setting';
+import { Patient } from '../../model/patient.model';
+var uri: any = `${ApiSetting.EmrEndPoint}`
+@Injectable({
+  providedIn: 'root'
+})
+export class PatientService extends AbstractService<Patient>{
+
+  constructor(@Inject(HttpClient) http: HttpClient) {
+    super(http, uri)
+  }
+
+  getPatientByName(name: string) {
+    this.baseURL = this.baseURL + `/patient/getByName`
+    let httpParams = new HttpParams().set('name', name);
+    return this.getByParams(httpParams);
+  }
+
+  savePatient(data: Patient) {
+    this.baseURL = this.baseURL + `/patient/save`
+    return this.save(data);
+  }
+
+  removePatient(id: string) {
+    this.baseURL = this.baseURL + `/patient/delete`
+    let httpParams = new HttpParams().set('id', id);
+    return this.getByParams(httpParams);
+  }
+
+  searchBooking(params: any) {
+    this.baseURL = this.baseURL + `/patient/searchBooking`
+    let httpParams = new HttpParams()
+      .set('name', params)
+      .set('name', params)
+    return this.getByParams(httpParams);
+  }
+
+  saveBooking(data: Patient) {
+    this.baseURL = this.baseURL + `/patient/saveBooking`
+    return this.save(data);
+  }
+
+  deleteBooking(id: string) {
+    this.baseURL = this.baseURL + `/patient/deleteBooking`
+    let httpParams = new HttpParams().set('id', id);
+    return this.getByParams(httpParams);
+  }
+
+}

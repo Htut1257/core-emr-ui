@@ -1,0 +1,69 @@
+<div class="row">
+    <div class="row mb-3">
+        <div class="col-lg-3 col-md-3 col-sm-12 pt-2">
+            <mat-label>Reg No: </mat-label>
+            <mat-label *ngIf="checkOut">{{checkOut.regNo}}</mat-label>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-12 pt-2">
+            <mat-label>Adm No: </mat-label>
+            <mat-label *ngIf="checkOut">{{checkOut.admNo}}</mat-label>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-12 pt-2">
+            <mat-label>Name: </mat-label>
+            <mat-label *ngIf="checkOut">{{checkOut.Name}}</mat-label>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-12">
+            <div class="button-row float-right ">
+                <button mat-flat-button color="primary" [routerLink]="['/main/opd/check-out']">Back</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <ag-grid-angular #agGrid style="width: 100%; height: 200px;" class="ag-theme-balham" [gridOptions]="gridOptionsCheckOut"
+            (gridReady)="onGridReady($event)" rowSelection="multiple" (selectionChanged)="onSelectionChanged($event)"
+            (cellEditingStarted)="cellEditingStarted($event)" (cellEditingStopped)="cellEditingStopped($event)">
+        </ag-grid-angular>
+    </div>
+    <div class="row mt-3">
+        <div class="col-4">
+            <div class="col-12">
+                <ag-grid-angular #agGrid style="width: 100%; height: 200px;" class="ag-theme-balham" [gridOptions]="gridOptionsPayment"
+                (gridReady)="onGridReadyPay($event)" rowSelection="multiple" (selectionChanged)="onSelectionChanged($event)"
+                (cellEditingStarted)="cellEditingStarted($event)" (cellEditingStopped)="cellEditingStopped($event)">
+            </ag-grid-angular>
+            </div>
+            <div class="col-12">
+                <mat-form-field>
+                    <mat-label>Total Pay</mat-label>
+                    <input matInput>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row col-8">
+            <div class="col-12">
+                <mat-form-field class="float-right">
+                    <mat-label>Vou Total</mat-label>
+                    <input matInput>
+                </mat-form-field>
+            </div>
+            <div class="col-12">
+                <mat-form-field class="float-right">
+                    <mat-label>Tax</mat-label>
+                    <input matInput>
+                </mat-form-field>
+            </div>
+            <div class="col-12">
+                <mat-form-field class="float-right">
+                    <mat-label>Balance</mat-label>
+                    <input matInput>
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="button-row float-right ">
+            <button mat-flat-button color="primary" (click)="getRowData()">Save</button>
+            <button mat-flat-button color="primary">Print</button>
+        </div>
+    </div>
+</div>

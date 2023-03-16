@@ -1,0 +1,10 @@
+.classContainer {
+    flex: 60%;
+    margin: 0 2% 0 1%;
+
+}
+
+.container {
+    flex: 30%;
+    margin: 0 1% 0 2%;
+}

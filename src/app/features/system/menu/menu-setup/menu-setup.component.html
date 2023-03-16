@@ -1,0 +1,61 @@
+<div class="row card">
+    <div class="card-header">
+        Menu Setup
+    </div>
+    <form class="form card-body" [formGroup]="menuForm" (ngSubmit)="onSaveMenu(menuForm.value)">
+        <div class="row">
+            <div class="col-12">
+                <mat-form-field class='col-12' appearance="outline">
+                    <mat-label>Menu Code</mat-label>
+                    <input [id]="'menuCode'" matInput type="text" name="menuCode" formControlName="menuCode">
+                </mat-form-field>
+            </div>
+            <div class="col-12">
+                <mat-form-field class='col-12' appearance="outline">
+                    <mat-label>Menu Name</mat-label>
+                    <input [id]="'menuName'" matInput type="text" name="menuName" formControlName="menuName">
+                </mat-form-field>
+            </div>
+            <div class="col-12">
+                <mat-form-field class='col-12' appearance="outline">
+                    <mat-label>Menu MM</mat-label>
+                    <input [id]="'menuMM'" matInput type="text" name="menuMM" formControlName="menuMM">
+                </mat-form-field>
+            </div>
+            <div class="col-12">
+                <mat-form-field class='col-12' appearance="outline">
+                    <mat-label>Url</mat-label>
+                    <input [id]="'url'" matInput type="text" name="menuUrl" formControlName="menuUrl">
+                </mat-form-field>
+            </div>
+            <div class="col-12">
+                <mat-form-field class='col-12' appearance="outline">
+                    <mat-label>Account</mat-label>
+                    <input [id]="'account'" matInput type="text" name="account" formControlName="account">
+                </mat-form-field>
+            </div>
+            <div class="col-12">
+                <mat-form-field class='col-12' appearance="outline">
+                    <mat-label>Menu Type</mat-label>
+                    <input [id]="'menuType'" matInput type="text" name="menuType" formControlName="menuType">
+                </mat-form-field>
+            </div>
+            <div class="col-12">
+                <mat-form-field class='col-12' appearance="outline">
+                    <mat-label>Menu Class</mat-label>
+                    <input [id]="'menuClass'" matInput type="text" name="menuClass" formControlName="menuClass">
+                </mat-form-field>
+            </div>
+            <div class="col-12">
+                <mat-form-field class='col-12' appearance="outline">
+                    <mat-label>Order</mat-label>
+                    <input [id]="'order'" matInput type="text" name="orderBy" formControlName="orderBy">
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="example-button-row float-right">
+            <button mat-raised-button type="submit" color="primary">Save</button>
+            <button mat-raised-button type="button" color="primary">Clear</button>
+        </div>
+    </form>
+</div>

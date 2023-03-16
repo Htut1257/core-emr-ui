@@ -1,0 +1,45 @@
+<div class="auth-wrapper">
+    <div class="auth-content">
+        <mat-card class="row align-items-center text-center">
+            <mat-card-title>
+                <h2 class="mb-3 mt-3 "><span class="title1">Core</span>&nbsp;<span class="title2">EMR</span></h2>
+            </mat-card-title>
+            <mat-card-content class="col-md-12">
+                <form [formGroup]="userForm" (ngSubmit)="loginUser(userForm.value)"
+                    (keydown.enter)="handleEnter($event)" onfocus="this.select()">
+                    <div class="mb-3 col-12">
+                        <mat-form-field appearance="outline">
+                            <mat-label>User Name</mat-label>
+                            <input [id]="'name'" matInput type="text" name="userName" formControlName="userName"
+                                (keydown.enter)="focusNext($event)">
+                            <!-- <div *ngIf=" f['userName'].errors" class="invalid-feedback">
+                                <div *ngIf="f['userName'].errors['required']">Fullname is required</div>
+                              </div>  -->
+                            <mat-error *ngIf="!userForm.value.userName">Please Enter User Name</mat-error>
+
+                        </mat-form-field>
+                    </div>
+                    <div class="mb-2 col-12">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Password</mat-label>
+                            <input [id]="'password'" matInput type="password" formControlName="password"
+                                (keydown.enter)="focusNext($event)" onfocus="this.select()">
+                            <mat-error *ngIf="!userForm.value.password">Please Enter Password</mat-error>
+                        </mat-form-field>
+                    </div>
+                    <button mat-raised-button color="primary" [id]="'login'" class="btn btn-block btn-primary mb-4 btn-login col-12"
+                        [disabled]="!userForm.valid" >Login</button>
+
+                    <div class="form-group text-left mt-2 d-none">
+                        <div class="checkbox checkbox-primary d-inline">
+                            <input type="checkbox" name="checkbox-fill-1" id="checkbox-fill-a1" checked="">
+                            <label for="checkbox-fill-a1" class="cr"> Save credentials</label>
+                        </div>
+                    </div>
+                    <p class="mb-2 text-muted d-none">Forgot password? <a class="f-w-400">Reset</a></p>
+                    <p class="mb-0 text-muted d-none">Don’t have an account? <a class="f-w-400">Signup</a></p>
+                </form>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

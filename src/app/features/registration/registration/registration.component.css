@@ -1,0 +1,18 @@
+.classContainer {
+    flex: 50%;
+    margin: 0 2% 0 1%;
+
+}
+
+.container {
+    flex: 30%;
+    margin: 0 1% 0 2%;
+}
+
+mat-tab {
+    overflow: hidden;
+}
+
+mat-form-field.mat-form-field {
+    font-size: 12px;
+  }

@@ -1,0 +1,39 @@
+<mat-toolbar color="primary">
+    <button mat-icon-button class="menu" (click)="commonService.openNavigation()">
+        <mat-icon>menu</mat-icon>
+    </button>
+    <span style="align-content:center ;"><a> Core EMR </a></span>
+    <span class="example-spacer"></span>
+    <div class="pull-right">
+        <button mat-icon-button [matMenuTriggerFor]="settingMenu" matTooltip="Setting">
+            <mat-icon>settings</mat-icon>
+        </button>
+        <mat-menu #settingMenu='matMenu'>
+            <button mat-menu-item [matMenuTriggerFor]="setting">Settings</button>
+            <button mat-menu-item [matMenuTriggerFor]="opening">Openings</button>
+        </mat-menu>
+
+        <mat-menu #setting='matMenu'>
+            <button mat-menu-item>Device Setting</button>
+            <button mat-menu-item>System Property</button>
+        </mat-menu>
+
+        <mat-menu #opening='matMenu'>
+            <button mat-menu-item>Leave Opening</button>
+            <button mat-menu-item>Openings 2</button>
+        </mat-menu>
+
+        <button mat-icon-button matTooltip="Help?">
+            <mat-icon>help_outline</mat-icon>
+        </button>
+        <button mat-icon-button [matMenuTriggerFor]="menu" matTooltip="Account">
+            <mat-icon>person_outline</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="logOut()">
+                <mat-icon>exit_to_app</mat-icon>SignOut
+            </button>
+        </mat-menu>
+    </div>
+</mat-toolbar>
+<mat-progress-bar class="d-none" mode="indeterminate"></mat-progress-bar>
