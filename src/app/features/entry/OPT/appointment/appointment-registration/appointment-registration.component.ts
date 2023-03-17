@@ -7,7 +7,8 @@ import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/mat
 import { MAT_DATE_FORMATS, MAT_DATE_LOCALE, DateAdapter } from '@angular/material/core';
 import { Doctor } from 'src/app/core/model/doctor.model';
 import { DoctorService } from 'src/app/core/services/doctor-service/doctor.service';
-
+import { Gender } from 'src/app/core/model/gender.model';
+import { GenderService } from 'src/app/core/services/gender-service/gender.service';
 const MY_DATE_FORMAT = {
   parse: {
     dateInput: 'DD/MM/YYYY', // this is how your date will be parsed from Input
@@ -34,16 +35,20 @@ export class AppointmentRegistrationComponent implements OnInit {
   doctors: Doctor[] = []
   filteredDoc: Observable<any[]>;
 
+  gender: Gender[]
+
   appointForm: any
   todayDate = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD')
 
   constructor(
-    private docService: DoctorService, private dateAdapter: DateAdapter<Date>,
+    private docService: DoctorService, private genderService: GenderService,
+    private dateAdapter: DateAdapter<Date>,
     private appointService: AppointmentService, private fb: FormBuilder
   ) {
     this.dateAdapter.setLocale('en-GB');
   }
   ngOnInit(): void {
+   // this.getGender();
     this.initializeForm();
 
     this.filteredDoc = this.appointForm.controls['doctor'].valueChanges.pipe(
@@ -82,21 +87,40 @@ export class AppointmentRegistrationComponent implements OnInit {
     return item ? item.doctorName : '';
   }
 
-    //filter data for autocomplete
-    private _filterDoc(value: any): any {
-      let filterValue = value
-  
-      this.getDoctor(value)
-      if (value.doctorName != null) {
-        filterValue = value.doctorName.toLowerCase()
-      } else {
-        filterValue = value.toLowerCase()
-      }
-      return this.doctors.filter(data => data.doctorName.toLowerCase().includes(filterValue));
+  //filter data for autocomplete
+  private _filterDoc(value: any): any {
+    let filterValue = value
+
+    this.getDoctor(value)
+    if (value.doctorName != null) {
+      filterValue = value.doctorName.toLowerCase()
+    } else {
+      filterValue = value.toLowerCase()
     }
+    return this.doctors.filter(data => data.doctorName.toLowerCase().includes(filterValue));
+  }
+
+
+  getGender() {
+    this.genderService.getGender().subscribe({
+      next: data => {
+        this.gender = data;
+      },
+      error: err => {
+        console.trace(err)
+      }
+    })
+  }
+
+  //compare bonus data with initial data
+  compareGender(b1: Gender, b2: Gender) {
+    return b1 && b2 ? b1.genderId === b2.genderId : b1 === b2
+  }
+
 
   saveAppointment(data: any) {
     console.log(data)
+    return
     this.appointService.saveAppointment(data).subscribe(data => {
 
     })

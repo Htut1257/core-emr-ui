@@ -15,7 +15,7 @@ export class ApiSetting {
     }
 
     public static get EmrEndPoint(){
-        return 'http://192.168.100.231:8080';
+        return 'http://localhost:8080';
     }
 
 }

@@ -72,7 +72,7 @@ export const navItems: any = [
             {
                 displayName: 'User',
                 iconName: 'user',
-                route: 'system/user',
+                route: 'system/user/user-list',
                 children: []
             },
             {

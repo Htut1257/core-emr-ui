@@ -3,8 +3,8 @@
         <h4 class="mb-3 mt-3 f-w-400">User List</h4>
     </mat-card-title>
     <mat-card-content class="col-md-12">
-        <div class="classContainer mat-elevation-z1">
-            <mat-table [dataSource]="dataSource" class="mat-elevation-z1 "  >
+        <div class="classContainer card mat-elevation-z0">
+            <mat-table [dataSource]="dataSource" class="mat-elevation-z0 "  >
                 <ng-container matColumnDef="name">
                     <mat-header-cell mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
                     <mat-cell mat-cell *matCellDef="let element"> {{element.roleName}} </mat-cell>
@@ -15,7 +15,7 @@
                 </mat-row>
             </mat-table>
         </div>
-        <div class="container mat-elevation-z1">
+        <div class="container card mat-elevation-z0">
             <mat-tab-group>
                 <mat-tab label="System Property">
                     System Property

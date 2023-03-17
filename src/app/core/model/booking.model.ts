@@ -1,12 +1,14 @@
 export interface Booking {
     bookingId: number
-    bkDate: Date
     regNo: String
     patientName: String
+    doctorId: String
+    bkDate: Date
     bkPhone: String
     bkActive: boolean
     bkSerialNo: number
     createdDate: Date
     createdBy: String
-    doctorId: String
+    actionStatus: String
+    bStatus: String
 }

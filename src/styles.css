@@ -4,10 +4,10 @@
 @import "ag-grid-autocomplete-editor/dist/main.css";
 @import 'ag-grid-community/styles/ag-theme-alpine.css';
 @import 'ag-grid-community/styles/ag-theme-balham.css';
-
+@import './assets/styles/table-style.css';
 mat-form-field.mat-form-field {
-    font-size:12px;
-  }
+    font-size: 12px;
+}
 
 html,
 body {
@@ -66,14 +66,31 @@ body {
 .example-button-row {
     display: table-cell;
     max-width: 600px;
-  }
-  
-  .example-button-row .mat-flat-button,.example-button-row .mat-raised-button {
+}
+
+.example-button-row .mat-flat-button,
+.example-button-row .mat-raised-button {
     margin: 8px 8px 8px 0;
     height: 30px;
     line-height: 25px;
-  }
+}
 
-  .example-spacer {
+.example-spacer {
     flex: 1 1 auto;
-  }
+}
+
+.td-number {
+    text-align: right !important;
+    padding-right: 10px !important;
+}
+
+.td-text {
+    text-align: left !important;
+    padding-left: 10px !important;
+}
+
+.td-object {
+    text-align: center !important;
+    align-items: center !important;
+
+}
