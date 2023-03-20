@@ -119,10 +119,20 @@ export class AppointmentRegistrationComponent implements OnInit {
 
 
   saveAppointment(data: any) {
-    console.log(data)
-    return
-    this.appointService.saveAppointment(data).subscribe(data => {
+    let booking=data
+    booking.bookingId=null
+    booking.regNo=null
+    booking.patientName="TEsting 455"
+    booking.doctorId="042"
+    booking.bkDate=moment(data.regisDate).format("yyyy-MM-DDTHH:mm:ss")
+    booking.bkPhone=""
+    booking.bkActive=true
+    booking.bkSerialNo=""
+    booking.actionStatus=""
+    booking.bStatus=""
 
+    this.appointService.saveAppointment(booking).subscribe(data => {
+      console.log(data)
     })
   }
 

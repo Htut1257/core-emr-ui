@@ -1,10 +1,49 @@
 .table-container {
     margin-top: 25px;
-    height: 60vh;
+    height: 74vh;
     overflow: auto;
 }
 
-th.mat-mdc-header-cell.cdk-header-cell {
+table {
+    width: 100%;
+    margin: auto;
+    /* margin-top: 25px; */
+    overflow-y: scroll;
+    border: solid 0.1px rgb(209, 203, 203);
+}
+
+.table-mat {
+    width: auto;
+    margin: auto;
+    margin-top: 25px;
+    overflow-y: scroll;
+}
+
+.btn-edit {
+    text-align: right;
+}
+
+h2 {
+    text-align: center;
+    padding-top: 20px;
+}
+
+.button-add-row {
+    background: #1b9e1b;
+    color: #ffffff;
+}
+
+.button-remove-rows {
+    background: red;
+    color: #ffffff;
+    margin-right: 5px;
+}
+
+.button-remove {
+    color: red;
+}
+
+th.mat-header-cell.cdk-header-cell {
     font-size: large;
     color: rgb(26, 17, 17);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -12,17 +51,82 @@ th.mat-mdc-header-cell.cdk-header-cell {
     vertical-align: center;
 }
 
-.mat-mdc-header-row {
+tr.mat-row,
+tr.mat-footer-row,
+.cdk-header-row {
+    height: auto;
+}
+
+tr.mat-row,
+tr.mat-footer-row {
+    height: min-content !important;
+}
+
+
+.td-number {
+    text-align: right !important;
+    padding-right: 10px !important;
+}
+
+.td-text {
+    text-align: left !important;
+    padding-left: 10px !important;
+}
+
+.td-object {
+    text-align: center !important;
+    align-items: center !important;
+
+}
+
+.mat-header-row {
     min-height: 30px !important;
     height: 30px !important;
 }
 
-.mat-mdc-row {
-    min-height: auto !important;
-    height: auto !important;
-}
-
-.mat-mdc-header-cell {
+.mat-header-cell {
     min-height: 30px !important;
     height: 30px !important;
 }
+
+
+
+/* .mat-row:nth-child(even) {
+    background-color: white;
+}
+
+.mat-row:nth-child(odd) {
+    background-color: #e6ebe6;
+} */
+
+tr.mat-row:hover {
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.085);
+}
+
+th.mat-header-cell.cdk-header-cell {
+    font-size: 14px !important;
+    font-weight: bold !important;
+    /* border: solid 0.1px rgb(209, 203, 203); */
+}
+
+
+th.table-row {
+    /* background-color: aqua; */
+    height: 30px !important;
+}
+
+.mat-header-row {
+    /* background-color: aqua; */
+    height: 30px !important;
+}
+
+/* 
+.mat-button.mat-blue {
+    color: blue;
+ }  
+ 
+ .mat-raised-button.mat-blue, .mat-flat-button.mat-blue{
+    background-color: blue;
+    color: white;
+ } */

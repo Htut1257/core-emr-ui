@@ -2,7 +2,7 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { AnimationEvent } from "@angular/animations";
 
 import { AutocompleteSelectCellEditor } from "ag-grid-autocomplete-editor";
-import { Grid, ColDef, GridOptions, GridApi, ColumnApi } from "ag-grid-community";
+import { Grid, ColDef, GridOptions, GridApi, ColumnApi, Column } from "ag-grid-community";
 import { DoctorService } from 'src/app/core/services/doctor-service/doctor.service';
 import { Router } from '@angular/router';
 const selectData = [
@@ -196,6 +196,25 @@ export class DocEntryComponent implements OnInit {
   api: GridApi
   api1: GridApi
 
+  examinationApi: GridApi
+  treatmentApi: GridApi
+  noteApi: GridApi
+
+  examinationColumn: ColumnApi
+  treatmentColumn: ColumnApi
+  noteColumn: ColumnApi
+
+  examinationGridOption: GridOptions
+  treatmentGridOption: GridOptions
+  noteGridOption: GridOptions
+
+  examinationColumnDef: any
+  treatmentColumnDef: any
+  noteColumnDef: any
+
+  examinationRow: any
+  treatmentRow: any
+  noteRow: any
 
 
   columnApi: ColumnApi
@@ -203,7 +222,7 @@ export class DocEntryComponent implements OnInit {
   animationState = "in";
 
   rowDatas = [
-    { make: null },{ make: null },{ make: null },{ make: null },{ make: null },{ make: null }
+    { make: null }, { make: null }, { make: null }, { make: null }, { make: null }, { make: null }
     // { make: null, model: null, price: null, country: null, city: null },
     // { make: null, model: null, price: null, country: null, city: null },
     // { make: null, model: null, price: null, country: null, city: null },
@@ -232,8 +251,8 @@ export class DocEntryComponent implements OnInit {
       editable: true
     }
   ];
-  isHide:boolean=false
-  constructor(private route:Router,private docService:DoctorService) {
+  isHide: boolean = false
+  constructor(private route: Router, private docService: DoctorService) {
 
   }
 
@@ -242,6 +261,10 @@ export class DocEntryComponent implements OnInit {
     // let eGridDiv1: HTMLElement = document.querySelector("#myGrid1");
     //new Grid(eGridDiv, gridOptions);
     // new Grid(eGridDiv1, gridOptions);
+    this.getExaminationData();
+    this.getTreatmentData();
+    this.getNoteData();
+    this.InitializeGridTable();
   }
 
   toggleShowDiv(divName: string) {
@@ -252,16 +275,240 @@ export class DocEntryComponent implements OnInit {
     }
   }
 
+  InitializeGridTable() {
+    this.examinationGridOption = {
+      columnDefs: this.examinationColumnDef,
+      rowData: this.examinationRow,
+      suppressScrollOnNewData: false
+    }
+
+    this.treatmentGridOption = {
+      columnDefs: this.treatmentColumnDef,
+      rowData: this.treatmentRow,
+      suppressScrollOnNewData: false
+    }
+
+    this.noteGridOption = {
+      columnDefs: this.noteColumnDef,
+      rowData: this.noteRow,
+      suppressScrollOnNewData: false
+    }
+  }
 
   //table for diagnosis 
-  onGriReadydDiagnosis(){
-
+  onGriReadyExamination(params) {
+    this.examinationApi = params.api
+    this.examinationColumn = params.columnApi
+    this.examinationApi.sizeColumnsToFit()
+    params.examinationApi.resetRowHeights();
   }
 
   //table for treatment
-  onGridReadyTreatment(){
-
+  onGridReadyTreatment(params) {
+    this.treatmentApi = params.api
+    this.treatmentColumn = params.columnApi
+    this.treatmentApi.sizeColumnsToFit()
+    params.treatmentApi.resetRowHeights();
   }
+
+  onGridReadyNote(params) {
+    this.noteApi = params.api
+    this.noteColumn = params.columnApi
+    this.noteApi.sizeColumnsToFit()
+    params.noteApi.resetRowHeights();
+  }
+
+  getExaminationData() {
+    this.examinationColumnDef = [
+      {
+        headerName: "Examination/Diagnosis",
+        field: "examination",
+        cellEditor: AutocompleteSelectCellEditor,
+        cellEditorParams: {
+          required: true,
+          selectData: selectData,
+          placeholder: "type examination"
+        },
+        valueFormatter: params => {
+          if (params.value) {
+            return params.value.label || params.value.value || params.value;
+          }
+          return "";
+        },
+        editable: true
+      }
+    ]
+
+    this.examinationRow = [
+      { examination: "testing 1" },
+      { examination: "testing 2" },
+      { examination: "testing 3" },
+    ]
+  }
+
+  getTreatmentData() {
+    this.treatmentColumnDef=[
+      {
+        headerName: "Description",
+        field: "desc",
+        cellEditor: AutocompleteSelectCellEditor,
+        cellEditorParams: {
+          required: true,
+          selectData: selectData,
+          placeholder: "type data"
+        },
+        valueFormatter: params => {
+          if (params.value) {
+            return params.value.label || params.value.value || params.value;
+          }
+          return "";
+        },
+        editable: true
+      },
+      {
+        headerName: "Pattern",
+        field: "pattern",
+        cellEditor: AutocompleteSelectCellEditor,
+        cellEditorParams: {
+          required: true,
+          selectData: selectData,
+          placeholder: "type data"
+        },
+        valueFormatter: params => {
+          if (params.value) {
+            return params.value.label || params.value.value || params.value;
+          }
+          return "";
+        },
+        editable: true
+      },
+      {
+        headerName: "Qty",
+        field: "qty",
+        cellEditor: AutocompleteSelectCellEditor,
+        cellEditorParams: {
+          required: true,
+          selectData: selectData,
+          placeholder: "type data"
+        },
+        valueFormatter: params => {
+          if (params.value) {
+            return params.value.label || params.value.value || params.value;
+          }
+          return "";
+        },
+        editable: true
+      },
+      {
+        headerName: "Price",
+        field: "price",
+        cellEditor: AutocompleteSelectCellEditor,
+        cellEditorParams: {
+          required: true,
+          selectData: selectData,
+          placeholder: "type data"
+        },
+        valueFormatter: params => {
+          if (params.value) {
+            return params.value.label || params.value.value || params.value;
+          }
+          return "";
+        },
+        editable: true
+      },
+      {
+        headerName: "Discount",
+        field: "discount",
+        cellEditor: AutocompleteSelectCellEditor,
+        cellEditorParams: {
+          required: true,
+          selectData: selectData,
+          placeholder: "type data"
+        },
+        valueFormatter: params => {
+          if (params.value) {
+            return params.value.label || params.value.value || params.value;
+          }
+          return "";
+        },
+        editable: true
+      },
+      {
+        headerName: "Amount",
+        field: "amount",
+        cellEditor: AutocompleteSelectCellEditor,
+        cellEditorParams: {
+          required: true,
+          selectData: selectData,
+          placeholder: "type data"
+        },
+        valueFormatter: params => {
+          if (params.value) {
+            return params.value.label || params.value.value || params.value;
+          }
+          return "";
+        },
+        editable: true
+      },
+      {
+        headerName: "Remark",
+        field: "remark",
+        cellEditor: AutocompleteSelectCellEditor,
+        cellEditorParams: {
+          required: true,
+          selectData: selectData,
+          placeholder: "type data"
+        },
+        valueFormatter: params => {
+          if (params.value) {
+            return params.value.label || params.value.value || params.value;
+          }
+          return "";
+        },
+        editable: true
+      },
+
+    ]
+    this.treatmentRow=[
+      {col1:'',col2:'',col3:'',col4:'',col5:'',col6:'',col7:''}
+    ]
+  }
+
+  getNoteData() {
+    this.noteColumnDef = [
+      {
+        headerName: "Key",
+        field: "key",
+        editable: true
+      },
+      {
+        headerName: "Value",
+        field: "value",
+        editable: true
+      }
+    ]
+    this.noteRow = [
+      { key: 'key remark1', value: 'value remark1' }
+    ]
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   //get data ready for grid data
   onGridReady(params): void {
@@ -286,10 +533,10 @@ export class DocEntryComponent implements OnInit {
   }
 
   isEditing = false;
-   @HostListener('keydown', ['$event'])
+  @HostListener('keydown', ['$event'])
   onKeydown(event) {
     event.stopPropagation();
-   
+
     if (event.key == "Escape") {
       console.log('esc')
       return false;
@@ -318,22 +565,22 @@ export class DocEntryComponent implements OnInit {
   cellEditingStarted(event) {
     this.isEditing = true
     console.log("is editing")
-  //  this.api.setFocusedCell(event.rowIndex, event.colDef.field);
+    //  this.api.setFocusedCell(event.rowIndex, event.colDef.field);
   }
 
-  currIndex=0
+  currIndex = 0
   cellEditingStopped(event) {
     console.log(event)
-    this.currIndex=event.node.childIndex
+    this.currIndex = event.node.childIndex
     this.isEditing = false
     console.log("stop editing")
     this.api.setFocusedCell(event.rowIndex, event.colDef.field);
   }
 
-  
-  cellStyle='stickyInner-close'
-  clickChange(){
-    if(this.cellStyle == 'stickyInner-close') {
+
+  cellStyle = 'stickyInner-close'
+  clickChange() {
+    if (this.cellStyle == 'stickyInner-close') {
       this.cellStyle = 'stickyInner-open';
     } else {
       this.cellStyle = 'stickyInner-close';

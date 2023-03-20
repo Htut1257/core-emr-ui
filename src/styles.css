@@ -9,6 +9,10 @@ mat-form-field.mat-form-field {
     font-size: 12px;
 }
 
+mat-form-field-outline.mat-form-field-outline{
+    background-color: aqua;
+}
+
 html,
 body {
     height: 100%;

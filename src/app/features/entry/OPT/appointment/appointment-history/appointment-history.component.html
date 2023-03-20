@@ -22,15 +22,15 @@
                 </ng-component>
                 <ng-component matColumnDef="date">
                     <th mat-header-cell class="td-text" *matHeaderCellDef="">Date</th>
-                    <td mat-cell class="td-text" *matCellDef="let element"></td>
+                    <td mat-cell class="td-text" *matCellDef="let element">{{element.bkDate|date:'dd/MM/yyyy '}}</td>
                 </ng-component>
                 <ng-component matColumnDef="visitno">
                     <th mat-header-cell class="td-text" *matHeaderCellDef="">Visit No</th>
-                    <td mat-cell class="td-text" *matCellDef="let element"></td>
+                    <td mat-cell class="td-text" *matCellDef="let element">{{element.bookingId}}</td>
                 </ng-component>
                 <ng-component matColumnDef="regno">
                     <th mat-header-cell class="td-text" *matHeaderCellDef="">Reg No</th>
-                    <td mat-cell class="td-text" *matCellDef="let element"></td>
+                    <td mat-cell class="td-text" *matCellDef="let element">{{element.regNo}}</td>
                 </ng-component>
                 <ng-component matColumnDef="patient">
                     <th mat-header-cell class="td-text" *matHeaderCellDef="">Patient</th>
@@ -38,7 +38,7 @@
                 </ng-component>
                 <ng-component matColumnDef="doctor">
                     <th mat-header-cell class="td-text" *matHeaderCellDef="">Doctor</th>
-                    <td mat-cell class="td-text" *matCellDef="let element"></td>
+                    <td mat-cell class="td-text" *matCellDef="let element">{{element.doctorId}}</td>
                 </ng-component>
                 <ng-component matColumnDef="phone">
                     <th mat-header-cell class="td-text" *matHeaderCellDef="">Phone No</th>
