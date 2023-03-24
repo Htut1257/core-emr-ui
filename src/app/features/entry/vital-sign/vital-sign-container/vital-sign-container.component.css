@@ -1,0 +1,15 @@
+.classContainer {
+  flex: 55%;
+  margin: 0 2% 0 2%;
+  /* box-sizing: border-box;
+      border-right: 0.5px solid grey; */
+}
+
+.container {
+  flex: 30%;
+  margin: 0 2% 0 2%;
+}
+
+.card.card-border {
+  padding: 5%
+}

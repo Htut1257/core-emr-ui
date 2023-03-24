@@ -1,0 +1,54 @@
+<div class="row col-12">
+   
+    <div class="row col-12">
+        <div class="table-container table">
+            <table class="table table-responsive" mat-table [dataSource]="dataSource">
+                <ng-component matColumnDef="no">
+                    <th mat-header-cell class="td-number" *matHeaderCellDef="">No</th>
+                    <td mat-cell class="td-number" *matCellDef="let i=index">{{i+1}}</td>
+                </ng-component>
+                <ng-component matColumnDef="date">
+                    <th mat-header-cell class="td-text" *matHeaderCellDef="">Date</th>
+                    <td mat-cell class="td-text" *matCellDef="let element">{{element.bkDate|date:'dd/MM/yyyy '}}</td>
+                </ng-component>
+                <ng-component matColumnDef="visitno">
+                    <th mat-header-cell class="td-text" *matHeaderCellDef="">Visit No</th>
+                    <td mat-cell class="td-text" *matCellDef="let element">{{element.bookingId}}</td>
+                </ng-component>
+                <ng-component matColumnDef="regno">
+                    <th mat-header-cell class="td-text" *matHeaderCellDef="">Reg No</th>
+                    <td mat-cell class="td-text" *matCellDef="let element">{{element.regNo}}</td>
+                </ng-component>
+                <ng-component matColumnDef="patient">
+                    <th mat-header-cell class="td-text" *matHeaderCellDef="">Patient</th>
+                    <td mat-cell class="td-text" *matCellDef="let element">{{element.patientName}}</td>
+                </ng-component>
+                <ng-component matColumnDef="doctor">
+                    <th mat-header-cell class="td-text" *matHeaderCellDef="">Doctor</th>
+                    <td mat-cell class="td-text" *matCellDef="let element">{{element.doctorName}}</td>
+                </ng-component>
+                <ng-component matColumnDef="phone">
+                    <th mat-header-cell class="td-text" *matHeaderCellDef="">Phone No</th>
+                    <td mat-cell class="td-text" *matCellDef="let element">{{element.bkPhone}}</td>
+                </ng-component>
+                <ng-component matColumnDef="serialno">
+                    <th mat-header-cell class="td-number" *matHeaderCellDef="">Serial No</th>
+                    <td mat-cell class="td-number" *matCellDef="let element">{{element.bkSerialNo}}</td>
+                </ng-component>
+                <ng-component matColumnDef="wl">
+                    <th mat-header-cell class="td-number" *matHeaderCellDef="">W/L</th>
+                    <td mat-cell class="td-number" *matCellDef="let element">{{element.bstatus}}</td>
+                </ng-component>
+                <ng-component matColumnDef="reg">
+                    <th mat-header-cell class="td-number" *matHeaderCellDef="">Action</th>
+                    <td mat-cell class="td-number" *matCellDef="let element">
+                        <button mat-raised-button color="primary" *ngIf="!element.regNo" (click)="vitalBooking(element)">Register</button>
+                    </td>
+                </ng-component>
+                <tr mat-header-row *matHeaderRowDef="displayedColumn;sticky:true"></tr>
+                <tr mat-row *matRowDef="let row;columns:displayedColumn"></tr>
+            </table>
+        </div>
+    </div>
+
+</div>

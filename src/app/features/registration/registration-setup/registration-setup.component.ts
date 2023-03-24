@@ -6,12 +6,14 @@ import { IPatientFormGroup, Patient } from 'src/app/core/model/patient.model';
 import { PatientService } from 'src/app/core/services/patient-service/patient.service';
 import { DoctorService } from 'src/app/core/services/doctor-service/doctor.service';
 import { TownshipService } from 'src/app/core/services/township-service/township.service';
+import { AppointmentService } from 'src/app/core/services/appointment-service/appointment.service';
 import { Observable, map, startWith } from 'rxjs';
 import { Doctor } from 'src/app/core/model/doctor.model';
 import { Township } from 'src/app/core/model/township.model';
 import * as moment from 'moment';
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { MAT_DATE_FORMATS, MAT_DATE_LOCALE, DateAdapter } from '@angular/material/core';
+import { Booking } from 'src/app/core/model/booking.model';
 
 const MY_DATE_FORMAT = {
   parse: {
@@ -39,6 +41,8 @@ export class RegistrationSetupComponent implements OnInit {
   patient: Patient
   registrationForm: IPatientFormGroup
 
+  booking: Booking
+
   doctors: Doctor[] = []
   towns: Township[] = []
 
@@ -48,14 +52,19 @@ export class RegistrationSetupComponent implements OnInit {
   todayDate = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD')
   constructor(private route: Router, private patientService: PatientService,
     private docService: DoctorService, private townService: TownshipService,
+    private appintService: AppointmentService,
     private formBuilder: FormBuilder, private dateAdapter: DateAdapter<Date>) {
     this.dateAdapter.setLocale('en-GB');
   }
 
   ngOnInit(): void {
-    this.getTownship();
-
     this.initializeForm();
+    this.getTownship();
+    if (this.appintService._booking != undefined) {
+      this.booking = this.appintService._booking
+      console.log(this.booking)
+      this.initializeFormData(this.booking)
+    }
 
     this.filteredDoc = this.registrationForm.controls['doctor'].valueChanges.pipe(
       startWith(''),
@@ -68,12 +77,10 @@ export class RegistrationSetupComponent implements OnInit {
     );
   }
 
-
-
   //initialize form with interface model
   initializeForm() {
     this.registrationForm = this.formBuilder.group({
-      regNo: ['22832023'],
+      regNo: [{ value: null, disabled: true }],
       regDate: [],
       dob: [null],
       sex: [''],
@@ -103,6 +110,12 @@ export class RegistrationSetupComponent implements OnInit {
     //this.form.patchValue(this.myData);
   }
 
+  initializeFormData(data) {
+    this.registrationForm.get('regDate').patchValue(data.bkDate)
+    this.registrationForm.get('patientName').patchValue(data.patientName)
+    this.registrationForm.get('contactNo').patchValue(data.bkPhone)
+  }
+
   getDoctor(id: string) {
     this.docService.getDoctor(id).subscribe({
       next: doctors => {
@@ -129,6 +142,11 @@ export class RegistrationSetupComponent implements OnInit {
 
   DocDisplayFn(item: any) {
     return item ? item.doctorName : '';
+  }
+
+  //compare Leave data with initial data
+  compareDoctor(d1: Doctor, d2: Doctor): boolean {
+    return d1 && d2 ? d1.doctorId === d2.doctorId : d1 === d2;
   }
 
   TownDisplayFn(item: any) {
@@ -168,11 +186,11 @@ export class RegistrationSetupComponent implements OnInit {
     patient.township = data.township.townshipId
     patient.regDate = moment(data.regDate).format("yyyy-MM-DDTHH:mm:ss");
     patient.dob = moment(data.dob).format("yyyy-MM-DDTHH:mm:ss");
+    patient.bookingId = this.booking != undefined ? this.booking.bookingId : null
     console.log(patient)
-  
-    console.log("Before save :" + JSON.stringify(data))
     this.patientService.savePatient(patient).subscribe(data => {
       console.log("After Save" + JSON.stringify(data))
+      this.appintService._booking = undefined
     })
   }
 }

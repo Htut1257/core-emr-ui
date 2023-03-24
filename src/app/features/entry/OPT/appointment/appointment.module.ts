@@ -5,6 +5,7 @@ import { AppointmentRegistrationComponent } from './appointment-registration/app
 import { AppointmentRoutingModule } from './appointment-routing.module';
 import { AppointmentHistoryComponent } from './appointment-history/appointment-history.component';
 import { AppointmentComponent } from './appointment/appointment.component';
+import { AppointmentSearchDialogComponent } from './appointment-search-dialog/appointment-search-dialog.component';
 
 const components=[
   AppointmentComponent,
@@ -14,6 +15,7 @@ const components=[
 @NgModule({
   declarations: [
     components,
+    AppointmentSearchDialogComponent,
   ],
   imports: [
     CommonModule,

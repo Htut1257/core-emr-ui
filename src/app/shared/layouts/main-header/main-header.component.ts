@@ -7,11 +7,16 @@ import { CommonServiceService } from 'src/app/core/services/common-service/commo
   styleUrls: ['./main-header.component.css']
 })
 export class MainHeaderComponent {
+  title:string
   constructor(private route:Router,public commonService:CommonServiceService){
-
+     
+    this.commonService.titleSubject$.subscribe(data=>{
+      this.title=data
+    })
   }
 
   logOut(){
     this.route.navigate(['/login'])
   }
 }
+

@@ -1,0 +1,11 @@
+<div class="row">
+    <div class="container">
+        <app-vital-sign></app-vital-sign>
+    </div>
+    <div *ngIf="!isMobile" class="classContainer">
+        <div class="card card-border pt-3 pb-3">
+            <app-vital-sign-setup></app-vital-sign-setup>
+            </div>
+       
+    </div>
+</div>

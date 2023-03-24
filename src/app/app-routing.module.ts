@@ -23,6 +23,10 @@ const routes: Routes = [
         loadChildren: () => import('./features/registration/registration.module').then(module => module.RegistrationModule)
       },
       {
+        path: 'vital-sign',
+        loadChildren: () => import('./features/entry/vital-sign/vital-sign.module').then(module => module.VitalSignModule)
+      },
+      {
         path: 'opd',
         loadChildren: () => import('./features/entry/OPT/opt.module').then(module => module.OPTModule)
       },
@@ -33,20 +37,20 @@ const routes: Routes = [
     ]
   },
   {
-    path:'system',component:MainDefaultComponent,
-    children:[
-     {
-      path: 'user',
-      loadChildren: () => import('./features/system/user/user.module').then(module => module.UserModule)
-     },
-     {
-      path: 'role',
-      loadChildren: () => import('./features/system/role/role.module').then(module => module.RoleModule)
-     },
-     {
-      path: 'menu',
-      loadChildren: () => import('./features/system/menu/menu.module').then(module => module.MenuModule)
-     }
+    path: 'system', component: MainDefaultComponent,
+    children: [
+      {
+        path: 'user',
+        loadChildren: () => import('./features/system/user/user.module').then(module => module.UserModule)
+      },
+      {
+        path: 'role',
+        loadChildren: () => import('./features/system/role/role.module').then(module => module.RoleModule)
+      },
+      {
+        path: 'menu',
+        loadChildren: () => import('./features/system/menu/menu.module').then(module => module.MenuModule)
+      }
     ]
   }
 ];

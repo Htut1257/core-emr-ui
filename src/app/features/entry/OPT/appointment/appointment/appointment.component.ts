@@ -6,9 +6,11 @@ import { CommonServiceService } from 'src/app/core/services/common-service/commo
   styleUrls: ['./appointment.component.css']
 })
 export class AppointmentComponent {
-
+  isMobile:boolean=false
   constructor(private commonService:CommonServiceService){
-
+    this.commonService.isMobileObj$.subscribe(data=>{
+      this.isMobile=data  
+    })
   }
 
 }

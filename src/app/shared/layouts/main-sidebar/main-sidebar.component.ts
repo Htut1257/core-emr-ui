@@ -46,6 +46,7 @@ export class MainSidebarComponent implements OnInit {
       let uri=item.route?.toLowerCase();
       this.route.navigate([uri]);
       this.commonService.openNavigation();
+      this.commonService.getTitle(item.displayName)
       return;
     }
     this.expanded=!this.expanded

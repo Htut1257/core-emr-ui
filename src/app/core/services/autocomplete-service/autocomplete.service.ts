@@ -1,0 +1,47 @@
+import { Injectable, Inject } from '@angular/core';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
+import { DrAutoCompleteItem } from '../../model/autocomplete-item.model';
+import { ApiSetting } from 'src/app/api/api-setting';
+import { relativeTimeThreshold } from 'moment';
+const httpHeader = new HttpHeaders({
+  'Content-Type': 'application/json',
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Allow-Methods': 'GET,POST,OPTIONS,DELETE,PUT',
+});
+@Injectable({
+  providedIn: 'root'
+})
+export class AutocompleteService {
+
+  constructor(private http: HttpClient) {
+  }
+
+  getExaminationData(params: string): Observable<any> {
+    return new Observable(observable => {
+      let uri = `${ApiSetting.EmrMongoEndPoint}/autoComplete/medTermsAutoComplete`
+      let httpParams = new HttpParams()
+        .set("medDesc", params)
+      let httpOption = { headers: httpHeader, params: httpParams }
+      this.http.get<any>(uri, httpOption).subscribe(data => {
+        observable.next(data)
+        observable.complete()
+      })
+    })
+  }
+
+  getTreatmentData(params: string): Observable<any> {
+    return new Observable(observable => {
+      let uri = `${ApiSetting.EmrEndPoint}/common/getDrAutoCompleteItem`
+      let httpParams = new HttpParams()
+        .set("desc", params)
+      let httpOption = { headers: httpHeader }
+      this.http.get<any>(uri, httpOption).subscribe(data => {
+        observable.next(data)
+        observable.complete()
+      })
+    })
+  }
+
+}

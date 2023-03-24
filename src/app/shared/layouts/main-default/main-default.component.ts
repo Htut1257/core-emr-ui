@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild,HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { DoctorStatusModalComponent } from 'src/app/features/entry/OPT/doctor-status-modal/doctor-status-modal.component';
@@ -29,6 +29,15 @@ export class MainDefaultComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.commonService.appDrawer = this.appDrawer
+  }
+
+  @HostListener('window:resize', ['$event'])
+  getScreenSize() {
+    let screenSize = {
+      width: window.innerWidth,
+      height: window.innerHeight
+    }
+    this.commonService.getSize(screenSize)
   }
 
   openDialog() {

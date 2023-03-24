@@ -7,18 +7,26 @@ import { DocEntryComponent } from './doc-entry/doc-entry.component';
 import { NurseEntryComponent } from './nurse-entry/nurse-entry.component';
 import { DoctorStatusViewComponent } from './doctor-status-view/doctor-status-view.component';
 import { DoctorStatusModalComponent } from './doctor-status-modal/doctor-status-modal.component';
-const components=[
+
+//import { AutocompleteCell } from 'src/app/shared/cell-renderer/autocomplete-cell';
+import { AgGridModule } from 'ag-grid-angular';
+const components = [
   DocEntryComponent,
   NurseEntryComponent,
+  DoctorStatusViewComponent,
+  DoctorStatusModalComponent
 ]
 @NgModule({
-  declarations: [components, DoctorStatusViewComponent, DoctorStatusModalComponent] ,
+  declarations: [
+    components,
+   // AutocompleteCell
+  ],
   imports: [
     CommonModule,
     CommonModulesModule,
     OPTRoutingModule
   ],
-  exports:[
+  exports: [
     components
   ]
 })

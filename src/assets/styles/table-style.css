@@ -8,7 +8,7 @@ table {
     width: 100%;
     margin: auto;
     /* margin-top: 25px; */
-    overflow-y: scroll;
+    overflow: scroll;
     border: solid 0.1px rgb(209, 203, 203);
 }
 
@@ -44,10 +44,8 @@ h2 {
 }
 
 th.mat-header-cell.cdk-header-cell {
-    font-size: large;
-    color: rgb(26, 17, 17);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    text-align: center !important;
+    font-size:large;
+    color: rgb(0, 0, 0);
     vertical-align: center;
 }
 
@@ -76,7 +74,6 @@ tr.mat-footer-row {
 .td-object {
     text-align: center !important;
     align-items: center !important;
-
 }
 
 .mat-header-row {

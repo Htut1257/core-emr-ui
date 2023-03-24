@@ -13,9 +13,13 @@ export class ApiSetting {
     public static get PayRollApiEndPoint() {
         return 'http://localhost:8098';
     }
-
+s
     public static get EmrEndPoint(){
         return 'http://192.168.100.48:8080';
+    }
+
+    public static get EmrMongoEndPoint(){
+        return 'http://192.168.100.54:8081';
     }
 
 }

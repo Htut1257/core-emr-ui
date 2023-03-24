@@ -1,16 +1,17 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { AnimationEvent } from "@angular/animations";
-
+import { Router } from '@angular/router';
 import { AutocompleteSelectCellEditor } from "ag-grid-autocomplete-editor";
 import { Grid, ColDef, GridOptions, GridApi, ColumnApi, Column } from "ag-grid-community";
 import { DoctorService } from 'src/app/core/services/doctor-service/doctor.service';
-import { Router } from '@angular/router';
+import { AutocompleteService } from 'src/app/core/services/autocomplete-service/autocomplete.service';
+import { AppointmentService } from 'src/app/core/services/appointment-service/appointment.service';
+
 const selectData = [
   { value: 0, label: "this" },
   { value: 1, label: "is" },
   { value: 2, label: "sparta" },
-  { value: 3, label: "yolo" },
-  { value: 4, label: "yoloooooo" },
+  { value: 3, label: "yolo", group: 'North America' },
+  { value: 4, label: "yoloooooo", group: ' America' },
   { value: 5, label: "yola" },
   { value: 6, label: "yoli" },
   { value: 7, label: "yolu" },
@@ -216,6 +217,9 @@ export class DocEntryComponent implements OnInit {
   treatmentRow: any
   noteRow: any
 
+  examinationAutoData: any
+  treatmentAutoDaata: any
+  noteAutoData: any
 
   columnApi: ColumnApi
 
@@ -252,7 +256,10 @@ export class DocEntryComponent implements OnInit {
     }
   ];
   isHide: boolean = false
-  constructor(private route: Router, private docService: DoctorService) {
+  constructor(
+    private route: Router, private docService: DoctorService,
+    private autoService: AutocompleteService, private appointServcie: AppointmentService
+  ) {
 
   }
 
@@ -265,6 +272,7 @@ export class DocEntryComponent implements OnInit {
     this.getTreatmentData();
     this.getNoteData();
     this.InitializeGridTable();
+    this.getDrTreatmentData("a")
   }
 
   toggleShowDiv(divName: string) {
@@ -300,7 +308,7 @@ export class DocEntryComponent implements OnInit {
     this.examinationApi = params.api
     this.examinationColumn = params.columnApi
     this.examinationApi.sizeColumnsToFit()
-    params.examinationApi.resetRowHeights();
+    //  params.examinationApi.resetRowHeights();
   }
 
   //table for treatment
@@ -308,14 +316,14 @@ export class DocEntryComponent implements OnInit {
     this.treatmentApi = params.api
     this.treatmentColumn = params.columnApi
     this.treatmentApi.sizeColumnsToFit()
-    params.treatmentApi.resetRowHeights();
+    //  params.treatmentApi.resetRowHeights();
   }
 
   onGridReadyNote(params) {
     this.noteApi = params.api
     this.noteColumn = params.columnApi
     this.noteApi.sizeColumnsToFit()
-    params.noteApi.resetRowHeights();
+    // params.noteApi.resetRowHeights();
   }
 
   getExaminationData() {
@@ -347,15 +355,42 @@ export class DocEntryComponent implements OnInit {
   }
 
   getTreatmentData() {
-    this.treatmentColumnDef=[
+    this.treatmentColumnDef = [
       {
         headerName: "Description",
         field: "desc",
+        width: 300,
         cellEditor: AutocompleteSelectCellEditor,
         cellEditorParams: {
-          required: true,
-          selectData: selectData,
-          placeholder: "type data"
+          autocomplete: {
+            fetch: (cellEditor, text, update) => {
+              let match =
+                text.toLowerCase() || cellEditor.eInput.value.toLowerCase();
+              let xmlHttp = new XMLHttpRequest();
+              xmlHttp.onreadystatechange = () => {
+                console.log(xmlHttp.status)
+                if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+                  let data = JSON.parse(xmlHttp.responseText);
+                  let items = data.map(d => ({
+                    value: d,
+                    label: d.itemName,
+                    group:''
+                  }));
+                  console.log(items)
+                  update(items);
+                }
+                if (xmlHttp.status === 404) {
+                  update(false);
+                }
+              };
+              xmlHttp.open(
+                "GET",
+                `http://localhost:8080/common/getDrAutoCompleteItem?desp=${match}`,
+                true
+              );
+              xmlHttp.send(null);
+            }
+          }
         },
         valueFormatter: params => {
           if (params.value) {
@@ -368,6 +403,7 @@ export class DocEntryComponent implements OnInit {
       {
         headerName: "Pattern",
         field: "pattern",
+        width: 100,
         cellEditor: AutocompleteSelectCellEditor,
         cellEditorParams: {
           required: true,
@@ -380,79 +416,24 @@ export class DocEntryComponent implements OnInit {
           }
           return "";
         },
+        editable: true
+      },
+      {
+        headerName: "Days",
+        field: "day",
+        width: 100,
         editable: true
       },
       {
         headerName: "Qty",
         field: "qty",
-        cellEditor: AutocompleteSelectCellEditor,
-        cellEditorParams: {
-          required: true,
-          selectData: selectData,
-          placeholder: "type data"
-        },
-        valueFormatter: params => {
-          if (params.value) {
-            return params.value.label || params.value.value || params.value;
-          }
-          return "";
-        },
-        editable: true
-      },
-      {
-        headerName: "Price",
-        field: "price",
-        cellEditor: AutocompleteSelectCellEditor,
-        cellEditorParams: {
-          required: true,
-          selectData: selectData,
-          placeholder: "type data"
-        },
-        valueFormatter: params => {
-          if (params.value) {
-            return params.value.label || params.value.value || params.value;
-          }
-          return "";
-        },
-        editable: true
-      },
-      {
-        headerName: "Discount",
-        field: "discount",
-        cellEditor: AutocompleteSelectCellEditor,
-        cellEditorParams: {
-          required: true,
-          selectData: selectData,
-          placeholder: "type data"
-        },
-        valueFormatter: params => {
-          if (params.value) {
-            return params.value.label || params.value.value || params.value;
-          }
-          return "";
-        },
-        editable: true
-      },
-      {
-        headerName: "Amount",
-        field: "amount",
-        cellEditor: AutocompleteSelectCellEditor,
-        cellEditorParams: {
-          required: true,
-          selectData: selectData,
-          placeholder: "type data"
-        },
-        valueFormatter: params => {
-          if (params.value) {
-            return params.value.label || params.value.value || params.value;
-          }
-          return "";
-        },
+        width: 100,
         editable: true
       },
       {
         headerName: "Remark",
         field: "remark",
+        width: 300,
         cellEditor: AutocompleteSelectCellEditor,
         cellEditorParams: {
           required: true,
@@ -469,8 +450,8 @@ export class DocEntryComponent implements OnInit {
       },
 
     ]
-    this.treatmentRow=[
-      {col1:'',col2:'',col3:'',col4:'',col5:'',col6:'',col7:''}
+    this.treatmentRow = [
+      { col1: '', col2: '', col3: '', col4: '', col5: '', col6: '', col7: '' }
     ]
   }
 
@@ -492,10 +473,26 @@ export class DocEntryComponent implements OnInit {
     ]
   }
 
+  setBookingStatus() {
+    let appoint: any = {
+      bookingId: "",
+      bStatus: ""
+    }
+    this.appointServcie.updateAppointmentStatus(appoint).subscribe(data => {
+      console.log(data)
+    })
+  }
 
-
-
-
+  getDrTreatmentData(params: string) {
+    this.autoService.getTreatmentData(params).subscribe(data => {
+      let items = data.map(d => ({
+        value: d,
+        label: d.itemName,
+        group: "-"
+      }));
+      this.examinationAutoData = items
+    });
+  }
 
 
 

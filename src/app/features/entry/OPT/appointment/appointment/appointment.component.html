@@ -2,7 +2,10 @@
     <div class="classContainer">
         <app-appointment-history></app-appointment-history>
     </div>
-    <div class="container card pt-3 pb-3">
-        <app-appointment-registration></app-appointment-registration>
+    <div class="container" *ngIf="!isMobile">
+        <div class="card card-border pt-3 pb-3">
+            <app-appointment-registration></app-appointment-registration>
+        </div>
+
     </div>
 </div>

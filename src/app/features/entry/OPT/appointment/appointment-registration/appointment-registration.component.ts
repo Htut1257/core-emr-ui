@@ -48,7 +48,7 @@ export class AppointmentRegistrationComponent implements OnInit {
     this.dateAdapter.setLocale('en-GB');
   }
   ngOnInit(): void {
-   // this.getGender();
+    // this.getGender();
     this.initializeForm();
 
     this.filteredDoc = this.appointForm.controls['doctor'].valueChanges.pipe(
@@ -60,14 +60,12 @@ export class AppointmentRegistrationComponent implements OnInit {
 
   initializeForm() {
     this.appointForm = this.fb.group({
-      regisNo: [''],
+      regisNo: [null],
       regisDate: [''],
       name: [''],
       doctor: [''],
       ph: [''],
-      gender: [''],
     });
-
     this.appointForm.get('regisDate').patchValue(this.todayDate)
   }
 
@@ -119,17 +117,18 @@ export class AppointmentRegistrationComponent implements OnInit {
 
 
   saveAppointment(data: any) {
-    let booking=data
-    booking.bookingId=null
-    booking.regNo=null
-    booking.patientName="TEsting 455"
-    booking.doctorId="042"
-    booking.bkDate=moment(data.regisDate).format("yyyy-MM-DDTHH:mm:ss")
-    booking.bkPhone=""
-    booking.bkActive=true
-    booking.bkSerialNo=""
-    booking.actionStatus=""
-    booking.bStatus=""
+    let booking = data
+    // booking.bookingId=null
+    booking.regNo = data.regisNo
+    booking.patientName = data.name
+    booking.doctorId = data.doctor.doctorId
+    booking.bkDate = moment(data.regisDate).format("yyyy-MM-DD")
+    booking.bkPhone = data.ph
+    // booking.bkActive=true
+    // booking.bkSerialNo=""
+    // booking.actionStatus=""
+    // booking.bStatus=""
+    console.log(booking)
 
     this.appointService.saveAppointment(booking).subscribe(data => {
       console.log(data)

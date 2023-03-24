@@ -55,14 +55,16 @@ button.form-btn {
 }
 
 
-
-
-:host{
+:host {
     font-size: smaller;
 }
 
 
-
 mat-form-field.mat-form-field {
-  font-size: 12px;
+    font-size: 12px;
+}
+
+.group-text-field-left {
+    margin-right: 0px;
+    padding: 0px 0px 0px 2px;
 }
