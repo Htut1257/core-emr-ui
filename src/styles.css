@@ -103,3 +103,8 @@ body {
     align-items: center !important;
 
 }
+
+.form-height{
+    height: 80vh;
+    overflow-y: auto;
+}

@@ -4,6 +4,7 @@ import { Observable, startWith, map } from 'rxjs'
 import { Doctor } from 'src/app/core/model/doctor.model';
 import { AppointmentService } from 'src/app/core/services/appointment-service/appointment.service';
 import { DoctorService } from 'src/app/core/services/doctor-service/doctor.service';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MAT_DATE_FORMATS, MAT_DATE_LOCALE, DateAdapter } from '@angular/material/core';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import * as moment from 'moment';
@@ -40,7 +41,8 @@ export class AppointmentSearchDialogComponent implements OnInit {
 
   constructor(
     private appointService: AppointmentService, private doctorService: DoctorService,
-    private formBuilder: FormBuilder, private dateAdapter: DateAdapter<Date>
+    private formBuilder: FormBuilder, private dateAdapter: DateAdapter<Date>,
+    public dialogRef: MatDialogRef<AppointmentSearchDialogComponent>,
   ) {
     this.dateAdapter.setLocale('en-GB');
     this.doctors = []
@@ -95,7 +97,13 @@ export class AppointmentSearchDialogComponent implements OnInit {
 
 
   searchAppointment(data:any) {
-    
+    let filter=data
+    filter.fromDate=moment(data.fromDate).format("yyyy-MM-DD")
+    filter.toDate=moment(data.toDate).format("yyyy-MM-DD")
+    filter.doctorId=filter.doctor!='-'?filter.doctor.doctorId:'-'
+    filter.status='-'
+    filter.dialogStatus=true
+    this.dialogRef.close(filter)
   }
 
 }

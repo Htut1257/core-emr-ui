@@ -8,7 +8,7 @@
         </div>
         <div class="col-3">
             <div class="example-button-row">
-                <button mat-flat-button class="" color="primary" (click)="searchBooking()"> Search</button>
+                <button mat-flat-button class="" color="primary" (click)="searchBooking()"> Filter</button>
                 <button mat-flat-button class="" color="primary"> Print</button>
             </div>
         </div>
@@ -17,11 +17,11 @@
         <div class="table-container table">
             <table   mat-table [dataSource]="dataSource">
                 <ng-container matColumnDef="no">
-                    <th mat-header-cell class="td-number column-no" *matHeaderCellDef="">No</th>
+                    <th mat-header-cell class="td-number column-no" *matHeaderCellDef>No</th>
                     <td mat-cell class="td-number" *matCellDef="let i=index">{{i+1}}</td>
                 </ng-container>
                 <ng-container matColumnDef="date">
-                    <th mat-header-cell class="td-text" *matHeaderCellDef="">Date</th>
+                    <th mat-header-cell class="td-text" *matHeaderCellDef>Date</th>
                     <td mat-cell class="td-text" *matCellDef="let element">{{element.bkDate|date:'dd/MM/yyyy '}}</td>
                 </ng-container>
                 <!-- <ng-container matColumnDef="visitno">
@@ -29,19 +29,19 @@
                     <td mat-cell class="td-text" *matCellDef="let element">{{element.bookingId}}</td>
                 </ng-container> -->
                 <ng-container matColumnDef="regno">
-                    <th mat-header-cell class="td-text" *matHeaderCellDef="">Reg No</th>
+                    <th mat-header-cell class="td-text" *matHeaderCellDef>Reg No</th>
                     <td mat-cell class="td-text" *matCellDef="let element">{{element.regNo}}</td>
                 </ng-container>
                 <ng-container matColumnDef="patient">
-                    <th mat-header-cell class="td-text" *matHeaderCellDef="">Patient</th>
+                    <th mat-header-cell class="td-text" *matHeaderCellDef>Patient</th>
                     <td mat-cell class="td-text" *matCellDef="let element">{{element.patientName}}</td>
                 </ng-container>
                 <ng-container matColumnDef="doctor">
-                    <th mat-header-cell class="td-text column-doc" *matHeaderCellDef="">Doctor</th>
+                    <th mat-header-cell class="td-text column-doc" *matHeaderCellDef>Doctor</th>
                     <td mat-cell class="td-text" *matCellDef="let element">{{element.doctorName}}</td>
                 </ng-container>
                 <ng-container matColumnDef="phone">
-                    <th mat-header-cell class="td-text" *matHeaderCellDef="">Phone No</th>
+                    <th mat-header-cell class="td-text" *matHeaderCellDef>Phone No</th>
                     <td mat-cell class="td-text" *matCellDef="let element">{{element.bkPhone}}</td>
                 </ng-container>
                 <ng-container matColumnDef="serialno">

@@ -30,6 +30,12 @@ export const navItems: any = [
                         children: []
                     },
                     {
+                        displayName: 'Vital Sign',
+                        iconName: 'vital-sign',
+                        route: 'main/vital-sign',
+                        children: []
+                    },
+                    {
                         displayName: 'Check Out',
                         iconName: 'check-out',
                         route: 'main/opd/check-out',

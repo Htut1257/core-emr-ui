@@ -1,34 +1,27 @@
-<mat-card class="row">
-    <mat-card-title>
-        <h4 class="mb-3 mt-3 f-w-400">User List</h4>
-    </mat-card-title>
-    <mat-card-content class="col-md-12">
-        <div class="classContainer card mat-elevation-z0">
-            <mat-table [dataSource]="dataSource" class="mat-elevation-z0 "  >
+<div class="row">
+    <div class="classContainer  mat-elevation-z0">
+        <div class="table table-container">
+            <table mat-table [dataSource]="dataSource" class="mat-elevation-z0 ">
                 <ng-container matColumnDef="name">
-                    <mat-header-cell mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
-                    <mat-cell mat-cell *matCellDef="let element"> {{element.roleName}} </mat-cell>
+                    <th mat-header-cell mat-header-cell *matHeaderCellDef class="td-text"> Name </th>
+                    <td mat-cell mat-cell *matCellDef="let element" class="td-text"> {{element.roleName}} </td>
                 </ng-container>
-
-                <mat-header-row *matHeaderRowDef="displayedColumn"></mat-header-row>
-                <mat-row matRipple *matRowDef="let row; columns: displayedColumn;" (click)="onRowClicked(row)">
-                </mat-row>
-            </mat-table>
+                <tr mat-header-row *matHeaderRowDef="displayedColumn;sticky:true"></tr>
+                <tr mat-row *matRowDef="let row;columns:displayedColumn" (click)="onRowClicked(row)"></tr>
+            </table>
         </div>
-        <div class="container card mat-elevation-z0">
-            <mat-tab-group>
-                <mat-tab label="System Property">
-                    System Property
-                </mat-tab>
-                <mat-tab label="Role">
-                    <app-role-menu-tree></app-role-menu-tree>
-                </mat-tab>
-                <mat-tab label="New Features">
-                    Coming Soon
-                </mat-tab>
-            </mat-tab-group>
-        </div>
-
-
-    </mat-card-content>
-</mat-card>
+    </div>
+    <div class="container card mat-elevation-z0">
+        <mat-tab-group class="table-container">
+            <mat-tab label="System Property">
+                System Property
+            </mat-tab>
+            <mat-tab label="Role">
+                <app-role-menu-tree></app-role-menu-tree>
+            </mat-tab>
+            <mat-tab label="New Features">
+                Coming Soon
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</div>

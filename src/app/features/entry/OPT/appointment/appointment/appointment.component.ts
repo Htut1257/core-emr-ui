@@ -8,8 +8,9 @@ import { CommonServiceService } from 'src/app/core/services/common-service/commo
 export class AppointmentComponent {
   isMobile:boolean=false
   constructor(private commonService:CommonServiceService){
-    this.commonService.isMobileObj$.subscribe(data=>{
+    this.commonService.isMobile$.subscribe(data=>{
       this.isMobile=data  
+      console.log(data)
     })
   }
 

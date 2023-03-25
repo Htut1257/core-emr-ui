@@ -3,7 +3,10 @@
     padding:0px 0px 0px 2px;
 }
 
-.form-height{
-    height: 80vh;
-    overflow-y: auto;
+.group-first-text-field-left {
+    margin-left: 1px;
+    /* padding:0px 0px 0px 0px; */
+    padding-right: 0;
 }
+
+

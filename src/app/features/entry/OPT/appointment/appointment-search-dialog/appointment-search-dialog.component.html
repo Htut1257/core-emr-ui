@@ -1,7 +1,7 @@
 <h1 mat-dialog-title>Appointment Search</h1>
 <form [formGroup]="appointForm" (ngSubmit)="searchAppointment(appointForm.value)">
-    <div mat-dialog-content >
-        <div class="row col-6">
+    <div mat-dialog-content>
+        <div class="row">
             <div class="col-6">
                 <mat-form-field class="col-12" appearance="outline">
                     <mat-label>From Date</mat-label>
@@ -25,18 +25,24 @@
                     <mat-error *ngIf="!appointForm.value.fromDate">Please To To Date</mat-error>
                 </mat-form-field>
             </div>
+        </div>
+        <div class="row">
             <div class="col-6">
                 <mat-form-field class="col-12" appearance="outline">
-                    <mat-label>Reg No</mat-label>
-                    <input matInput [matDatepicker]="picker2" formControlName="regNo" name="regNo">
-                    <mat-error *ngIf="!appointForm.value.fromDate">Please To To Date</mat-error>
+                    <mat-label>Registration-No</mat-label>
+                    <input [id]="'regisNo'" matInput type="text" name="regNo" formControlName="regNo">
                 </mat-form-field>
             </div>
             <div class="col-6">
-                <mat-form-field class="col-12" appearance="outline">
+                <mat-form-field class='col-12' appearance="outline">
                     <mat-label>Doctor</mat-label>
-                    <input matInput [matDatepicker]="picker2" formControlName="doctor" name="doctor">
-                    <mat-error *ngIf="!appointForm.value.fromDate">Please To To Date</mat-error>
+                    <input [id]="'doctor'" matInput [matAutocomplete]="auto" type="text" name="doctor"
+                        formControlName="doctor">
+                    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="DocDisplayFn">
+                        <mat-option *ngFor="let item of filteredDoc|async " [value]="item">
+                            {{item.doctorName}}
+                        </mat-option>
+                    </mat-autocomplete>
                 </mat-form-field>
             </div>
         </div>
@@ -44,7 +50,7 @@
     <div mat-dialog-actions>
         <button mat-raised-button type="button" mat-dialog-close>Close</button>
         <button class="delete-button" type="submit" color="primary" mat-raised-button [disabled]="!appointForm.valid">
-            Confirm
+            Search
         </button>
     </div>
 </form>

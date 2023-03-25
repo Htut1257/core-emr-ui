@@ -97,8 +97,11 @@ export class AppointmentHistoryComponent implements OnInit {
       width: '50%'
     })
       .afterClosed()
-      .subscribe(data => {
-
+      .subscribe(result => {
+        if(result.dialogStatus){
+          console.log(result)
+          this.getBooking(result)
+        }
       })
   }
 
