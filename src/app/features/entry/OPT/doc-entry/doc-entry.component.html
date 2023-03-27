@@ -138,9 +138,16 @@
         </ag-grid-angular>
     </div>
     <div class="col-6">
-        <ag-grid-angular id="myGrid" (gridReady)="onGridReadyTreatment($event)" class="ag-theme-balham"
-            style="height:70vh;width:100%;" [gridOptions]="treatmentGridOption">
-        </ag-grid-angular>
+        <ag-grid-angular 
+        style="height: 300px; width: 600px;" 
+        class="ag-theme-balham"
+        [rowData]="treatmentRow" 
+        [columnDefs]="treatmentColumnDef"
+        [frameworkComponents]="frameworkComponents"
+        (gridReady)="onGridReadyTreatment($event)"
+        (cellEditingStopped)="treatCellEditingStopped($event)"
+        >
+      </ag-grid-angular>
     </div>
     <div class="col-3">
         <div class="row">

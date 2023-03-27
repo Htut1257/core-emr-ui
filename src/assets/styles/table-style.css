@@ -12,6 +12,10 @@ table {
     border: solid 0.1px rgb(209, 203, 203);
 }
 
+    th{
+        background-color: white;
+    }
+
 .table-mat {
     width: auto;
     margin: auto;

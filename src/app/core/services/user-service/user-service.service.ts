@@ -30,7 +30,7 @@ export class UserService extends AbstractService<User>{
 
   //User Login
   loginUser(name: string, password: string): Observable<User[]> {
-    this.baseURL = this.baseURL + '/user/login';
+    this.baseURL = `${uri}/user/login`;
     let httpParams = new HttpParams()
       .set('userName', name)
       .set('password', password)
@@ -39,13 +39,13 @@ export class UserService extends AbstractService<User>{
 
   //get user list
   getUser(): Observable<User[]> {
-    this.baseURL = this.baseURL + '/user/get-appuser';
+    this.baseURL = `${uri}/user/get-appuser`;
     return this.getAll();
   }
 
   //add or save user
   saveUser(user: User): Observable<User> {
-    this.baseURL = this.baseURL + '/user/save-user';
+    this.baseURL = `${uri}/user/save-user`;
     return this.save(user)
   }
 

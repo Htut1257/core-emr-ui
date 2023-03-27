@@ -17,17 +17,17 @@ export class RegistrationService extends AbstractService<Regis>{
   }
 
   getRegis(): Observable<Regis[]> {
-    this.baseURL = this.baseURL + `/setup/get-Bonus`
+    this.baseURL = `${uri}/setup/get-Bonus`
     return this.getAll()
   }
 
   saveRegis(regis: Regis): Observable<Regis> {
-    this.baseURL = this.baseURL + `/setup/save-Bonus`
+    this.baseURL = `${uri}/setup/save-Bonus`
     return this.save(regis);
   }
 
   deleteRegis(id: string) {
-    this.baseURL = this.baseURL + `/setup/delete-Bonus`
+    this.baseURL = `${uri}/setup/delete-Bonus`
     let httpParams = new HttpParams().set('id', id);
     this.delete(httpParams);
   }

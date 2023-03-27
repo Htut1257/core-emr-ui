@@ -35,8 +35,8 @@ export class AutocompleteService {
     return new Observable(observable => {
       let uri = `${ApiSetting.EmrEndPoint}/common/getDrAutoCompleteItem`
       let httpParams = new HttpParams()
-        .set("desc", params)
-      let httpOption = { headers: httpHeader }
+        .set("desp", params)
+      let httpOption = { headers: httpHeader,params:httpParams }
       this.http.get<any>(uri, httpOption).subscribe(data => {
         observable.next(data)
         observable.complete()

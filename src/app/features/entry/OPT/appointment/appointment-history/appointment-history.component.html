@@ -56,7 +56,7 @@
                     <th mat-header-cell class="td-object" *matHeaderCellDef="">Action</th>
                     <td mat-cell class="td-object" *matCellDef="let element">
                         <div class="example-button-row">
-                            <button mat-raised-button  color="primary" *ngIf="!element.regNo" (click)="registerBooking(element)">Register</button>
+                            <button mat-raised-button  color="primary" class="register-btn" *ngIf="!element.regNo" (click)="registerBooking(element)">Register</button>
                         </div>
                     </td>
                 </ng-container>

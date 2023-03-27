@@ -15,17 +15,17 @@ export class CheckOutService extends AbstractService<CheckOut>{
   }
 
   getCheckup(): Observable<CheckOut[]> {
-    this.baseURL = this.baseURL + `/setup/get-Bonus`
+    this.baseURL =`${uri}/setup/get-Bonus`
     return this.getAll()
   }
 
   saveCheckup(checkOut: CheckOut) {
-    this.baseURL = this.baseURL + `/setup/save-Bonus`
+    this.baseURL =`${uri}/setup/save-Bonus`
     this.save(checkOut);
   }
 
   deleteCheckOut(id: string) {
-    this.baseURL = this.baseURL + `/setup/delete-Bonus`
+    this.baseURL =`${uri}/setup/delete-Bonus`
     let httpParams = new HttpParams().set('id', id);
     this.delete(httpParams);
   }

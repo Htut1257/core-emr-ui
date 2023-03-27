@@ -16,41 +16,41 @@ export class DoctorService extends AbstractService<Doctor>{
   }
 
   getDoctorById(id: string): Observable<Doctor[]> {
-    this.baseURL = this.baseURL + `/doctor/getById`
+    this.baseURL = `${uri}/doctor/getById`
     let httpParams = new HttpParams().set('id', id);
     return this.getByParams(httpParams);
   }
 
   getDoctor(id: string): Observable<Doctor[]> {
-    this.baseURL = this.baseURL + `/doctor/getAllActive`
+    this.baseURL = `${uri}/doctor/getAllActive`
     let httpParams = new HttpParams().set('id', id);
     return this.getByParams(httpParams);
   }
 
   getInativeDoctor(): Observable<Doctor[]> {
-    this.baseURL = this.baseURL + `/doctor/getAllInActive`
+    this.baseURL = `${uri}/doctor/getAllInActive`
     return this.getAll()
   }
 
   getDoctorActiveByName(name: string): Observable<Doctor[]> {
-    this.baseURL = this.baseURL + `/doctor/getByNameActive`
+    this.baseURL = `${uri}/doctor/getByNameActive`
     let httpParams = new HttpParams().set('name', name);
     return this.getByParams(httpParams);
   }
 
   getDoctorInActiveByName(name: string): Observable<Doctor[]> {
-    this.baseURL = this.baseURL + `/doctor/getByNameInActive`
+    this.baseURL = `${uri}/doctor/getByNameInActive`
     let httpParams = new HttpParams().set('name', name);
     return this.getByParams(httpParams);
   }
 
   saveDoctor(doc: Doctor): Observable<Doctor> {
-    this.baseURL = this.baseURL + `/doctor/save`
+    this.baseURL = `${uri}/doctor/save`
     return this.save(doc);
   }
 
   deleteDoctor(id: string) {
-    this.baseURL = this.baseURL + `/doctor/delete`
+    this.baseURL = `${uri}/doctor/delete`
     let httpParams = new HttpParams().set('id', id);
     this.delete(httpParams);
   }

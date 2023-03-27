@@ -105,5 +105,4 @@ export class AppointmentSearchDialogComponent implements OnInit {
     filter.dialogStatus=true
     this.dialogRef.close(filter)
   }
-
 }

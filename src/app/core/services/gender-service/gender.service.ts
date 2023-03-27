@@ -16,7 +16,7 @@ export class GenderService extends AbstractService<Gender>{
   }
 
   getGender():Observable<Gender[]>{
-    this.baseURL = this.baseURL + `/setup/get-gender`
+    this.baseURL =`${uri}/setup/get-gender`
     return this.getAll()
   }
 
