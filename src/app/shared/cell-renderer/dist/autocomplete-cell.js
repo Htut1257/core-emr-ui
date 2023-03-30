@@ -13,7 +13,7 @@ var AutocompleteCell = /** @class */ (function () {
         this.autoService = autoService;
         this.rowSelection = 'single';
         this.gridHeight = 175;
-        this.gridWidth = 375;
+        this.gridWidth = 500;
         this.isCanceled = true;
         this.selectedObject = {};
     }
@@ -47,7 +47,12 @@ var AutocompleteCell = /** @class */ (function () {
             this.gridWidth = params.gridWidth;
         this.columnDefs = params.columnDefs;
         this.propertyName = params.propertyRendered;
+        if (this.propertyName == "patternName") {
+            this.gridWidth = 200;
+        }
+        console.log(this.gridWidth);
         this.cellValue = params.value[this.propertyName];
+        console.log(this.columnDefs);
         this.returnObject = params.returnObject;
         if (!params.charPress) {
             if (this.cellValue)
@@ -109,7 +114,7 @@ var AutocompleteCell = /** @class */ (function () {
             this.columnFilter = this.gridApi.getFilterInstance(this.propertyName);
             if (event.length == 0)
                 this.gridApi.setRowData();
-            if (event.length == 2) {
+            if (event.length >= 1) {
                 this.getApiData(event).subscribe(function (data) {
                     _this.rowData = data;
                 });
@@ -169,7 +174,7 @@ var AutocompleteCell = /** @class */ (function () {
             host: {
                 style: "position: absolute;\n\t\t\t\t\tleft: 0px; \n\t\t\t\t\ttop: 0px;\n\t\t\t\t\tbackground-color: transparant;\n\t\t\t\t\t"
             },
-            template: " \n\t\t<input #input\n\t\t\t[(ngModel)]=\"inputValue\"\n\t\t\t(ngModelChange)=\"processDataInput($event)\"\n\t\t\tstyle=\" height: 28px; font-weight: 400; font-size: 12px;\"\n\t\t\t[style.width]=\"params.column.actualWidth + 'px'\">\n\t\t<ag-grid-angular\n\t\t\tstyle=\"font-weight: 150;width:500px\" \n\t\t\t[style.height]=\"gridHeight + 'px'\"\n\t\t\t\n\t\t\tclass=\"ag-theme-balham\"\n\t\t\t[rowData]=\"rowData\" \n\t\t\t[columnDefs]=\"columnDefs\"\n\t\t\t(gridReady)=\"onGridReady($event)\"\n\t\t\t(rowClicked)=\"rowClicked($event)\">\n\t\t</ag-grid-angular>\n\t"
+            template: " \n\t\t<input #input\n\t\t\t[(ngModel)]=\"inputValue\"\n\t\t\t(ngModelChange)=\"processDataInput($event)\"\n\t\t\tstyle=\" height: 28px; font-weight: 400; font-size: 12px;\"\n\t\t\t[style.width]=\"params.column.actualWidth + 'px'\">\n\t\t<ag-grid-angular\n\t\t\tstyle=\"font-weight: 150;\" \n\t\t\t[style.height]=\"gridHeight + 'px'\"\n\t\t\t[style.width]=\"gridWidth + 'px'\"\n\t\t\tclass=\"ag-theme-balham\"\n\t\t\t[rowData]=\"rowData\" \n\t\t\t[columnDefs]=\"columnDefs\"\n\t\t\t(gridReady)=\"onGridReady($event)\"\n\t\t\t(rowClicked)=\"rowClicked($event)\">\n\t\t</ag-grid-angular>\n\t"
         })
     ], AutocompleteCell);
     return AutocompleteCell;

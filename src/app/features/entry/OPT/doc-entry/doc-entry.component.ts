@@ -56,10 +56,8 @@ export class DocEntryComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    //// let eGridDiv: HTMLElement = document.querySelector("#myGrid");
-    // let eGridDiv1: HTMLElement = document.querySelector("#myGrid1");
-    //new Grid(eGridDiv, gridOptions);
-    // new Grid(eGridDiv1, gridOptions);
+
+
     this.getExaminationData();
     this.getTreatmentData();
     this.getNoteData();
@@ -164,16 +162,22 @@ export class DocEntryComponent implements OnInit {
       },
       {
         headerName: "Pattern",
-        field: "pattern",
-        width: 100,
-        cellEditor: AutocompleteSelectCellEditor,
+        field: "patternObj",
+        editable: true,
+        cellEditor: 'autoComplete',
+        cellEditorParams: {
+          'propertyRendered': 'patternName',
+          'returnObject': true,
+          'columnDefs': [
+            { headerName: 'Name', field: 'patternName' },
+            { headerName: 'Option', field: 'itemOption' },
+          ] 
+        },
         valueFormatter: params => {
-          if (params.value) {
-            return params.value.label || params.value.value || params.value;
-          }
+          if (params.value) return params.value.patternName;
           return "";
         },
-        editable: true
+
       },
       {
         headerName: "Days",
@@ -192,7 +196,6 @@ export class DocEntryComponent implements OnInit {
         field: "remark",
         width: 300,
         cellEditor: AutocompleteSelectCellEditor,
-
         valueFormatter: params => {
           if (params.value) {
             return params.value.label || params.value.value || params.value;
@@ -203,7 +206,11 @@ export class DocEntryComponent implements OnInit {
       },
     ]
     this.treatmentRow = [
-      { 'cityObject': {'id': '', 'city': '' }, 'accommodation': ''},
+      {
+        'cityObject': { 'itemName': '', 'itemOption': '', 'itemType': '', },
+        'patternObj': { 'patternName': '', 'itemOption': '' },
+        'accommodation': ''
+      },
     ]
   }
 
@@ -248,18 +255,15 @@ export class DocEntryComponent implements OnInit {
 
   treatCellEditingStopped(event) {
     this.treatmentApi.setFocusedCell(event.rowIndex, event.colDef.field);
+    let columnField = event.colDef.field
+    console.log(event)
   }
 
-  // started(e: any) {
-  //   console.log("editing")
-  //   console.log(e)
-  // }
 
   // isEditing = false;
   // @HostListener('keydown', ['$event'])
   // onKeydown(event) {
   //   event.stopPropagation();
-
   //   if (event.key == "Escape") {
   //     console.log('esc')
   //     return false;
@@ -276,8 +280,12 @@ export class DocEntryComponent implements OnInit {
   //   if (this.isEditing == false) {
   //     console.log(event)
   //     if (event.key == "ArrowRight" || event.key == "ArrowLeft") {
-  //       document.querySelector<HTMLElement>(`#myGrid1`).focus()
-  //       this.api1.setFocusedCell(this.currIndex, 'make');
+  //       console.log(this.treatmentApi.getFocusedCell())
+  //       let treatTableColumn: any = this.treatmentApi.getFocusedCell()
+  //       if (treatTableColumn.column.colDef.field == "remark") {
+  //         document.querySelector<HTMLElement>(`#noteGrid`).focus()
+  //         this.noteApi.setFocusedCell(0, 'key');
+  //       }
   //       return false;
   //     }
   //   }
@@ -298,16 +306,6 @@ export class DocEntryComponent implements OnInit {
   //   this.isEditing = false
   //   console.log("stop editing")
   //   this.api.setFocusedCell(event.rowIndex, event.colDef.field);
-  // }
-
-
-  // cellStyle = 'stickyInner-close'
-  // clickChange() {
-  //   if (this.cellStyle == 'stickyInner-close') {
-  //     this.cellStyle = 'stickyInner-open';
-  //   } else {
-  //     this.cellStyle = 'stickyInner-close';
-  //   }
   // }
 
 }

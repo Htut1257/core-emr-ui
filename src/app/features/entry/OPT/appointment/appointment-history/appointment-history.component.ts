@@ -21,7 +21,7 @@ export class AppointmentHistoryComponent implements OnInit {
   todayDate = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD')
 
 
-  displayedColumn: string[] = ["no", "date",  "regno", "patient", "doctor", "phone", "serialno", "wl", "reg"]
+  displayedColumn: string[] = ["no", "date", "regno", "patient", "doctor", "phone", "serialno", "wl", "reg"]
   dataSource!: MatTableDataSource<Booking>
 
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
@@ -45,16 +45,15 @@ export class AppointmentHistoryComponent implements OnInit {
       toDate: this.todayDate,
       doctorId: '-',
       regNo: '-',
-      status:'-'
+      status: '-'
     }
     this.getBooking(filter);
     this.getServerSideData();
   }
 
   getServerSideData() {
-    let uri = 'http://192.168.100.48:8080/opdBooking/getMessage'
+    let uri = '/opdBooking/getMessage'
     this.serverService.getServerSource(uri).subscribe(data => {
-      console.log(JSON.parse(data.data))
       let serverData = JSON.parse(data.data)
       if (serverData.actionStatus = "ADD") {
         this.bookings.push(serverData);
@@ -69,7 +68,6 @@ export class AppointmentHistoryComponent implements OnInit {
   //get Appointment
   getBooking(filter: any) {
     this.appointService.getAppointment(filter).subscribe(appoint => {
-      console.log(appoint)
       this.bookings = appoint
       this.dataSource = new MatTableDataSource(this.bookings)
       this.filterBooking();
@@ -98,8 +96,7 @@ export class AppointmentHistoryComponent implements OnInit {
     })
       .afterClosed()
       .subscribe(result => {
-        if(result.dialogStatus){
-          console.log(result)
+        if (result.dialogStatus) {
           this.getBooking(result)
         }
       })

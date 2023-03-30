@@ -42,9 +42,8 @@ var AppointmentHistoryComponent = /** @class */ (function () {
     };
     AppointmentHistoryComponent.prototype.getServerSideData = function () {
         var _this = this;
-        var uri = 'http://192.168.100.48:8080/opdBooking/getMessage';
+        var uri = '/opdBooking/getMessage';
         this.serverService.getServerSource(uri).subscribe(function (data) {
-            console.log(JSON.parse(data.data));
             var serverData = JSON.parse(data.data);
             if (serverData.actionStatus = "ADD") {
                 _this.bookings.push(serverData);
@@ -59,7 +58,6 @@ var AppointmentHistoryComponent = /** @class */ (function () {
     AppointmentHistoryComponent.prototype.getBooking = function (filter) {
         var _this = this;
         this.appointService.getAppointment(filter).subscribe(function (appoint) {
-            console.log(appoint);
             _this.bookings = appoint;
             _this.dataSource = new table_1.MatTableDataSource(_this.bookings);
             _this.filterBooking();
@@ -85,7 +83,6 @@ var AppointmentHistoryComponent = /** @class */ (function () {
             .afterClosed()
             .subscribe(function (result) {
             if (result.dialogStatus) {
-                console.log(result);
                 _this.getBooking(result);
             }
         });

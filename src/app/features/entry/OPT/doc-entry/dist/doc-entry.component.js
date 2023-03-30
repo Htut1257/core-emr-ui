@@ -23,10 +23,6 @@ var DocEntryComponent = /** @class */ (function () {
         };
     }
     DocEntryComponent.prototype.ngOnInit = function () {
-        //// let eGridDiv: HTMLElement = document.querySelector("#myGrid");
-        // let eGridDiv1: HTMLElement = document.querySelector("#myGrid1");
-        //new Grid(eGridDiv, gridOptions);
-        // new Grid(eGridDiv1, gridOptions);
         this.getExaminationData();
         this.getTreatmentData();
         this.getNoteData();
@@ -122,16 +118,22 @@ var DocEntryComponent = /** @class */ (function () {
             },
             {
                 headerName: "Pattern",
-                field: "pattern",
-                width: 100,
-                cellEditor: ag_grid_autocomplete_editor_1.AutocompleteSelectCellEditor,
-                valueFormatter: function (params) {
-                    if (params.value) {
-                        return params.value.label || params.value.value || params.value;
-                    }
-                    return "";
+                field: "patternObj",
+                editable: true,
+                cellEditor: 'autoComplete',
+                cellEditorParams: {
+                    'propertyRendered': 'patternName',
+                    'returnObject': true,
+                    'columnDefs': [
+                        { headerName: 'Name', field: 'patternName' },
+                        { headerName: 'Option', field: 'itemOption' },
+                    ]
                 },
-                editable: true
+                valueFormatter: function (params) {
+                    if (params.value)
+                        return params.value.patternName;
+                    return "";
+                }
             },
             {
                 headerName: "Days",
@@ -160,7 +162,11 @@ var DocEntryComponent = /** @class */ (function () {
             },
         ];
         this.treatmentRow = [
-            { 'cityObject': { 'id': '', 'city': '' }, 'accommodation': '' },
+            {
+                'cityObject': { 'itemName': '', 'itemOption': '', 'itemType': '' },
+                'patternObj': { 'patternName': '', 'itemOption': '' },
+                'accommodation': ''
+            },
         ];
     };
     DocEntryComponent.prototype.getNoteData = function () {
@@ -202,6 +208,8 @@ var DocEntryComponent = /** @class */ (function () {
     };
     DocEntryComponent.prototype.treatCellEditingStopped = function (event) {
         this.treatmentApi.setFocusedCell(event.rowIndex, event.colDef.field);
+        var columnField = event.colDef.field;
+        console.log(event);
     };
     DocEntryComponent = __decorate([
         core_1.Component({

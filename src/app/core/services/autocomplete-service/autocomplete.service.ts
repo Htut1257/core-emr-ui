@@ -15,7 +15,14 @@ const httpHeader = new HttpHeaders({
 })
 export class AutocompleteService {
 
+  $tableSizeObserver!: Observable<any>
+  tableSizeSubject$!: BehaviorSubject<any>
+
   constructor(private http: HttpClient) {
+  }
+
+  getAutoTableSize(width){
+    this.tableSizeSubject$.next(width);
   }
 
   getExaminationData(params: string): Observable<any> {

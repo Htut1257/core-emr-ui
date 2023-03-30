@@ -17,9 +17,9 @@ import { AutocompleteService } from 'src/app/core/services/autocomplete-service/
 			style=" height: 28px; font-weight: 400; font-size: 12px;"
 			[style.width]="params.column.actualWidth + 'px'">
 		<ag-grid-angular
-			style="font-weight: 150;width:500px" 
+			style="font-weight: 150;" 
 			[style.height]="gridHeight + 'px'"
-			
+			[style.width]="gridWidth + 'px'"
 			class="ag-theme-balham"
 			[rowData]="rowData" 
 			[columnDefs]="columnDefs"
@@ -45,7 +45,7 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
     public inputValue: string;
     public apiEndpoint: string;
     public gridHeight: number = 175;
-    public gridWidth: number = 375;
+    public gridWidth: number = 500;
     public useApi: boolean;
     public propertyName: string;
     public isCanceled: boolean = true;
@@ -80,8 +80,15 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
         if (params.gridHeight) this.gridHeight = params.gridHeight;
         if (params.gridWidth) this.gridWidth = params.gridWidth;
         this.columnDefs = params.columnDefs;
+        
         this.propertyName = params.propertyRendered;
+        if(this.propertyName=="patternName")
+        {
+            this.gridWidth=200
+        }
+        console.log(this.gridWidth)
         this.cellValue = params.value[this.propertyName];
+        console.log(this.columnDefs)
         this.returnObject = params.returnObject;
 
         if (!params.charPress) {
@@ -146,7 +153,7 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
         if (this.useApi) {
             this.columnFilter = this.gridApi.getFilterInstance(this.propertyName);
             if (event.length == 0) this.gridApi.setRowData();
-            if (event.length == 2) {
+            if (event.length >= 1) {
                 this.getApiData(event).subscribe(data => {
                     this.rowData = data;
                 });

@@ -21,6 +21,9 @@ var AutocompleteService = /** @class */ (function () {
     function AutocompleteService(http) {
         this.http = http;
     }
+    AutocompleteService.prototype.getAutoTableSize = function (width) {
+        this.tableSizeSubject$.next(width);
+    };
     AutocompleteService.prototype.getExaminationData = function (params) {
         var _this = this;
         return new rxjs_1.Observable(function (observable) {

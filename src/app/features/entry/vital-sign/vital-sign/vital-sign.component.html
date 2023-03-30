@@ -1,8 +1,15 @@
 <div class="row col-12">
-   
+    <div class="row">
+        <div class="col-12">
+            <div class="example-button-row">
+                <button mat-flat-button class="" color="primary" (click)="searchBooking()"> Filter</button>
+               
+            </div>
+        </div>
+    </div>
     <div class="row col-12">
         <div class="table-container table">
-            <table class="table table-responsive" mat-table [dataSource]="dataSource">
+            <table mat-table [dataSource]="dataSource">
                 <ng-component matColumnDef="no">
                     <th mat-header-cell class="td-number" *matHeaderCellDef="">No</th>
                     <td mat-cell class="td-number" *matCellDef="let i=index">{{i+1}}</td>
@@ -36,13 +43,14 @@
                     <td mat-cell class="td-number" *matCellDef="let element">{{element.bkSerialNo}}</td>
                 </ng-component>
                 <ng-component matColumnDef="wl">
-                    <th mat-header-cell class="td-number" *matHeaderCellDef="">W/L</th>
+                    <th mat-header-cell class="td-number" *matHeaderCellDef="">Status</th>
                     <td mat-cell class="td-number" *matCellDef="let element">{{element.bstatus}}</td>
                 </ng-component>
                 <ng-component matColumnDef="reg">
                     <th mat-header-cell class="td-number" *matHeaderCellDef="">Action</th>
                     <td mat-cell class="td-number" *matCellDef="let element">
-                        <button mat-raised-button color="primary" *ngIf="!element.regNo" (click)="vitalBooking(element)">Register</button>
+                        <button mat-raised-button color="primary" 
+                            (click)="vitalBooking(element)">Check</button>
                     </td>
                 </ng-component>
                 <tr mat-header-row *matHeaderRowDef="displayedColumn;sticky:true"></tr>

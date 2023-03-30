@@ -1,19 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormControl, FormGroup, FormBuilder, Validators, NgForm } from '@angular/forms';
-
-import { IPatientFormGroup, Patient } from 'src/app/core/model/patient.model';
-import { PatientService } from 'src/app/core/services/patient-service/patient.service';
-import { DoctorService } from 'src/app/core/services/doctor-service/doctor.service';
-import { TownshipService } from 'src/app/core/services/township-service/township.service';
-import { AppointmentService } from 'src/app/core/services/appointment-service/appointment.service';
 import { Observable, map, startWith } from 'rxjs';
+import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
+import { Patient } from 'src/app/core/model/patient.model';
+import { PatientService } from 'src/app/core/services/patient-service/patient.service';
 import { Doctor } from 'src/app/core/model/doctor.model';
+import { DoctorService } from 'src/app/core/services/doctor-service/doctor.service';
+import { Gender } from 'src/app/core/model/gender.model';
+import { GenderService } from 'src/app/core/services/gender-service/gender.service';
 import { Township } from 'src/app/core/model/township.model';
+import { TownshipService } from 'src/app/core/services/township-service/township.service';
+import { Booking } from 'src/app/core/model/booking.model';
+import { AppointmentService } from 'src/app/core/services/appointment-service/appointment.service';
+import { CommonServiceService } from 'src/app/core/services/common-service/common-service.service';
+import { ToastService } from 'src/app/core/services/toast-service/toast-service.service';
 import * as moment from 'moment';
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { MAT_DATE_FORMATS, MAT_DATE_LOCALE, DateAdapter } from '@angular/material/core';
-import { Booking } from 'src/app/core/model/booking.model';
 
 const MY_DATE_FORMAT = {
   parse: {
@@ -38,31 +41,37 @@ const MY_DATE_FORMAT = {
 })
 export class RegistrationSetupComponent implements OnInit {
 
-  patient: Patient
-  registrationForm: IPatientFormGroup
+  registrationForm: FormGroup
+  @ViewChild('reactiveForm', { static: true }) reactiveForm: NgForm
 
+  patient: Patient 
   booking: Booking
 
   doctors: Doctor[] = []
   towns: Township[] = []
-
+  gender: Gender[] = []
   filteredDoc: Observable<any[]>;
   filteredTown: Observable<any[]>;
 
   todayDate = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD')
+  todayYear = moment(new Date(), 'MM/DD/YYYY').format('YYYY')
+  isLoading: boolean = false
+  regNo:any=null
   constructor(private route: Router, private patientService: PatientService,
     private docService: DoctorService, private townService: TownshipService,
-    private appintService: AppointmentService,
-    private formBuilder: FormBuilder, private dateAdapter: DateAdapter<Date>) {
+    private appintService: AppointmentService, private commonService: CommonServiceService,
+    private toastService: ToastService, private genderService: GenderService,
+    private formBuilder: FormBuilder, private dateAdapter: DateAdapter<Date>,
+  ) {
     this.dateAdapter.setLocale('en-GB');
   }
 
   ngOnInit(): void {
     this.initializeForm();
     this.getTownship();
+    this.getGender();
     if (this.appintService._booking != undefined) {
       this.booking = this.appintService._booking
-      console.log(this.booking)
       this.initializeFormData(this.booking)
     }
 
@@ -80,15 +89,15 @@ export class RegistrationSetupComponent implements OnInit {
   //initialize form with interface model
   initializeForm() {
     this.registrationForm = this.formBuilder.group({
-      regNo: [{ value: null, disabled: true }],
-      regDate: [],
+      regNo: [{ value: null ,disabled:true}],
+      regDate: [null, Validators.required],
       dob: [null],
-      sex: [''],
+      sex: [null],
       fatherName: [''],
       nirc: [''],
       nationality: [''],
       religion: [''],
-      doctor: [''],
+      doctor: [null],
       patientName: [''],
       address: [''],
       contactNo: [''],
@@ -98,22 +107,27 @@ export class RegistrationSetupComponent implements OnInit {
       year: [0],
       month: [0],
       day: [0],
-      township: [0],
+      township: [null],
       ptType: [''],
       otId: ['']
-    }) as IPatientFormGroup;
-
-
+    })
     // fill the form with this data
     this.registrationForm.get('regDate').patchValue(this.todayDate)
     this.registrationForm.get('dob').patchValue(this.todayDate)
-    //this.form.patchValue(this.myData);
   }
 
   initializeFormData(data) {
+    this.regNo=data.regNo
+    this.registrationForm.get('regNo').patchValue(data.regNo)
     this.registrationForm.get('regDate').patchValue(data.bkDate)
     this.registrationForm.get('patientName').patchValue(data.patientName)
     this.registrationForm.get('contactNo').patchValue(data.bkPhone)
+    let doc = {
+      doctorId: data.doctorId,
+      doctorName: data.doctorName
+    }
+    this.registrationForm.get('doctor').patchValue(doc)
+
   }
 
   getDoctor(id: string) {
@@ -132,7 +146,17 @@ export class RegistrationSetupComponent implements OnInit {
     this.townService.getAllTownship().subscribe({
       next: towns => {
         this.towns = towns
+      },
+      error: err => {
+        console.trace(err)
+      }
+    })
+  }
 
+  getGender() {
+    this.genderService.getGender().subscribe({
+      next: data => {
+        this.gender = data
       },
       error: err => {
         console.trace(err)
@@ -142,11 +166,6 @@ export class RegistrationSetupComponent implements OnInit {
 
   DocDisplayFn(item: any) {
     return item ? item.doctorName : '';
-  }
-
-  //compare Leave data with initial data
-  compareDoctor(d1: Doctor, d2: Doctor): boolean {
-    return d1 && d2 ? d1.doctorId === d2.doctorId : d1 === d2;
   }
 
   TownDisplayFn(item: any) {
@@ -166,6 +185,11 @@ export class RegistrationSetupComponent implements OnInit {
     return this.doctors.filter(data => data.doctorName.toLowerCase().includes(filterValue));
   }
 
+  changed() {
+    console.log("changed")
+  }
+
+  //filter data for autocomplete
   private _filterTown(value: any): any {
     let filterValue = value
 
@@ -180,17 +204,77 @@ export class RegistrationSetupComponent implements OnInit {
 
   //save regis
   saveRegis(data: any) {
-
+    console.log(data)
     let patient = data
+    patient.regNo=this.regNo
+    patient.sex=data.sex.genderId
     patient.doctor = data.doctor.doctorId
     patient.township = data.township.townshipId
     patient.regDate = moment(data.regDate).format("yyyy-MM-DDTHH:mm:ss");
     patient.dob = moment(data.dob).format("yyyy-MM-DDTHH:mm:ss");
     patient.bookingId = this.booking != undefined ? this.booking.bookingId : null
     console.log(patient)
-    this.patientService.savePatient(patient).subscribe(data => {
-      console.log("After Save" + JSON.stringify(data))
-      this.appintService._booking = undefined
+    this.patientService.savePatient(patient).subscribe({
+      next: registration => {
+        this.toastService.showSuccessToast("Registrations", "Success adding new Registration")
+        this.appintService._booking = undefined
+        this.onClear();
+      },
+      error: err => {
+        console.trace(err);
+      }
     })
   }
+
+  onNew() {
+
+  }
+
+  onBacktoList() {
+    this.appintService._booking = undefined
+    this.route.navigate(['/main/opd/appointment'])
+    this.commonService.getTitle("Appiontment");
+  }
+
+  onClear() {
+    this.isLoading = false
+    this.clearForm()
+  }
+
+  clearForm() {
+    this.registrationForm.reset()
+    this.reactiveForm.resetForm()
+    this.registrationForm.get('regDate').patchValue(this.todayDate)
+    this.registrationForm.get('dob').patchValue(this.todayDate)
+  }
+
+  focusElement(eleString: string, nextString: string, type: string) {
+    if (type == "autocomplete") {
+      if (this.registrationForm.controls['' + eleString + ''].value == null) {
+        return
+      }
+    }
+    if (type == "option") {
+      if (this.registrationForm.controls['' + eleString + ''].value == null) {
+        return
+      }
+    }
+    if (eleString == "year") {
+      let patientYear = this.registrationForm.controls['' + eleString + ''].value
+      patientYear = parseInt(this.todayYear) - patientYear
+      patientYear = moment('01/01/' + patientYear, 'MM/DD/YYYY').format('YYYY-MM-DD')
+      this.registrationForm.get('dob').patchValue(patientYear)
+    }
+    document.querySelector<HTMLInputElement>(`#${nextString}`)?.focus()
+  }
+
+  //handle event from submitting
+  handleEnter(event: any) {
+    let tagname = event.srcElement.id
+    if (tagname !== 'btnSave') {
+      return false
+    }
+    return true
+  }
+
 }

@@ -12,9 +12,6 @@ table {
     border: solid 0.1px rgb(209, 203, 203);
 }
 
-    th{
-        background-color: white;
-    }
 
 .table-mat {
     width: auto;
@@ -48,9 +45,10 @@ h2 {
 }
 
 th.mat-header-cell.cdk-header-cell {
-    font-size:large;
+    font-size: large;
     color: rgb(0, 0, 0);
     vertical-align: center;
+    background-color: white;
 }
 
 tr.mat-row,

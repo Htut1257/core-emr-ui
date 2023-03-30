@@ -74,7 +74,7 @@
         <ag-grid-angular id="myGrid" (gridReady)="onGridReady($event)" class="ag-theme-balham"
             style="height: 70vh;width:100%;" [rowData]="rowDatas" [columnDefs]="columnDefs"
             (cellEditingStarted)="cellEditingStarted($event)" (cellEditingStopped)="cellEditingStopped($event)">
-        </ag-grid-angular>
+        </ag-grid-angular>  
     </div>
     <div class="col-3 d-flex">
         <ag-grid-angular id="myGrid1" (gridReady)="onGridReady1($event)" class="ag-theme-balham"
@@ -133,21 +133,16 @@
 
 <div class="col-12 row">
     <div class="col-3">
-        <ag-grid-angular (gridReady)="onGriReadyExamination($event)" class="ag-theme-balham"
-            style="height:70vh;width:100%;" [gridOptions]="examinationGridOption">
+        <ag-grid-angular id="examinationGrid" (gridReady)="onGriReadyExamination($event)" class="ag-theme-balham"
+            style="height:60vh;width:100%;" [gridOptions]="examinationGridOption">
         </ag-grid-angular>
     </div>
     <div class="col-6">
-        <ag-grid-angular 
-        style="height: 300px; width: 600px;" 
-        class="ag-theme-balham"
-        [rowData]="treatmentRow" 
-        [columnDefs]="treatmentColumnDef"
-        [frameworkComponents]="frameworkComponents"
-        (gridReady)="onGridReadyTreatment($event)"
-        (cellEditingStopped)="treatCellEditingStopped($event)"
-        >
-      </ag-grid-angular>
+        <ag-grid-angular id="treatmentGrid" style="height:60vh;width:100%;" class="ag-theme-balham" [gridOptions]="treatmentGridOption"
+            [frameworkComponents]="frameworkComponents" (gridReady)="onGridReadyTreatment($event)" 
+
+            (cellEditingStopped)="treatCellEditingStopped($event)">
+        </ag-grid-angular>
     </div>
     <div class="col-3">
         <div class="row">
@@ -159,8 +154,8 @@
                 </mat-form-field>
             </div>
             <div class="col-12">
-                <ag-grid-angular (gridReady)="onGridReadyNote($event)" class="ag-theme-balham"
-                    style="height:50vh;width:100%;" [gridOptions]="noteGridOption">
+                <ag-grid-angular id="noteGrid" (gridReady)="onGridReadyNote($event)" class="ag-theme-balham"
+                    style="height:40vh;width:100%;" [gridOptions]="noteGridOption">
                 </ag-grid-angular>
             </div>
         </div>

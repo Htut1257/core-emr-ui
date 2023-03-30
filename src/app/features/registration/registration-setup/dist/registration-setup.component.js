@@ -9,6 +9,7 @@ exports.__esModule = true;
 exports.RegistrationSetupComponent = void 0;
 var core_1 = require("@angular/core");
 var rxjs_1 = require("rxjs");
+var forms_1 = require("@angular/forms");
 var moment = require("moment");
 var material_moment_adapter_1 = require("@angular/material-moment-adapter");
 var core_2 = require("@angular/material/core");
@@ -24,26 +25,33 @@ var MY_DATE_FORMAT = {
     }
 };
 var RegistrationSetupComponent = /** @class */ (function () {
-    function RegistrationSetupComponent(route, patientService, docService, townService, appintService, formBuilder, dateAdapter) {
+    function RegistrationSetupComponent(route, patientService, docService, townService, appintService, commonService, toastService, genderService, formBuilder, dateAdapter) {
         this.route = route;
         this.patientService = patientService;
         this.docService = docService;
         this.townService = townService;
         this.appintService = appintService;
+        this.commonService = commonService;
+        this.toastService = toastService;
+        this.genderService = genderService;
         this.formBuilder = formBuilder;
         this.dateAdapter = dateAdapter;
         this.doctors = [];
         this.towns = [];
+        this.gender = [];
         this.todayDate = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD');
+        this.todayYear = moment(new Date(), 'MM/DD/YYYY').format('YYYY');
+        this.isLoading = false;
+        this.regNo = null;
         this.dateAdapter.setLocale('en-GB');
     }
     RegistrationSetupComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.initializeForm();
         this.getTownship();
+        this.getGender();
         if (this.appintService._booking != undefined) {
             this.booking = this.appintService._booking;
-            console.log(this.booking);
             this.initializeFormData(this.booking);
         }
         this.filteredDoc = this.registrationForm.controls['doctor'].valueChanges.pipe(rxjs_1.startWith(''), rxjs_1.map(function (name) { return (name ? _this._filterDoc(name) : _this.doctors.slice()); }));
@@ -53,14 +61,14 @@ var RegistrationSetupComponent = /** @class */ (function () {
     RegistrationSetupComponent.prototype.initializeForm = function () {
         this.registrationForm = this.formBuilder.group({
             regNo: [{ value: null, disabled: true }],
-            regDate: [],
+            regDate: [null, forms_1.Validators.required],
             dob: [null],
-            sex: [''],
+            sex: [null],
             fatherName: [''],
             nirc: [''],
             nationality: [''],
             religion: [''],
-            doctor: [''],
+            doctor: [null],
             patientName: [''],
             address: [''],
             contactNo: [''],
@@ -70,19 +78,25 @@ var RegistrationSetupComponent = /** @class */ (function () {
             year: [0],
             month: [0],
             day: [0],
-            township: [0],
+            township: [null],
             ptType: [''],
             otId: ['']
         });
         // fill the form with this data
         this.registrationForm.get('regDate').patchValue(this.todayDate);
         this.registrationForm.get('dob').patchValue(this.todayDate);
-        //this.form.patchValue(this.myData);
     };
     RegistrationSetupComponent.prototype.initializeFormData = function (data) {
+        this.regNo = data.regNo;
+        this.registrationForm.get('regNo').patchValue(data.regNo);
         this.registrationForm.get('regDate').patchValue(data.bkDate);
         this.registrationForm.get('patientName').patchValue(data.patientName);
         this.registrationForm.get('contactNo').patchValue(data.bkPhone);
+        var doc = {
+            doctorId: data.doctorId,
+            doctorName: data.doctorName
+        };
+        this.registrationForm.get('doctor').patchValue(doc);
     };
     RegistrationSetupComponent.prototype.getDoctor = function (id) {
         var _this = this;
@@ -106,12 +120,19 @@ var RegistrationSetupComponent = /** @class */ (function () {
             }
         });
     };
+    RegistrationSetupComponent.prototype.getGender = function () {
+        var _this = this;
+        this.genderService.getGender().subscribe({
+            next: function (data) {
+                _this.gender = data;
+            },
+            error: function (err) {
+                console.trace(err);
+            }
+        });
+    };
     RegistrationSetupComponent.prototype.DocDisplayFn = function (item) {
         return item ? item.doctorName : '';
-    };
-    //compare Leave data with initial data
-    RegistrationSetupComponent.prototype.compareDoctor = function (d1, d2) {
-        return d1 && d2 ? d1.doctorId === d2.doctorId : d1 === d2;
     };
     RegistrationSetupComponent.prototype.TownDisplayFn = function (item) {
         return item ? item.townshipName : '';
@@ -128,6 +149,10 @@ var RegistrationSetupComponent = /** @class */ (function () {
         }
         return this.doctors.filter(function (data) { return data.doctorName.toLowerCase().includes(filterValue); });
     };
+    RegistrationSetupComponent.prototype.changed = function () {
+        console.log("changed");
+    };
+    //filter data for autocomplete
     RegistrationSetupComponent.prototype._filterTown = function (value) {
         var filterValue = value;
         this.getDoctor(value);
@@ -142,18 +167,75 @@ var RegistrationSetupComponent = /** @class */ (function () {
     //save regis
     RegistrationSetupComponent.prototype.saveRegis = function (data) {
         var _this = this;
+        console.log(data);
         var patient = data;
+        patient.regNo = this.regNo;
+        patient.sex = data.sex.genderId;
         patient.doctor = data.doctor.doctorId;
         patient.township = data.township.townshipId;
         patient.regDate = moment(data.regDate).format("yyyy-MM-DDTHH:mm:ss");
         patient.dob = moment(data.dob).format("yyyy-MM-DDTHH:mm:ss");
         patient.bookingId = this.booking != undefined ? this.booking.bookingId : null;
         console.log(patient);
-        this.patientService.savePatient(patient).subscribe(function (data) {
-            console.log("After Save" + JSON.stringify(data));
-            _this.appintService._booking = undefined;
+        this.patientService.savePatient(patient).subscribe({
+            next: function (registration) {
+                _this.toastService.showSuccessToast("Registrations", "Success adding new Registration");
+                _this.appintService._booking = undefined;
+                _this.onClear();
+            },
+            error: function (err) {
+                console.trace(err);
+            }
         });
     };
+    RegistrationSetupComponent.prototype.onNew = function () {
+    };
+    RegistrationSetupComponent.prototype.onBacktoList = function () {
+        this.appintService._booking = undefined;
+        this.route.navigate(['/main/opd/appointment']);
+        this.commonService.getTitle("Appiontment");
+    };
+    RegistrationSetupComponent.prototype.onClear = function () {
+        this.isLoading = false;
+        this.clearForm();
+    };
+    RegistrationSetupComponent.prototype.clearForm = function () {
+        this.registrationForm.reset();
+        this.reactiveForm.resetForm();
+        this.registrationForm.get('regDate').patchValue(this.todayDate);
+        this.registrationForm.get('dob').patchValue(this.todayDate);
+    };
+    RegistrationSetupComponent.prototype.focusElement = function (eleString, nextString, type) {
+        var _a;
+        if (type == "autocomplete") {
+            if (this.registrationForm.controls['' + eleString + ''].value == null) {
+                return;
+            }
+        }
+        if (type == "option") {
+            if (this.registrationForm.controls['' + eleString + ''].value == null) {
+                return;
+            }
+        }
+        if (eleString == "year") {
+            var patientYear = this.registrationForm.controls['' + eleString + ''].value;
+            patientYear = parseInt(this.todayYear) - patientYear;
+            patientYear = moment('01/01/' + patientYear, 'MM/DD/YYYY').format('YYYY-MM-DD');
+            this.registrationForm.get('dob').patchValue(patientYear);
+        }
+        (_a = document.querySelector("#" + nextString)) === null || _a === void 0 ? void 0 : _a.focus();
+    };
+    //handle event from submitting
+    RegistrationSetupComponent.prototype.handleEnter = function (event) {
+        var tagname = event.srcElement.id;
+        if (tagname !== 'btnSave') {
+            return false;
+        }
+        return true;
+    };
+    __decorate([
+        core_1.ViewChild('reactiveForm', { static: true })
+    ], RegistrationSetupComponent.prototype, "reactiveForm");
     RegistrationSetupComponent = __decorate([
         core_1.Component({
             selector: 'app-registration-setup',

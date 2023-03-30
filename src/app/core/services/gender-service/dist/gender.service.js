@@ -34,7 +34,7 @@ var GenderService = /** @class */ (function (_super) {
         return _super.call(this, http, uri) || this;
     }
     GenderService.prototype.getGender = function () {
-        this.baseURL = uri + "/setup/get-gender";
+        this.baseURL = uri + "/opdSetup/getAllGender";
         return this.getAll();
     };
     GenderService = __decorate([

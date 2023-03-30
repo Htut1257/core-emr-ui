@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Observable, map, startWith } from 'rxjs';
-import { FormControl, FormGroup, FormBuilder, Validators, NgForm } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, NgForm } from '@angular/forms';
 import { AppointmentService } from 'src/app/core/services/appointment-service/appointment.service';
 import * as moment from 'moment';
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
@@ -9,6 +9,10 @@ import { Doctor } from 'src/app/core/model/doctor.model';
 import { DoctorService } from 'src/app/core/services/doctor-service/doctor.service';
 import { Gender } from 'src/app/core/model/gender.model';
 import { GenderService } from 'src/app/core/services/gender-service/gender.service';
+import { Patient } from 'src/app/core/model/patient.model';
+import { PatientService } from 'src/app/core/services/patient-service/patient.service';
+import { CommonServiceService } from 'src/app/core/services/common-service/common-service.service';
+import { ToastService } from 'src/app/core/services/toast-service/toast-service.service';
 const MY_DATE_FORMAT = {
   parse: {
     dateInput: 'DD/MM/YYYY', // this is how your date will be parsed from Input
@@ -32,18 +36,25 @@ const MY_DATE_FORMAT = {
 })
 
 export class AppointmentRegistrationComponent implements OnInit {
+
+  appointForm: FormGroup
+  @ViewChild('reactiveForm', { static: true }) reactiveForm: NgForm
+
   doctors: Doctor[] = []
   filteredDoc: Observable<any[]>;
-
+  patient: Patient[] = []
+  filteredPatient: Observable<any[]>
   gender: Gender[]
 
-  appointForm: any
   todayDate = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD')
+  isLoading: boolean = false
 
   constructor(
+    private appointService: AppointmentService, private patientService: PatientService,
     private docService: DoctorService, private genderService: GenderService,
+    private toastService: ToastService,
     private dateAdapter: DateAdapter<Date>,
-    private appointService: AppointmentService, private fb: FormBuilder
+    private fb: FormBuilder
   ) {
     this.dateAdapter.setLocale('en-GB');
   }
@@ -55,25 +66,30 @@ export class AppointmentRegistrationComponent implements OnInit {
       startWith(''),
       map(name => (name ? this._filterDoc(name) : this.doctors.slice()))
     );
-  }
 
+    this.filteredPatient = this.appointForm.controls['patient'].valueChanges.pipe(
+      startWith(''),
+      map(name => (name ? this._filterPatient(name) : this.patient.slice()))
+    )
+
+  }
 
   initializeForm() {
     this.appointForm = this.fb.group({
-      regisNo: [null],
-      regisDate: [''],
-      name: [''],
-      doctor: [''],
-      ph: [''],
+      regNo: [null],
+      bkDate: ['', Validators.required],
+      patient: ['', Validators.required],
+      doctor: [null, Validators.required],
+      bkPhone: [''],
     });
-    this.appointForm.get('regisDate').patchValue(this.todayDate)
+    this.appointForm.get('bkDate').patchValue(this.todayDate)
   }
 
   getDoctor(id: string) {
     this.docService.getDoctor(id).subscribe({
       next: doctors => {
         this.doctors = doctors;
-
+        console.log(this.doctors)
       },
       error: err => {
         console.trace(err)
@@ -88,7 +104,6 @@ export class AppointmentRegistrationComponent implements OnInit {
   //filter data for autocomplete
   private _filterDoc(value: any): any {
     let filterValue = value
-
     this.getDoctor(value)
     if (value.doctorName != null) {
       filterValue = value.doctorName.toLowerCase()
@@ -98,6 +113,33 @@ export class AppointmentRegistrationComponent implements OnInit {
     return this.doctors.filter(data => data.doctorName.toLowerCase().includes(filterValue));
   }
 
+  getPatient(name: string) {
+    this.patientService.getPatientByName(name).subscribe({
+      next: data => {
+        this.patient = data
+        console.log(this.patient)
+      },
+      error: err => {
+        console.trace(err)
+      }
+    })
+  }
+
+  patientDisplayFn(item: any) {
+    return item ? item.patientName : ''
+  }
+
+  //filter data for autocomplete
+  private _filterPatient(value: any) {
+    let filterValue = value
+    this.getPatient(value)
+    if (value.patientName != null) {
+      filterValue = value.patientName.toLowerCase()
+    } else {
+      filterValue = value.toLowerCase()
+    }
+    return this.patient.filter(data => data.patientName.toLowerCase().includes(filterValue));
+  }
 
   getGender() {
     this.genderService.getGender().subscribe({
@@ -115,24 +157,65 @@ export class AppointmentRegistrationComponent implements OnInit {
     return b1 && b2 ? b1.genderId === b2.genderId : b1 === b2
   }
 
-
   saveAppointment(data: any) {
     let booking = data
-    // booking.bookingId=null
-    booking.regNo = data.regisNo
-    booking.patientName = data.name
+    booking.patientName = data.patient.patientName
     booking.doctorId = data.doctor.doctorId
-    booking.bkDate = moment(data.regisDate).format("yyyy-MM-DD")
-    booking.bkPhone = data.ph
-    // booking.bkActive=true
-    // booking.bkSerialNo=""
-    // booking.actionStatus=""
-    // booking.bStatus=""
-    console.log(booking)
+    booking.bkDate = moment(data.bkDate).format("yyyy-MM-DD")
 
     this.appointService.saveAppointment(booking).subscribe(data => {
-      console.log(data)
+      this.toastService.showSuccessToast("", "Success Adding new Appointment")
+      this.onClear()
     })
+  }
+
+  onNew() {
+
+  }
+
+  //called on patient change autocomplete
+  getpatientData(event) {
+    let patient = event.option.value
+    this.appointForm.get('regNo').patchValue(patient.regNo)
+  }
+
+  onBacktoList() {
+
+  }
+
+  onClear() {
+    this.isLoading = false
+    this.clearForm()
+  }
+
+  clearForm() {
+    this.appointForm.reset()
+    this.reactiveForm.resetForm()
+    this.appointForm.get('bkDate').patchValue(this.todayDate)
+
+  }
+
+  focusElement(eleString: string, nextString: string, type: string) {
+    if (type == "autocomplete") {
+      if (this.appointForm.controls['' + eleString + ''].value == null) {
+        return
+      }
+    }
+    if (type == "option") {
+      if (this.appointForm.controls['' + eleString + ''].value == null) {
+        return
+      }
+    }
+    document.querySelector<HTMLInputElement>(`#${nextString}`)?.focus()
+  }
+
+  //handle event from submitting
+  handleEnter(event: any) {
+    let tagname = event.srcElement.id
+    if (tagname !== 'btnSave') {
+      return false
+    }
+    return true
   }
 
 }
