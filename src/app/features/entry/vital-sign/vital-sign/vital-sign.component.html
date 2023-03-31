@@ -3,7 +3,7 @@
         <div class="col-12">
             <div class="example-button-row">
                 <button mat-flat-button class="" color="primary" (click)="searchBooking()"> Filter</button>
-               
+
             </div>
         </div>
     </div>
@@ -18,10 +18,10 @@
                     <th mat-header-cell class="td-text" *matHeaderCellDef="">Date</th>
                     <td mat-cell class="td-text" *matCellDef="let element">{{element.bkDate|date:'dd/MM/yyyy '}}</td>
                 </ng-component>
-                <ng-component matColumnDef="visitno">
+                <!-- <ng-component matColumnDef="visitno">
                     <th mat-header-cell class="td-text" *matHeaderCellDef="">Visit No</th>
                     <td mat-cell class="td-text" *matCellDef="let element">{{element.bookingId}}</td>
-                </ng-component>
+                </ng-component> -->
                 <ng-component matColumnDef="regno">
                     <th mat-header-cell class="td-text" *matHeaderCellDef="">Reg No</th>
                     <td mat-cell class="td-text" *matCellDef="let element">{{element.regNo}}</td>
@@ -34,23 +34,25 @@
                     <th mat-header-cell class="td-text" *matHeaderCellDef="">Doctor</th>
                     <td mat-cell class="td-text" *matCellDef="let element">{{element.doctorName}}</td>
                 </ng-component>
-                <ng-component matColumnDef="phone">
+                <!-- <ng-component matColumnDef="phone">
                     <th mat-header-cell class="td-text" *matHeaderCellDef="">Phone No</th>
                     <td mat-cell class="td-text" *matCellDef="let element">{{element.bkPhone}}</td>
                 </ng-component>
                 <ng-component matColumnDef="serialno">
                     <th mat-header-cell class="td-number" *matHeaderCellDef="">Serial No</th>
                     <td mat-cell class="td-number" *matCellDef="let element">{{element.bkSerialNo}}</td>
-                </ng-component>
+                </ng-component> -->
                 <ng-component matColumnDef="wl">
                     <th mat-header-cell class="td-number" *matHeaderCellDef="">Status</th>
                     <td mat-cell class="td-number" *matCellDef="let element">{{element.bstatus}}</td>
                 </ng-component>
                 <ng-component matColumnDef="reg">
-                    <th mat-header-cell class="td-number" *matHeaderCellDef="">Action</th>
-                    <td mat-cell class="td-number" *matCellDef="let element">
-                        <button mat-raised-button color="primary" 
-                            (click)="vitalBooking(element)">Check</button>
+                    <th mat-header-cell class="td-object" *matHeaderCellDef="">Action</th>
+                    <td mat-cell class="td-object" *matCellDef="let element">
+                        <div class="example-button-row">
+                            <button mat-raised-button color="primary" class="register-btn"
+                                (click)="vitalBooking(element)">Check</button>
+                        </div>
                     </td>
                 </ng-component>
                 <tr mat-header-row *matHeaderRowDef="displayedColumn;sticky:true"></tr>

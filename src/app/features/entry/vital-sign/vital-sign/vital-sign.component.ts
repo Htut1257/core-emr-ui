@@ -18,7 +18,7 @@ export class VitalSignComponent implements OnInit {
 
   todayDate = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD')
 
-  displayedColumn: string[] = ["no", "date", "visitno", "regno", "patient", "doctor", "phone", "serialno", "wl","reg"]
+  displayedColumn: string[] = ["no", "date",  "regno", "patient", "doctor", "wl","reg"]
   dataSource!: MatTableDataSource<Booking>
   isMobile: boolean = false
   constructor(
