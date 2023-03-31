@@ -17,17 +17,17 @@ export class LabService extends AbstractService<Lab> {
   }
 
   getLab():Observable<Lab[]> {
-    this.baseURL = this.baseURL + `/setup/get-Bonus`
+    this.baseURL = `${uri}/setup/get-Bonus`
     return this.getAll()
   }
 
   saveLab(lab: Lab) :Observable<Lab>{
-    this.baseURL = this.baseURL + `/setup/save-Bonus`
+    this.baseURL =  `${uri}/setup/save-Bonus`
     return this.save(lab);
   }
 
   deleteLab(id: string) {
-    this.baseURL = this.baseURL + `/setup/delete-Bonus`
+    this.baseURL = `${uri}/setup/delete-Bonus`
     let httpParams = new HttpParams().set('id', id);
     this.delete(httpParams);
   }

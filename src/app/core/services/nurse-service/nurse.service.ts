@@ -17,17 +17,17 @@ export class NurseService extends AbstractService<Nurse>{
   }
 
   getNurse(): Observable<Nurse[]> {
-    this.baseURL = this.baseURL + `/setup/get-Bonus`
+    this.baseURL = `${uri}/setup/get-Bonus`
     return this.getAll()
   }
 
   saveNurse(nurse: Nurse): Observable<Nurse> {
-    this.baseURL = this.baseURL + `/setup/save-Bonus`
+    this.baseURL = `${uri}/setup/save-Bonus`
     return this.save(nurse);
   }
 
   deleteNurse(id: string) {
-    this.baseURL = this.baseURL + `/setup/delete-Bonus`
+    this.baseURL = `${uri}/setup/delete-Bonus`
     let httpParams = new HttpParams().set('id', id);
     this.delete(httpParams);
   }

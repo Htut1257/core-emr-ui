@@ -30,25 +30,25 @@ export class TownshipService extends AbstractService<Township>{
   }
 
   getAllTownship(): Observable<any[]> {
-    this.baseURL = this.baseURL + `/township/getAll`
+    this.baseURL = `${uri}/township/getAll`
     
     return this.getAll()
   }
 
   getTownshipByName(name: string): Observable<Township[]> {
-    this.baseURL = this.baseURL + `/township/getByName`
+    this.baseURL = `${uri}/township/getByName`
     let httpParams = new HttpParams().set('name', name);
     return this.getByParams(httpParams);
   }
 
   getTownshipByParent(id: string): Observable<Township[]> {
-    this.baseURL = this.baseURL + `/township/getByParent`
+    this.baseURL = `${uri}/township/getByParent`
     let httpParams = new HttpParams().set('parentId', id);
     return this.getByParams(httpParams);
   }
 
   removeTownship(id: string) {
-    this.baseURL = this.baseURL + `/township/delete`
+    this.baseURL = `${uri}/township/delete`
     let httpParams = new HttpParams().set('id', id);
     return this.getByParams(httpParams);
   }

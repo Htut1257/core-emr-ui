@@ -15,24 +15,24 @@ export class PatientService extends AbstractService<Patient>{
   }
 
   getPatientByName(name: string) {
-    this.baseURL = this.baseURL + `/patient/getByName`
+    this.baseURL = `${uri}/patient/getByName`
     let httpParams = new HttpParams().set('name', name);
     return this.getByParams(httpParams);
   }
 
   savePatient(data: Patient) {
-    this.baseURL = this.baseURL + `/patient/save`
+    this.baseURL = `${uri}/patient/save`
     return this.save(data);
   }
 
   removePatient(id: string) {
-    this.baseURL = this.baseURL + `/patient/delete`
+    this.baseURL = `${uri}/patient/delete`
     let httpParams = new HttpParams().set('id', id);
     return this.getByParams(httpParams);
   }
 
   searchBooking(params: any) {
-    this.baseURL = this.baseURL + `/patient/searchBooking`
+    this.baseURL = `${uri}/patient/searchBooking`
     let httpParams = new HttpParams()
       .set('name', params)
       .set('name', params)
@@ -40,12 +40,12 @@ export class PatientService extends AbstractService<Patient>{
   }
 
   saveBooking(data: Patient) {
-    this.baseURL = this.baseURL + `/patient/saveBooking`
+    this.baseURL = `${uri}/patient/saveBooking`
     return this.save(data);
   }
 
   deleteBooking(id: string) {
-    this.baseURL = this.baseURL + `/patient/deleteBooking`
+    this.baseURL = `${uri}/patient/deleteBooking`
     let httpParams = new HttpParams().set('id', id);
     return this.getByParams(httpParams);
   }

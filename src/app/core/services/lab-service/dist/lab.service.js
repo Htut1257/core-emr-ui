@@ -22,28 +22,36 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 exports.__esModule = true;
-exports.VitalSignService = void 0;
+exports.LabService = void 0;
 var core_1 = require("@angular/core");
 var http_1 = require("@angular/common/http");
-var api_setting_1 = require("src/app/api/api-setting");
 var abstract_service_1 = require("../abstract-service/abstract.service");
-var uri = api_setting_1.ApiSetting.EmrMongoEndPoint;
-var VitalSignService = /** @class */ (function (_super) {
-    __extends(VitalSignService, _super);
-    function VitalSignService(http) {
+var api_setting_1 = require("src/app/api/api-setting");
+var uri = "" + api_setting_1.ApiSetting.PayRollApiEndPoint;
+var LabService = /** @class */ (function (_super) {
+    __extends(LabService, _super);
+    function LabService(http) {
         return _super.call(this, http, uri) || this;
     }
-    VitalSignService.prototype.saveVitalSign = function (data) {
-        this.baseURL = uri + "/patient/saveVitalSign";
-        console.log(this.baseURL);
-        return this.http.post(uri, data);
+    LabService.prototype.getLab = function () {
+        this.baseURL = uri + "/setup/get-Bonus";
+        return this.getAll();
     };
-    VitalSignService = __decorate([
+    LabService.prototype.saveLab = function (lab) {
+        this.baseURL = uri + "/setup/save-Bonus";
+        return this.save(lab);
+    };
+    LabService.prototype.deleteLab = function (id) {
+        this.baseURL = uri + "/setup/delete-Bonus";
+        var httpParams = new http_1.HttpParams().set('id', id);
+        this["delete"](httpParams);
+    };
+    LabService = __decorate([
         core_1.Injectable({
             providedIn: 'root'
         }),
         __param(0, core_1.Inject(http_1.HttpClient))
-    ], VitalSignService);
-    return VitalSignService;
+    ], LabService);
+    return LabService;
 }(abstract_service_1.AbstractService));
-exports.VitalSignService = VitalSignService;
+exports.LabService = LabService;

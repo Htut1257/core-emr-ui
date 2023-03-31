@@ -29,7 +29,6 @@ export abstract class AbstractService<T>{
   getAll(): Observable<T[]> {
     return new Observable(observable => {
       let uri = this.baseURL
-      console.log(uri)
       let httpOption = { headers: httpHeader }
       this.http.get<T[]>(uri, httpOption).subscribe(data => {
         observable.next(data)
@@ -51,8 +50,6 @@ export abstract class AbstractService<T>{
     let httpOption = { headers: httpHeader }
     return this.http.post<T>(uri, obj, httpOption)
   }
-
-  
 
   //delete obj
   delete(params: HttpParams) {
