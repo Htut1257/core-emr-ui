@@ -89,7 +89,6 @@ export class AppointmentRegistrationComponent implements OnInit {
     this.docService.getDoctor(id).subscribe({
       next: doctors => {
         this.doctors = doctors;
-        console.log(this.doctors)
       },
       error: err => {
         console.trace(err)
@@ -117,7 +116,6 @@ export class AppointmentRegistrationComponent implements OnInit {
     this.patientService.getPatientByName(name).subscribe({
       next: data => {
         this.patient = data
-        console.log(this.patient)
       },
       error: err => {
         console.trace(err)
@@ -159,10 +157,9 @@ export class AppointmentRegistrationComponent implements OnInit {
 
   saveAppointment(data: any) {
     let booking = data
-    booking.patientName = data.patient.patientName
+    booking.patientName = data.patient.patientName != undefined ? data.patient.patientName : data.patient
     booking.doctorId = data.doctor.doctorId
     booking.bkDate = moment(data.bkDate).format("yyyy-MM-DD")
-
     this.appointService.saveAppointment(booking).subscribe(data => {
       this.toastService.showSuccessToast("", "Success Adding new Appointment")
       this.onClear()

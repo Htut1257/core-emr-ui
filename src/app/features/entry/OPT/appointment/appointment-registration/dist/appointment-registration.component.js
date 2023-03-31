@@ -61,7 +61,6 @@ var AppointmentRegistrationComponent = /** @class */ (function () {
         this.docService.getDoctor(id).subscribe({
             next: function (doctors) {
                 _this.doctors = doctors;
-                console.log(_this.doctors);
             },
             error: function (err) {
                 console.trace(err);
@@ -88,7 +87,6 @@ var AppointmentRegistrationComponent = /** @class */ (function () {
         this.patientService.getPatientByName(name).subscribe({
             next: function (data) {
                 _this.patient = data;
-                console.log(_this.patient);
             },
             error: function (err) {
                 console.trace(err);
@@ -128,7 +126,7 @@ var AppointmentRegistrationComponent = /** @class */ (function () {
     AppointmentRegistrationComponent.prototype.saveAppointment = function (data) {
         var _this = this;
         var booking = data;
-        booking.patientName = data.patient.patientName;
+        booking.patientName = data.patient.patientName != undefined ? data.patient.patientName : data.patient;
         booking.doctorId = data.doctor.doctorId;
         booking.bkDate = moment(data.bkDate).format("yyyy-MM-DD");
         this.appointService.saveAppointment(booking).subscribe(function (data) {

@@ -18,7 +18,6 @@ export class AppointmentService extends AbstractService<Booking>{
 
   constructor(@Inject(HttpClient) http: HttpClient) {
     super(http, uri)
-    console.log(uri)
   }
   _booking: Booking
   _bookings: Booking[] = []
@@ -46,9 +45,7 @@ export class AppointmentService extends AbstractService<Booking>{
   }
 
   saveAppointment(appoint: Booking): Observable<Booking> {
-    console.log(this.baseURL)
     this.baseURL = `${uri}/patient/saveBooking`
-    console.log(this.baseURL)
     return this.save(appoint);
   }
 

@@ -68,6 +68,7 @@ export class AppointmentHistoryComponent implements OnInit {
   //get Appointment
   getBooking(filter: any) {
     this.appointService.getAppointment(filter).subscribe(appoint => {
+      console.log(appoint)
       this.bookings = appoint
       this.dataSource = new MatTableDataSource(this.bookings)
       this.filterBooking();

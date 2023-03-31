@@ -42,7 +42,6 @@ var AppointmentService = /** @class */ (function (_super) {
         _this._bookings = [];
         _this.bookings = new rxjs_1.BehaviorSubject([]);
         _this.bookings$ = _this.bookings.asObservable();
-        console.log(uri);
         return _this;
     }
     AppointmentService.prototype.getAppointment = function (filter) {
@@ -65,9 +64,7 @@ var AppointmentService = /** @class */ (function (_super) {
         // return this.getByParams(httpparams)
     };
     AppointmentService.prototype.saveAppointment = function (appoint) {
-        console.log(this.baseURL);
         this.baseURL = uri + "/patient/saveBooking";
-        console.log(this.baseURL);
         return this.save(appoint);
     };
     //set booking status across form

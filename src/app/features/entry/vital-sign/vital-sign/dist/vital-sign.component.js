@@ -35,7 +35,6 @@ var VitalSignComponent = /** @class */ (function () {
                 return appoint.bstatus == "Confirm";
             });
         })).subscribe(function (data) {
-            console.log(data);
             _this.dataSource.data = data;
         });
     }

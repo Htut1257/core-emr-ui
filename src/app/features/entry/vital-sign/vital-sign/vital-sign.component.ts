@@ -42,7 +42,6 @@ export class VitalSignComponent implements OnInit {
         })
       })
     ).subscribe(data=>{
-      console.log(data)
       this.dataSource.data = data
     })
   }

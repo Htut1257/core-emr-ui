@@ -58,6 +58,7 @@ var AppointmentHistoryComponent = /** @class */ (function () {
     AppointmentHistoryComponent.prototype.getBooking = function (filter) {
         var _this = this;
         this.appointService.getAppointment(filter).subscribe(function (appoint) {
+            console.log(appoint);
             _this.bookings = appoint;
             _this.dataSource = new table_1.MatTableDataSource(_this.bookings);
             _this.filterBooking();
