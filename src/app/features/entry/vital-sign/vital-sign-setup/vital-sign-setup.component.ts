@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { VitalSign } from 'src/app/core/model/vital-sign.model';
@@ -14,20 +14,29 @@ import { Booking } from 'src/app/core/model/booking.model';
 export class VitalSignSetupComponent implements OnInit {
   vital: VitalSign
   vitalForm: FormGroup
-  booking:Booking
+  @ViewChild('reactiveForm', { static: true }) reactiveForm: NgForm
+
+  booking: Booking
+  isLoading: boolean = false
   constructor(
     private route: Router, private vitalService: VitalSignService,
     private appointService: AppointmentService,
     private commonService: CommonServiceService,
     public formBuilder: FormBuilder
   ) {
-
+    this.commonService.isMobileObj$.subscribe(data => {
+      if (data == false) {
+        console.log(data)
+        console.log(this.appointService._booking)
+        if (this.appointService._booking != undefined) {
+          this.booking = this.appointService._booking
+          this.initializeFormData(this.booking)
+        }
+      }
+    })
   }
 
   ngOnInit(): void {
-    if(this.appointService._booking!=undefined){
-      this.booking=this.appointService._booking
-    }
     this.initializeForm();
   }
 
@@ -55,10 +64,14 @@ export class VitalSignSetupComponent implements OnInit {
       heightUnit: [''],
       bmi: [''],
     })
-
-    this.vitalForm.get('bookingId').patchValue(this.booking.bookingId)
-    this.vitalForm.get('regNo').patchValue(this.booking.regNo)
   }
+
+  initializeFormData(data) {
+
+    this.vitalForm.get('bookingId').patchValue(data.bookingId)
+    this.vitalForm.get('regNo').patchValue(data.regNo)
+  }
+
 
 
   onSaveVital(data) {
@@ -69,5 +82,46 @@ export class VitalSignSetupComponent implements OnInit {
     })
   }
 
+  onNew() {
+
+  }
+
+  onBackToList() {
+
+  }
+
+  onClear() {
+    this.isLoading = false
+    this.clearForm()
+  }
+
+  clearForm() {
+    this.vitalForm.reset()
+    this.reactiveForm.resetForm()
+  }
+
+
+  focusElement(eleString: string, nextString: string, type: string) {
+    if (type == "autocomplete") {
+      if (this.vitalForm.controls['' + eleString + ''].value == null) {
+        return
+      }
+    }
+    if (type == "option") {
+      if (this.vitalForm.controls['' + eleString + ''].value == null) {
+        return
+      }
+    }
+    document.querySelector<HTMLInputElement>(`#${nextString}`)?.focus()
+  }
+
+  //handle event from submitting
+  handleEnter(event: any) {
+    let tagname = event.srcElement.id
+    if (tagname !== 'btnSave') {
+      return false
+    }
+    return true
+  }
 
 }

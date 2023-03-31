@@ -3,6 +3,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Booking } from 'src/app/core/model/booking.model';
 import { AppointmentService } from 'src/app/core/services/appointment-service/appointment.service';
+import { CommonServiceService } from 'src/app/core/services/common-service/common-service.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AppointmentSearchDialogComponent } from '../../OPT/appointment/appointment-search-dialog/appointment-search-dialog.component';
 import * as moment from 'moment';
@@ -22,10 +23,14 @@ export class VitalSignComponent implements OnInit {
   isMobile: boolean = false
   constructor(
     private route: Router, private appointService: AppointmentService,
+    private commonService:CommonServiceService,
     public dialog: MatDialog,
   ) {
     this.bookings = []
     this.dataSource = new MatTableDataSource<Booking>(this.bookings)
+    this.commonService.isMobile$.subscribe(data=>{
+      this.isMobile=data
+    })
     this.appointService.bookings.subscribe(data => {
       this.dataSource.data = data
     })
@@ -52,6 +57,12 @@ export class VitalSignComponent implements OnInit {
 
   vitalBooking(model) {
     this.appointService._booking = model
+    console.log(this.isMobile)
+    if(this.isMobile){
+      this.commonService.getCurrentObject(true)
+    }else{
+      this.commonService.getCurrentObject(false)
+    }
   }
 
   searchBooking(){

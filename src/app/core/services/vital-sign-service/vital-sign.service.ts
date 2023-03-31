@@ -10,6 +10,9 @@ var uri:any = ApiSetting.EmrMongoEndPoint
 })
 export class VitalSignService extends AbstractService<VitalSign>{
   _vitalSign: VitalSign
+
+  
+
   constructor(@Inject(HttpClient) http: HttpClient) {
     super(http, uri)
   }

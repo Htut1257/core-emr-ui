@@ -1,4 +1,4 @@
-<form #reactiveForm class="form form-height" [formGroup]="vitalForm" (ngSubmit)="onSaveVital(vitalForm.value)">
+<form #reactiveForm="ngForm" class="form form-height" [formGroup]="vitalForm" (ngSubmit)="onSaveVital(vitalForm.value)">
     <div class="row col-12">
         <div class="col-6">
             <mat-form-field class="col-12" appearance="outline">

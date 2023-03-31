@@ -90,6 +90,7 @@ var AppointmentHistoryComponent = /** @class */ (function () {
     AppointmentHistoryComponent.prototype.registerBooking = function (model) {
         this.route.navigate(['/main/registration/registration-setup']);
         this.appointService._booking = model;
+        this.commonService.getTitle("Registration");
     };
     __decorate([
         core_1.ViewChild(sort_1.MatSort, { static: true })

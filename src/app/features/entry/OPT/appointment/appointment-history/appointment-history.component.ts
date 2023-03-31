@@ -105,6 +105,7 @@ export class AppointmentHistoryComponent implements OnInit {
   registerBooking(model) {
     this.route.navigate(['/main/registration/registration-setup'])
     this.appointService._booking = model
+    this.commonService.getTitle("Registration")
   }
 
 }
