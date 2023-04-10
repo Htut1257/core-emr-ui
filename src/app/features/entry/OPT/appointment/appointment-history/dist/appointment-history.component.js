@@ -93,6 +93,18 @@ var AppointmentHistoryComponent = /** @class */ (function () {
         this.appointService._booking = model;
         this.commonService.getTitle("Registration");
     };
+    //confirm patient booking 
+    AppointmentHistoryComponent.prototype.confirmBooking = function (model) {
+        model.bStatus = model.bstatus;
+        this.appointService.updateAppointmentStatus(model).subscribe({
+            next: function (appoint) {
+                console.log(appoint);
+            },
+            error: function (err) {
+                console.trace(err);
+            }
+        });
+    };
     __decorate([
         core_1.ViewChild(sort_1.MatSort, { static: true })
     ], AppointmentHistoryComponent.prototype, "sort");

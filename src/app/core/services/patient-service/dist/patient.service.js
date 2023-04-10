@@ -22,29 +22,53 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 exports.__esModule = true;
-exports.VitalSignService = void 0;
+exports.PatientService = void 0;
 var core_1 = require("@angular/core");
 var http_1 = require("@angular/common/http");
-var api_setting_1 = require("src/app/api/api-setting");
 var abstract_service_1 = require("../abstract-service/abstract.service");
-var uri = api_setting_1.ApiSetting.EmrMongoEndPoint;
-var VitalSignService = /** @class */ (function (_super) {
-    __extends(VitalSignService, _super);
-    function VitalSignService(http) {
+var api_setting_1 = require("src/app/api/api-setting");
+var uri = "" + api_setting_1.ApiSetting.EmrEndPoint;
+var PatientService = /** @class */ (function (_super) {
+    __extends(PatientService, _super);
+    function PatientService(http) {
         return _super.call(this, http, uri) || this;
     }
-    VitalSignService.prototype.saveVitalSign = function (data) {
-        this.baseURL = uri + "/patient/saveVitalSign";
-        console.log(this.baseURL);
-        // return this.http.post<VitalSign>(uri, data)
+    PatientService.prototype.getPatientByName = function (name) {
+        this.baseURL = uri + "/patient/getByName";
+        var httpParams = new http_1.HttpParams().set('name', name);
+        return this.getByParams(httpParams);
+    };
+    PatientService.prototype.savePatient = function (data) {
+        this.baseURL = uri + "/patient/save";
         return this.save(data);
     };
-    VitalSignService = __decorate([
+    PatientService.prototype.removePatient = function (id) {
+        this.baseURL = uri + "/patient/delete";
+        var httpParams = new http_1.HttpParams().set('id', id);
+        return this.getByParams(httpParams);
+    };
+    PatientService.prototype.searchBooking = function (params) {
+        this.baseURL = uri + "/patient/searchBooking";
+        var httpParams = new http_1.HttpParams()
+            .set('name', params)
+            .set('name', params);
+        return this.getByParams(httpParams);
+    };
+    PatientService.prototype.saveBooking = function (data) {
+        this.baseURL = uri + "/patient/saveBooking";
+        return this.save(data);
+    };
+    PatientService.prototype.deleteBooking = function (id) {
+        this.baseURL = uri + "/patient/deleteBooking";
+        var httpParams = new http_1.HttpParams().set('id', id);
+        return this.getByParams(httpParams);
+    };
+    PatientService = __decorate([
         core_1.Injectable({
             providedIn: 'root'
         }),
         __param(0, core_1.Inject(http_1.HttpClient))
-    ], VitalSignService);
-    return VitalSignService;
+    ], PatientService);
+    return PatientService;
 }(abstract_service_1.AbstractService));
-exports.VitalSignService = VitalSignService;
+exports.PatientService = PatientService;

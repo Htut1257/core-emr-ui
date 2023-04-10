@@ -11,13 +11,15 @@ var core_1 = require("@angular/core");
 var ag_grid_autocomplete_editor_1 = require("ag-grid-autocomplete-editor");
 var autocomplete_cell_1 = require("src/app/shared/cell-renderer/autocomplete-cell");
 var DocEntryComponent = /** @class */ (function () {
-    function DocEntryComponent(route, docService, autoService, appointServcie) {
+    function DocEntryComponent(route, docService, autoService, appointService, serverService) {
         this.route = route;
         this.docService = docService;
         this.autoService = autoService;
-        this.appointServcie = appointServcie;
+        this.appointService = appointService;
+        this.serverService = serverService;
         this.animationState = "in";
         this.isHide = false;
+        this.doctorId = "211";
         this.frameworkComponents = {
             autoComplete: autocomplete_cell_1.AutocompleteCell
         };
@@ -27,7 +29,24 @@ var DocEntryComponent = /** @class */ (function () {
         this.getTreatmentData();
         this.getNoteData();
         this.InitializeGridTable();
+        this.getServerSideData();
         // this.getDrTreatmentData("a")
+    };
+    DocEntryComponent.prototype.getServerSideData = function () {
+        var _this = this;
+        var uri = '/opdBooking/getMessage';
+        this.serverService.getServerSource(uri).subscribe(function (data) {
+            var serverData = JSON.parse(data.data);
+            console.log(serverData);
+            console.log(_this.doctorId == serverData.doctorId);
+            if (_this.doctorId == serverData.doctorId) {
+                _this.booking = serverData;
+                _this.bookingId = serverData.bookingId;
+                _this.bookingDate = serverData.bkDate;
+                _this.regNo = serverData.regNo;
+                _this.patientName = serverData.patientName;
+            }
+        });
     };
     DocEntryComponent.prototype.toggleShowDiv = function (divName) {
         if (divName === "divA") {
@@ -187,12 +206,15 @@ var DocEntryComponent = /** @class */ (function () {
         ];
     };
     DocEntryComponent.prototype.setBookingStatus = function () {
-        var appoint = {
-            bookingId: "",
-            bStatus: ""
-        };
-        this.appointServcie.updateAppointmentStatus(appoint).subscribe(function (data) {
-            console.log(data);
+        var booking = this.booking;
+        booking.bStatus = booking.bstatus;
+        this.appointService.updateAppointmentStatus(booking).subscribe({
+            next: function (booking) {
+                console.log("status changed");
+                console.log(booking);
+            }, error: function (err) {
+                console.trace(err);
+            }
         });
     };
     DocEntryComponent.prototype.getDrTreatmentData = function (params) {

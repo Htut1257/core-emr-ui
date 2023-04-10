@@ -109,4 +109,17 @@ export class AppointmentHistoryComponent implements OnInit {
     this.commonService.getTitle("Registration")
   }
 
+  //confirm patient booking 
+  confirmBooking(model){
+    model.bStatus=model.bstatus
+    this.appointService.updateAppointmentStatus(model).subscribe({
+      next:appoint=>{
+        console.log(appoint);
+      },
+      error:err=>{
+        console.trace(err)
+      }
+    })
+  }
+
 }

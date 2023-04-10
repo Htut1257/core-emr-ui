@@ -3,19 +3,19 @@
         <div class="col-3 group-text-field-left">
             <mat-form-field class="col-12" appearance="outline" disabled>
                 <mat-label>Visit No</mat-label>
-                <input matInput type="text" name="fromDate" value="BK1234567890123">
+                <input matInput type="text"  name="fromDate" value="BK1234567890123" [(ngModel)]="bookingId">
             </mat-form-field>
         </div>
         <div class=" col-2 group-text-field-left">
             <mat-form-field class="col-12" appearance="outline">
                 <mat-label>Visit Date</mat-label>
-                <input matInput type="text" name="fromDate" value="03/05/2023">
+                <input matInput type="text" name="fromDate" value="03/05/2023" [(ngModel)]="bookingDate">
             </mat-form-field>
         </div>
         <div class=" col-2 group-text-field-left">
             <mat-form-field class="col-12" appearance="outline">
                 <mat-label>Reg No</mat-label>
-                <input matInput type="text" name="fromDate" value="123652023">
+                <input matInput type="text" name="fromDate" value="123652023" [(ngModel)]="regNo">
             </mat-form-field>
         </div>
         <div class=" col-2 group-text-field-left">
@@ -27,12 +27,12 @@
         <div class=" col-3 group-text-field-left">
             <mat-form-field class="col-12" appearance="outline">
                 <mat-label>Name</mat-label>
-                <input matInput type="text" name="fromDate" value="U Kaung Myaint Kyaw">
+                <input matInput type="text" name="fromDate" value="U Kaung Myaint Kyaw" [(ngModel)]="patientName">
             </mat-form-field>
         </div>
     </div>
 
-    <div class="row col-6  float-right">
+    <div class="row col-6  float-right"> 
         <div class="col-2">
             <span class="example-spacer"></span>
         </div>

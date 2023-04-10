@@ -6,7 +6,7 @@ var ApiSetting = /** @class */ (function () {
     }
     Object.defineProperty(ApiSetting, "UserApiEndPoint", {
         get: function () {
-            return 'http://localhost:8079';
+            return 'http://192.168.100.48:8079';
         },
         enumerable: false,
         configurable: true
@@ -34,14 +34,14 @@ var ApiSetting = /** @class */ (function () {
     });
     Object.defineProperty(ApiSetting, "EmrEndPoint", {
         get: function () {
-            return 'http://localhost:8080';
+            return 'http://192.168.100.48:8080';
         },
         enumerable: false,
         configurable: true
     });
     Object.defineProperty(ApiSetting, "EmrMongoEndPoint", {
         get: function () {
-            return 'http://192.168.100.54:8081';
+            return 'http://192.168.100.48:8082';
         },
         enumerable: false,
         configurable: true

@@ -60,10 +60,28 @@ var VitalSignSetupComponent = /** @class */ (function () {
         this.vitalForm.get('regNo').patchValue(data.regNo);
     };
     VitalSignSetupComponent.prototype.onSaveVital = function (data) {
+        var _this = this;
         var Vital = data;
-        console.log(data);
-        this.vitalService.saveVitalSign(Vital).subscribe(function (data) {
-            console.log(data);
+        var booking = this.booking;
+        booking.bStatus = booking.bstatus;
+        Vital.regNo = this.vitalForm.get('regNo').value;
+        Vital.bookingId = this.vitalForm.get('bookingId').value;
+        this.vitalService.saveVitalSign(Vital).subscribe({
+            next: function (vital) {
+                console.log("vital saved");
+                console.log(vital);
+                _this.appointService.updateAppointmentStatus(booking).subscribe({
+                    next: function (booking) {
+                        console.log("status changed");
+                        console.log(booking);
+                    }, error: function (err) {
+                        console.trace(err);
+                    }
+                });
+            },
+            error: function (err) {
+                console.trace(err);
+            }
         });
     };
     VitalSignSetupComponent.prototype.onNew = function () {

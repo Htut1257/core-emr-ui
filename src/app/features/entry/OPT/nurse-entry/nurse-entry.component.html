@@ -1,5 +1,12 @@
 <div class="row">
     <div class="row">
+        <div class="col-12">
+            <div class="example-button-row">
+                <button mat-flat-button class="" color="primary" (click)="searchBooking()"> Filter</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-4 mb-2">
             <mat-label>Session:</mat-label><mat-label>0010005</mat-label>
         </div>
@@ -29,22 +36,18 @@
         <table mat-table [dataSource]="dataSource" matSort>
             <ng-container matColumnDef="position">
                 <th mat-header-cell *matHeaderCellDef> No </th>
-                <td class="td-number" mat-cell *matCellDef="let element; let i = index">{{element.no}}</td>
+                <td class="td-number" mat-cell *matCellDef="let element; let i = index">{{i+1}}</td>
             </ng-container>
             <ng-container matColumnDef="name">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-                <td class="td-text" mat-cell *matCellDef="let element">{{element.name}}</td>
+                <td class="td-text" mat-cell *matCellDef="let element">{{element.patientName}}</td>
             </ng-container>
             <ng-container matColumnDef="status">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
-                <td class="td-text" mat-cell *matCellDef="let element">
-                    <div id="outer">
-                        <button mat-flat-button class="edit-btn" color="primary">
-                            approve
-                        </button>
-                        <button mat-flat-button class="button-remove-rows">
-                            deny
-                        </button>
+                <td mat-cell class="td-object" *matCellDef="let element">
+                    <div class="example-button-row">
+                        <button mat-raised-button  color="primary" class="register-btn" (click)="consultPatient(element)" >Consult</button>
+                        
                     </div>
                 </td>
             </ng-container>

@@ -9,7 +9,6 @@ exports.__esModule = true;
 exports.VitalSignComponent = void 0;
 var core_1 = require("@angular/core");
 var table_1 = require("@angular/material/table");
-var rxjs_1 = require("rxjs");
 var appointment_search_dialog_component_1 = require("../../OPT/appointment/appointment-search-dialog/appointment-search-dialog.component");
 var moment = require("moment");
 var VitalSignComponent = /** @class */ (function () {
@@ -27,16 +26,18 @@ var VitalSignComponent = /** @class */ (function () {
         this.commonService.isMobile$.subscribe(function (data) {
             _this.isMobile = data;
         });
-        // this.appointService.bookings.subscribe(data => {
-        //   this.dataSource.data = data
-        // })
-        this.appointService.bookings.pipe(rxjs_1.map(function (data) {
-            return data.filter(function (appoint) {
-                return appoint.bstatus == "Confirm";
-            });
-        })).subscribe(function (data) {
+        this.appointService.bookings.subscribe(function (data) {
             _this.dataSource.data = data;
         });
+        // this.appointService.bookings.pipe(
+        //   map((data:any)=>{
+        //     return data.filter(appoint=>{
+        //       return appoint.bstatus=="Confirm"
+        //     })
+        //   })
+        // ).subscribe(data=>{
+        //   this.dataSource.data = data
+        // })
     }
     VitalSignComponent.prototype.ngOnInit = function () {
         var filter = {
@@ -44,7 +45,7 @@ var VitalSignComponent = /** @class */ (function () {
             toDate: this.todayDate,
             doctorId: '-',
             regNo: '-',
-            status: 'CONFIRM'
+            status: 'Vital Sign'
         };
         this.getBooking(filter);
     };

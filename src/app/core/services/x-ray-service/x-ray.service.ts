@@ -15,17 +15,17 @@ export class XRayService extends AbstractService<XRay>{
   }
 
   getXRay(): Observable<XRay[]> {
-    this.baseURL = this.baseURL + `/setup/get-Bonus`
+    this.baseURL = `${uri}/setup/get-Bonus`
     return this.getAll()
   }
 
-  saveXRay(xRay: XRay):Observable<XRay> {
-    this.baseURL = this.baseURL + `/setup/save-Bonus`
+  saveXRay(xRay: XRay): Observable<XRay> {
+    this.baseURL = `${uri}/setup/save-Bonus`
     return this.save(xRay);
   }
 
   deleteXRay(id: string) {
-    this.baseURL = this.baseURL + `/setup/delete-Bonus`
+    this.baseURL = `${uri}/setup/delete-Bonus`
     let httpParams = new HttpParams().set('id', id);
     this.delete(httpParams);
   }

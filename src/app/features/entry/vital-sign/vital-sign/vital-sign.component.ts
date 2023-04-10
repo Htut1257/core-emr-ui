@@ -32,18 +32,18 @@ export class VitalSignComponent implements OnInit {
     this.commonService.isMobile$.subscribe(data => {
       this.isMobile = data
     })
-    // this.appointService.bookings.subscribe(data => {
-    //   this.dataSource.data = data
-    // })
-    this.appointService.bookings.pipe(
-      map((data:any)=>{
-        return data.filter(appoint=>{
-          return appoint.bstatus=="Confirm"
-        })
-      })
-    ).subscribe(data=>{
+    this.appointService.bookings.subscribe(data => {
       this.dataSource.data = data
     })
+    // this.appointService.bookings.pipe(
+    //   map((data:any)=>{
+    //     return data.filter(appoint=>{
+    //       return appoint.bstatus=="Confirm"
+    //     })
+    //   })
+    // ).subscribe(data=>{
+    //   this.dataSource.data = data
+    // })
   }
 
   ngOnInit(): void {
@@ -52,7 +52,7 @@ export class VitalSignComponent implements OnInit {
       toDate: this.todayDate,
       doctorId: '-',
       regNo: '-',
-      status: 'CONFIRM'
+      status: 'Vital Sign'
     }
     this.getBooking(filter);
   }

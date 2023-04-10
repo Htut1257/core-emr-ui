@@ -67,7 +67,6 @@ export class VitalSignSetupComponent implements OnInit {
   }
 
   initializeFormData(data) {
-
     this.vitalForm.get('bookingId').patchValue(data.bookingId)
     this.vitalForm.get('regNo').patchValue(data.regNo)
   }
@@ -76,9 +75,26 @@ export class VitalSignSetupComponent implements OnInit {
 
   onSaveVital(data) {
     let Vital = data
-    console.log(data)
-    this.vitalService.saveVitalSign(Vital).subscribe(data => {
-      console.log(data)
+    let booking: any = this.booking
+    booking.bStatus = booking.bstatus
+    Vital.regNo = this.vitalForm.get('regNo').value
+    Vital.bookingId = this.vitalForm.get('bookingId').value
+    this.vitalService.saveVitalSign(Vital).subscribe({
+      next: vital => {
+        console.log("vital saved")
+        console.log(vital)
+        this.appointService.updateAppointmentStatus(booking).subscribe({
+          next: booking => {
+            console.log("status changed")
+            console.log(booking)
+          }, error: err => {
+            console.trace(err)
+          }
+        })
+      },
+      error: err => {
+        console.trace(err)
+      }
     })
   }
 

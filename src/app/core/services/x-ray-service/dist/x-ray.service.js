@@ -22,29 +22,36 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 exports.__esModule = true;
-exports.VitalSignService = void 0;
+exports.XRayService = void 0;
 var core_1 = require("@angular/core");
 var http_1 = require("@angular/common/http");
-var api_setting_1 = require("src/app/api/api-setting");
 var abstract_service_1 = require("../abstract-service/abstract.service");
-var uri = api_setting_1.ApiSetting.EmrMongoEndPoint;
-var VitalSignService = /** @class */ (function (_super) {
-    __extends(VitalSignService, _super);
-    function VitalSignService(http) {
+var api_setting_1 = require("src/app/api/api-setting");
+var uri = "" + api_setting_1.ApiSetting.PayRollApiEndPoint;
+var XRayService = /** @class */ (function (_super) {
+    __extends(XRayService, _super);
+    function XRayService(http) {
         return _super.call(this, http, uri) || this;
     }
-    VitalSignService.prototype.saveVitalSign = function (data) {
-        this.baseURL = uri + "/patient/saveVitalSign";
-        console.log(this.baseURL);
-        // return this.http.post<VitalSign>(uri, data)
-        return this.save(data);
+    XRayService.prototype.getXRay = function () {
+        this.baseURL = uri + "/setup/get-Bonus";
+        return this.getAll();
     };
-    VitalSignService = __decorate([
+    XRayService.prototype.saveXRay = function (xRay) {
+        this.baseURL = uri + "/setup/save-Bonus";
+        return this.save(xRay);
+    };
+    XRayService.prototype.deleteXRay = function (id) {
+        this.baseURL = uri + "/setup/delete-Bonus";
+        var httpParams = new http_1.HttpParams().set('id', id);
+        this["delete"](httpParams);
+    };
+    XRayService = __decorate([
         core_1.Injectable({
             providedIn: 'root'
         }),
         __param(0, core_1.Inject(http_1.HttpClient))
-    ], VitalSignService);
-    return VitalSignService;
+    ], XRayService);
+    return XRayService;
 }(abstract_service_1.AbstractService));
-exports.VitalSignService = VitalSignService;
+exports.XRayService = XRayService;
