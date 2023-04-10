@@ -35,6 +35,12 @@ var httpHeaders = new http_1.HttpHeaders({
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Allow-Methods': 'GET,POST,OPTIONS,DELETE,PUT'
 });
+var httpHeaderparams = new http_1.HttpHeaders({
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token',
+    'Access-Control-Allow-Methods': 'GET,POST,OPTIONS,DELETE,PUT'
+});
 var AppointmentService = /** @class */ (function (_super) {
     __extends(AppointmentService, _super);
     function AppointmentService(http) {
@@ -70,13 +76,11 @@ var AppointmentService = /** @class */ (function (_super) {
     //set booking status across form
     AppointmentService.prototype.updateAppointmentStatus = function (appoint) {
         this.baseURL = uri + "/patient/updateBookingStatus";
-        var httpparams = new http_1.HttpParams()
+        var httpParams = new http_1.HttpParams()
             .set("bkId", appoint.bookingId)
             .set("bkStatus", appoint.bStatus);
-        return this.http.post(uri, httpparams, {
-            headers: new http_1.HttpHeaders()
-                .set('Content-Type', 'application/x-www-form-urlencoded')
-        });
+        var httpOption = { headers: httpHeaders, params: httpParams };
+        return this.http.post(this.baseURL, appoint, httpOption);
     };
     AppointmentService.prototype.deleteAppointment = function (id) {
         this.baseURL = uri + "/setup/delete-Bonus";

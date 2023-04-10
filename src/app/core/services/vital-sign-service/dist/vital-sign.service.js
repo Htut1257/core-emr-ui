@@ -36,7 +36,8 @@ var VitalSignService = /** @class */ (function (_super) {
     VitalSignService.prototype.saveVitalSign = function (data) {
         this.baseURL = uri + "/patient/saveVitalSign";
         console.log(this.baseURL);
-        return this.http.post(uri, data);
+        // return this.http.post<VitalSign>(uri, data)
+        return this.save(data);
     };
     VitalSignService = __decorate([
         core_1.Injectable({

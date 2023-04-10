@@ -5,6 +5,7 @@ import { Grid, ColDef, GridOptions, GridApi, ColumnApi, Column } from "ag-grid-c
 import { DoctorService } from 'src/app/core/services/doctor-service/doctor.service';
 import { AutocompleteService } from 'src/app/core/services/autocomplete-service/autocomplete.service';
 import { AppointmentService } from 'src/app/core/services/appointment-service/appointment.service';
+import { ServerService } from 'src/app/core/services/server-service/server.service';
 import { AutocompleteCell } from 'src/app/shared/cell-renderer/autocomplete-cell';
 @Component({
   selector: 'app-doc-entry',
@@ -46,9 +47,18 @@ export class DocEntryComponent implements OnInit {
 
   animationState = "in";
   isHide: boolean = false
+
+  booking:any
+  bookingId:any
+  bookingDate:any
+  regNo:any
+  patientName:any
+
+  doctorId:any="211"
   constructor(
     private route: Router, private docService: DoctorService,
-    private autoService: AutocompleteService, private appointServcie: AppointmentService
+    private autoService: AutocompleteService, private appointService: AppointmentService,
+    private serverService: ServerService,
   ) {
     this.frameworkComponents = {
       autoComplete: AutocompleteCell,
@@ -56,14 +66,30 @@ export class DocEntryComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
-
     this.getExaminationData();
     this.getTreatmentData();
     this.getNoteData();
     this.InitializeGridTable();
+    this.getServerSideData();
     // this.getDrTreatmentData("a")
   }
+
+  getServerSideData() {
+    let uri = '/opdBooking/getMessage'
+    this.serverService.getServerSource(uri).subscribe(data => {
+      let serverData = JSON.parse(data.data)
+      console.log(serverData)
+      console.log(this.doctorId==serverData.doctorId)
+      if(this.doctorId==serverData.doctorId){
+        this.booking=serverData
+        this.bookingId=serverData.bookingId
+        this.bookingDate=serverData.bkDate
+        this.regNo=serverData.regNo
+        this.patientName=serverData.patientName
+      } 
+    })
+  }
+
 
   toggleShowDiv(divName: string) {
     if (divName === "divA") {
@@ -171,7 +197,7 @@ export class DocEntryComponent implements OnInit {
           'columnDefs': [
             { headerName: 'Name', field: 'patternName' },
             { headerName: 'Option', field: 'itemOption' },
-          ] 
+          ]
         },
         valueFormatter: params => {
           if (params.value) return params.value.patternName;
@@ -233,12 +259,15 @@ export class DocEntryComponent implements OnInit {
   }
 
   setBookingStatus() {
-    let appoint: any = {
-      bookingId: "",
-      bStatus: ""
-    }
-    this.appointServcie.updateAppointmentStatus(appoint).subscribe(data => {
-      console.log(data)
+    let booking: any=this.booking
+    booking.bStatus = booking.bstatus
+    this.appointService.updateAppointmentStatus(booking).subscribe({
+      next: booking => {
+        console.log("status changed")
+        console.log(booking)
+      }, error: err => {
+        console.trace(err)
+      }
     })
   }
 

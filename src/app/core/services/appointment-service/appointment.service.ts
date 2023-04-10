@@ -11,6 +11,12 @@ const httpHeaders = new HttpHeaders({
   'Access-Control-Allow-Headers': 'Content-Type',
   'Access-Control-Allow-Methods': 'GET,POST,OPTIONS,DELETE,PUT',
 });
+const httpHeaderparams = new HttpHeaders({
+  'Content-Type': 'application/x-www-form-urlencoded',
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token',
+  'Access-Control-Allow-Methods': 'GET,POST,OPTIONS,DELETE,PUT',
+});
 @Injectable({
   providedIn: 'root'
 })
@@ -52,13 +58,11 @@ export class AppointmentService extends AbstractService<Booking>{
   //set booking status across form
   updateAppointmentStatus(appoint: Booking) {
     this.baseURL = `${uri}/patient/updateBookingStatus`
-    let httpparams = new HttpParams()
+    let httpParams = new HttpParams()
       .set("bkId", appoint.bookingId)
       .set("bkStatus", appoint.bStatus)
-    return this.http.post<Booking>(uri, httpparams, {
-      headers: new HttpHeaders()
-        .set('Content-Type', 'application/x-www-form-urlencoded')
-    })
+      let httpOption = { headers: httpHeaders, params: httpParams }
+    return this.http.post<Booking>(this.baseURL,appoint,httpOption)
   }
 
 
