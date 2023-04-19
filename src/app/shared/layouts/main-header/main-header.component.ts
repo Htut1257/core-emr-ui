@@ -9,7 +9,7 @@ import { CommonServiceService } from 'src/app/core/services/common-service/commo
 export class MainHeaderComponent {
   title:string
   constructor(private route:Router,public commonService:CommonServiceService){
-     
+    localStorage.removeItem('headerName') 
     this.commonService.titleSubject$.subscribe(data=>{
       this.title=data
     })
@@ -18,5 +18,6 @@ export class MainHeaderComponent {
   logOut(){
     this.route.navigate(['/login'])
   }
+  
 }
 

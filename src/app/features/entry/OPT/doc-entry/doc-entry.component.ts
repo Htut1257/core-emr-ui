@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
-import { AutocompleteSelectCellEditor } from "ag-grid-autocomplete-editor";
+
 import { Grid, ColDef, GridOptions, GridApi, ColumnApi, Column } from "ag-grid-community";
 import { DoctorService } from 'src/app/core/services/doctor-service/doctor.service';
 import { AutocompleteService } from 'src/app/core/services/autocomplete-service/autocomplete.service';
@@ -14,8 +14,6 @@ import { AutocompleteCell } from 'src/app/shared/cell-renderer/autocomplete-cell
 
 })
 export class DocEntryComponent implements OnInit {
-  api: GridApi
-  api1: GridApi
 
   examinationApi: GridApi
   treatmentApi: GridApi
@@ -43,18 +41,17 @@ export class DocEntryComponent implements OnInit {
 
   public frameworkComponents;
 
-  columnApi: ColumnApi
 
   animationState = "in";
   isHide: boolean = false
 
-  booking:any
-  bookingId:any
-  bookingDate:any
-  regNo:any
-  patientName:any
+  booking: any
+  bookingId: any
+  bookingDate: any
+  regNo: any
+  patientName: any
 
-  doctorId:any="211"
+  doctorId: any = "211"
   constructor(
     private route: Router, private docService: DoctorService,
     private autoService: AutocompleteService, private appointService: AppointmentService,
@@ -79,14 +76,14 @@ export class DocEntryComponent implements OnInit {
     this.serverService.getServerSource(uri).subscribe(data => {
       let serverData = JSON.parse(data.data)
       console.log(serverData)
-      console.log(this.doctorId==serverData.doctorId)
-      if(this.doctorId==serverData.doctorId){
-        this.booking=serverData
-        this.bookingId=serverData.bookingId
-        this.bookingDate=serverData.bkDate
-        this.regNo=serverData.regNo
-        this.patientName=serverData.patientName
-      } 
+      console.log(this.doctorId == serverData.doctorId)
+      if (this.doctorId == serverData.doctorId) {
+        this.booking = serverData
+        this.bookingId = serverData.bookingId
+        this.bookingDate = serverData.bkDate
+        this.regNo = serverData.regNo
+        this.patientName = serverData.patientName
+      }
     })
   }
 
@@ -147,7 +144,7 @@ export class DocEntryComponent implements OnInit {
       {
         headerName: "Examination/Diagnosis",
         field: "examination",
-        cellEditor: AutocompleteSelectCellEditor,
+        cellEditor: 'autoComplete',
         valueFormatter: params => {
           if (params.value) {
             return params.value.label || params.value.value || params.value;
@@ -221,7 +218,7 @@ export class DocEntryComponent implements OnInit {
         headerName: "Remark",
         field: "remark",
         width: 300,
-        cellEditor: AutocompleteSelectCellEditor,
+        cellEditor: 'autoComplete',
         valueFormatter: params => {
           if (params.value) {
             return params.value.label || params.value.value || params.value;
@@ -259,7 +256,7 @@ export class DocEntryComponent implements OnInit {
   }
 
   setBookingStatus() {
-    let booking: any=this.booking
+    let booking: any = this.booking
     booking.bStatus = booking.bstatus
     this.appointService.updateAppointmentStatus(booking).subscribe({
       next: booking => {
@@ -288,6 +285,50 @@ export class DocEntryComponent implements OnInit {
     console.log(event)
   }
 
+  @HostListener('keydown', ['$event'])
+  onKeydown(event) {
+    event.stopPropagation();
+    if (event.key == "Escape") {
+      // this.params.api.stopEditing();
+      return false;
+    }
+    if (event.key == "Enter" || event.key == "Tab") {
+      // this.rowConfirmed();
+      return false;
+    }
+    if (event.key == "ArrowUp" || event.key == "ArrowDown") {
+      //this.navigateGrid();
+      return false;
+    }
+    if (event.key == "ArrowLeft" || event.key == "ArrowRight") {
+      //this.navigateGrid();
+      this.examinationApi
+      console.log(this.examinationApi.getFocusedCell())
+      console.log(this.treatmentApi.getFocusedCell())
+      console.log(this.noteApi.getFocusedCell())
+
+      return false;
+    }
+    return true
+  }
+
+  navigateExaminationGrid() {
+    if (this.examinationApi.getFocusedCell() != undefined) {
+
+    }
+    
+  }
+  navigateTreatmentGrid() {
+    if (this.treatmentApi.getFocusedCell() != undefined) {
+
+    }
+  }
+
+  navigateNoteGrid() {
+    if (this.noteApi.getFocusedCell() != undefined) {
+
+    }
+  }
 
   // isEditing = false;
   // @HostListener('keydown', ['$event'])

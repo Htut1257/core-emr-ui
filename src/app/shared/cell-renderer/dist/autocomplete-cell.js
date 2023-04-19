@@ -33,6 +33,8 @@ var AutocompleteCell = /** @class */ (function () {
     // ICellEditorAngularComp functions
     AutocompleteCell.prototype.agInit = function (params) {
         this.params = params;
+        //to get witch field to use
+        console.log(params.colDef.field);
         if (!params.rowData) {
             this.apiEndpoint = params.apiEndpoint;
             this.useApi = true;

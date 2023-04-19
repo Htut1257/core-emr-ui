@@ -1,4 +1,5 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
+import { Observable,startWith,map } from 'rxjs'
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -7,26 +8,19 @@ import { AppointmentSearchDialogComponent } from '../appointment/appointment-sea
 import { NurseService } from 'src/app/core/services/nurse-service/nurse.service';
 import { Booking } from 'src/app/core/model/booking.model';
 import { AppointmentService } from 'src/app/core/services/appointment-service/appointment.service';
+import { Doctor } from 'src/app/core/model/doctor.model';
+import { DoctorService } from 'src/app/core/services/doctor-service/doctor.service';
 import * as moment from 'moment';
-
-export interface PeriodicElement {
-  no: number;
-  name: string;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  { no: 1, name: 'Mg Aung Khant' },
-  { no: 2, name: 'Mg Aung Myo Min' },
-  { no: 3, name: 'Mg Kang Naing' },
-];
-
-
+import { FormControl } from '@angular/forms';
 @Component({
   selector: 'app-nurse-entry',
   templateUrl: './nurse-entry.component.html',
   styleUrls: ['./nurse-entry.component.css']
 })
 export class NurseEntryComponent implements OnInit {
+  doctors: Doctor[] = []
+  filteredDoc: Observable<any[]>;
+  docControl = new FormControl()
   bookings: Booking[]
   todayDate = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD')
   displayedColumns: string[] = ["position", "name", "status"]
@@ -35,7 +29,7 @@ export class NurseEntryComponent implements OnInit {
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
   constructor(
     private route: Router, private nurseService: NurseService,
-    private appointService: AppointmentService,
+    private appointService: AppointmentService, private docService: DoctorService,
     public dialog: MatDialog
   ) {
     this.dataSource = new MatTableDataSource<Booking>(this.bookings)
@@ -53,16 +47,47 @@ export class NurseEntryComponent implements OnInit {
       status: 'Doctor Waiting'
     }
     this.getBooking(filter);
+
+    this.filteredDoc = this.docControl.valueChanges.pipe(
+      startWith(''),
+      map(name => (name ? this._filterDoc(name) : this.doctors.slice()))
+    );
+
   }
 
   //get Appointment
   getBooking(filter: any) {
-    console.log(filter)
     this.appointService.getAppointment(filter).subscribe(appoint => {
-      console.log(appoint)
       this.bookings = appoint
       this.dataSource = new MatTableDataSource(this.bookings)
     })
+  }
+
+  getDoctor(id: string) {
+    this.docService.getDoctor(id).subscribe({
+      next: doctors => {
+        this.doctors = doctors;
+      },
+      error: err => {
+        console.trace(err)
+      }
+    })
+  }
+
+  DocDisplayFn(item: any) {
+    return item ? item.doctorName : '';
+  }
+
+  //filter data for autocomplete
+  private _filterDoc(value: any): any {
+    let filterValue = value
+    this.getDoctor(value)
+    if (value.doctorName != null) {
+      filterValue = value.doctorName.toLowerCase()
+    } else {
+      filterValue = value.toLowerCase()
+    }
+    return this.doctors.filter(data => data.doctorName.toLowerCase().includes(filterValue));
   }
 
   getNurse() {
@@ -77,7 +102,6 @@ export class NurseEntryComponent implements OnInit {
     this.appointService.updateAppointmentStatus(booking).subscribe({
       next: booking => {
         console.log("status changed")
-        console.log(booking)
       }, error: err => {
         console.trace(err)
       }
@@ -92,10 +116,22 @@ export class NurseEntryComponent implements OnInit {
       .afterClosed()
       .subscribe(result => {
         if (result.dialogStatus) {
-          result.status="Doctor Waiting"
+          result.status = "Doctor Waiting"
           this.getBooking(result)
         }
       })
+  }
+
+  getDoctorData(event:any){
+    let doc = event.option.value
+    let filter = {
+      fromDate: this.todayDate,
+      toDate: this.todayDate,
+      doctorId: doc.doctorId,
+      regNo: '-',
+      status: 'Doctor Waiting'
+    }
+    this.getBooking(filter);
   }
 
 }

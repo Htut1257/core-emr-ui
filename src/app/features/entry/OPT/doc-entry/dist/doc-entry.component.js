@@ -8,7 +8,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 exports.__esModule = true;
 exports.DocEntryComponent = void 0;
 var core_1 = require("@angular/core");
-var ag_grid_autocomplete_editor_1 = require("ag-grid-autocomplete-editor");
 var autocomplete_cell_1 = require("src/app/shared/cell-renderer/autocomplete-cell");
 var DocEntryComponent = /** @class */ (function () {
     function DocEntryComponent(route, docService, autoService, appointService, serverService) {
@@ -97,7 +96,7 @@ var DocEntryComponent = /** @class */ (function () {
             {
                 headerName: "Examination/Diagnosis",
                 field: "examination",
-                cellEditor: ag_grid_autocomplete_editor_1.AutocompleteSelectCellEditor,
+                cellEditor: 'autoComplete',
                 valueFormatter: function (params) {
                     if (params.value) {
                         return params.value.label || params.value.value || params.value;
@@ -170,7 +169,7 @@ var DocEntryComponent = /** @class */ (function () {
                 headerName: "Remark",
                 field: "remark",
                 width: 300,
-                cellEditor: ag_grid_autocomplete_editor_1.AutocompleteSelectCellEditor,
+                cellEditor: 'autoComplete',
                 valueFormatter: function (params) {
                     if (params.value) {
                         return params.value.label || params.value.value || params.value;
@@ -233,6 +232,45 @@ var DocEntryComponent = /** @class */ (function () {
         var columnField = event.colDef.field;
         console.log(event);
     };
+    DocEntryComponent.prototype.onKeydown = function (event) {
+        event.stopPropagation();
+        if (event.key == "Escape") {
+            // this.params.api.stopEditing();
+            return false;
+        }
+        if (event.key == "Enter" || event.key == "Tab") {
+            // this.rowConfirmed();
+            return false;
+        }
+        if (event.key == "ArrowUp" || event.key == "ArrowDown") {
+            //this.navigateGrid();
+            return false;
+        }
+        if (event.key == "ArrowLeft" || event.key == "ArrowRight") {
+            //this.navigateGrid();
+            this.examinationApi;
+            console.log(this.examinationApi.getFocusedCell());
+            console.log(this.treatmentApi.getFocusedCell());
+            console.log(this.noteApi.getFocusedCell());
+            return false;
+        }
+        return true;
+    };
+    DocEntryComponent.prototype.navigateExaminationGrid = function () {
+        if (this.examinationApi.getFocusedCell() != undefined) {
+        }
+    };
+    DocEntryComponent.prototype.navigateTreatmentGrid = function () {
+        if (this.treatmentApi.getFocusedCell() != undefined) {
+        }
+    };
+    DocEntryComponent.prototype.navigateNoteGrid = function () {
+        if (this.noteApi.getFocusedCell() != undefined) {
+        }
+    };
+    __decorate([
+        core_1.HostListener('keydown', ['$event'])
+    ], DocEntryComponent.prototype, "onKeydown");
     DocEntryComponent = __decorate([
         core_1.Component({
             selector: 'app-doc-entry',

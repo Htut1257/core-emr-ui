@@ -8,22 +8,22 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 exports.__esModule = true;
 exports.NurseEntryComponent = void 0;
 var core_1 = require("@angular/core");
+var rxjs_1 = require("rxjs");
 var sort_1 = require("@angular/material/sort");
 var table_1 = require("@angular/material/table");
 var appointment_search_dialog_component_1 = require("../appointment/appointment-search-dialog/appointment-search-dialog.component");
 var moment = require("moment");
-var ELEMENT_DATA = [
-    { no: 1, name: 'Mg Aung Khant' },
-    { no: 2, name: 'Mg Aung Myo Min' },
-    { no: 3, name: 'Mg Kang Naing' },
-];
+var forms_1 = require("@angular/forms");
 var NurseEntryComponent = /** @class */ (function () {
-    function NurseEntryComponent(route, nurseService, appointService, dialog) {
+    function NurseEntryComponent(route, nurseService, appointService, docService, dialog) {
         var _this = this;
         this.route = route;
         this.nurseService = nurseService;
         this.appointService = appointService;
+        this.docService = docService;
         this.dialog = dialog;
+        this.doctors = [];
+        this.docControl = new forms_1.FormControl();
         this.todayDate = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD');
         this.displayedColumns = ["position", "name", "status"];
         this.dataSource = new table_1.MatTableDataSource(this.bookings);
@@ -32,6 +32,7 @@ var NurseEntryComponent = /** @class */ (function () {
         });
     }
     NurseEntryComponent.prototype.ngOnInit = function () {
+        var _this = this;
         var filter = {
             fromDate: this.todayDate,
             toDate: this.todayDate,
@@ -40,16 +41,41 @@ var NurseEntryComponent = /** @class */ (function () {
             status: 'Doctor Waiting'
         };
         this.getBooking(filter);
+        this.filteredDoc = this.docControl.valueChanges.pipe(rxjs_1.startWith(''), rxjs_1.map(function (name) { return (name ? _this._filterDoc(name) : _this.doctors.slice()); }));
     };
     //get Appointment
     NurseEntryComponent.prototype.getBooking = function (filter) {
         var _this = this;
-        console.log(filter);
         this.appointService.getAppointment(filter).subscribe(function (appoint) {
-            console.log(appoint);
             _this.bookings = appoint;
             _this.dataSource = new table_1.MatTableDataSource(_this.bookings);
         });
+    };
+    NurseEntryComponent.prototype.getDoctor = function (id) {
+        var _this = this;
+        this.docService.getDoctor(id).subscribe({
+            next: function (doctors) {
+                _this.doctors = doctors;
+            },
+            error: function (err) {
+                console.trace(err);
+            }
+        });
+    };
+    NurseEntryComponent.prototype.DocDisplayFn = function (item) {
+        return item ? item.doctorName : '';
+    };
+    //filter data for autocomplete
+    NurseEntryComponent.prototype._filterDoc = function (value) {
+        var filterValue = value;
+        this.getDoctor(value);
+        if (value.doctorName != null) {
+            filterValue = value.doctorName.toLowerCase();
+        }
+        else {
+            filterValue = value.toLowerCase();
+        }
+        return this.doctors.filter(function (data) { return data.doctorName.toLowerCase().includes(filterValue); });
     };
     NurseEntryComponent.prototype.getNurse = function () {
         this.nurseService.getNurse().subscribe(function (data) {
@@ -62,7 +88,6 @@ var NurseEntryComponent = /** @class */ (function () {
         this.appointService.updateAppointmentStatus(booking).subscribe({
             next: function (booking) {
                 console.log("status changed");
-                console.log(booking);
             }, error: function (err) {
                 console.trace(err);
             }
@@ -81,6 +106,17 @@ var NurseEntryComponent = /** @class */ (function () {
                 _this.getBooking(result);
             }
         });
+    };
+    NurseEntryComponent.prototype.getDoctorData = function (event) {
+        var doc = event.option.value;
+        var filter = {
+            fromDate: this.todayDate,
+            toDate: this.todayDate,
+            doctorId: doc.doctorId,
+            regNo: '-',
+            status: 'Doctor Waiting'
+        };
+        this.getBooking(filter);
     };
     __decorate([
         core_1.ViewChild(sort_1.MatSort, { static: true })

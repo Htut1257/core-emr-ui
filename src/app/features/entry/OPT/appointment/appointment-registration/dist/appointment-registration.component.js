@@ -131,6 +131,9 @@ var AppointmentRegistrationComponent = /** @class */ (function () {
         booking.bkDate = moment(data.bkDate).format("yyyy-MM-DD");
         this.appointService.saveAppointment(booking).subscribe(function (data) {
             _this.toastService.showSuccessToast("", "Success Adding new Appointment");
+            console.log(data);
+            _this.appointService._bookings.push(data);
+            _this.appointService.bookings.next(_this.appointService._bookings);
             _this.onClear();
         });
     };

@@ -7,7 +7,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class CommonServiceService {
   public appDrawer: any;
-  isDrawer: boolean = false
+  public isDrawer: boolean = false
   public currentUrl$ = new BehaviorSubject<String>('');
 
   $sizeObserver!: Observable<any>
@@ -26,6 +26,7 @@ export class CommonServiceService {
   public isMobileObj$: Observable<any> = this.isMobileObj.asObservable()
 
   constructor(private route: Router) {
+
     //define route name 
     this.route.events.subscribe((event: Event) => {
       if (event instanceof NavigationEnd) {
@@ -41,15 +42,15 @@ export class CommonServiceService {
         this.isMobile.next(true)
       }
     }
-
+    
   }
 
   //to open close navigation
   openNavigation() {
     if (this.isDrawer) {
-      this.appDrawer.open();
-    } else {
       this.appDrawer.close();
+    } else {
+      this.appDrawer.open();
     }
     this.isDrawer = !this.isDrawer;
   }

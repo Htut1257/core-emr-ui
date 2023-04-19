@@ -61,9 +61,10 @@
         </div>
     </div>
     <div>
-        <div class="button-row float-right ">
-            <button mat-flat-button color="primary" (click)="getRowData()">Save</button>
-            <button mat-flat-button color="primary">Print</button>
+        <div class="example-button-row float-right">
+            <button [id]="'btnSave'" mat-raised-button type="submit" color="primary" (click)="getRowData()">Save</button>
+            <button mat-raised-button type="button" color="primary" >Print</button>
         </div>
+       
     </div>
 </div>

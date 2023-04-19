@@ -52,6 +52,7 @@ var RegistrationSetupComponent = /** @class */ (function () {
         this.getGender();
         if (this.appintService._booking != undefined) {
             this.booking = this.appintService._booking;
+            console.log(this.booking);
             this.initializeFormData(this.booking);
         }
         this.filteredDoc = this.registrationForm.controls['doctor'].valueChanges.pipe(rxjs_1.startWith(''), rxjs_1.map(function (name) { return (name ? _this._filterDoc(name) : _this.doctors.slice()); }));
@@ -180,6 +181,15 @@ var RegistrationSetupComponent = /** @class */ (function () {
         this.patientService.savePatient(patient).subscribe({
             next: function (registration) {
                 _this.toastService.showSuccessToast("Registrations", "Success adding new Registration");
+                if (_this.booking != undefined) {
+                    var bookings_1;
+                    _this.appintService.bookings.subscribe(function (data) {
+                        bookings_1 = data;
+                    });
+                    var targetIndex = bookings_1.findIndex(function (data) { return data.bookingId == _this.booking.bookingId; });
+                    // this.bookings[targetIndex] = serverData
+                    // this.appointService.bookings.next(this.bookings)
+                }
                 _this.appintService._booking = undefined;
                 _this.onClear();
             },

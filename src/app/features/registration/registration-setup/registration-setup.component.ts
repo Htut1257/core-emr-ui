@@ -44,7 +44,7 @@ export class RegistrationSetupComponent implements OnInit {
   registrationForm: FormGroup
   @ViewChild('reactiveForm', { static: true }) reactiveForm: NgForm
 
-  patient: Patient 
+  patient: Patient
   booking: Booking
 
   doctors: Doctor[] = []
@@ -56,7 +56,7 @@ export class RegistrationSetupComponent implements OnInit {
   todayDate = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD')
   todayYear = moment(new Date(), 'MM/DD/YYYY').format('YYYY')
   isLoading: boolean = false
-  regNo:any=null
+  regNo: any = null
   constructor(private route: Router, private patientService: PatientService,
     private docService: DoctorService, private townService: TownshipService,
     private appintService: AppointmentService, private commonService: CommonServiceService,
@@ -72,6 +72,7 @@ export class RegistrationSetupComponent implements OnInit {
     this.getGender();
     if (this.appintService._booking != undefined) {
       this.booking = this.appintService._booking
+      console.log(this.booking)
       this.initializeFormData(this.booking)
     }
 
@@ -89,16 +90,16 @@ export class RegistrationSetupComponent implements OnInit {
   //initialize form with interface model
   initializeForm() {
     this.registrationForm = this.formBuilder.group({
-      regNo: [{ value: null ,disabled:true}],
+      regNo: [{ value: null, disabled: true }],
       regDate: [null, Validators.required],
       dob: [null],
-      sex: [null,Validators.required],
+      sex: [null, Validators.required],
       fatherName: [''],
       nirc: [''],
       nationality: [''],
       religion: [''],
-      doctor: [null,Validators.required],
-      patientName: ['',Validators.required],
+      doctor: [null, Validators.required],
+      patientName: ['', Validators.required],
       address: [''],
       contactNo: [''],
       createdBy: [''],
@@ -107,7 +108,7 @@ export class RegistrationSetupComponent implements OnInit {
       year: [0],
       month: [0],
       day: [0],
-      township: [null,Validators.required],
+      township: [null, Validators.required],
       ptType: [''],
       otId: ['']
     })
@@ -117,7 +118,7 @@ export class RegistrationSetupComponent implements OnInit {
   }
 
   initializeFormData(data) {
-    this.regNo=data.regNo
+    this.regNo = data.regNo
     this.registrationForm.get('regNo').patchValue(data.regNo)
     this.registrationForm.get('regDate').patchValue(data.bkDate)
     this.registrationForm.get('patientName').patchValue(data.patientName)
@@ -206,8 +207,8 @@ export class RegistrationSetupComponent implements OnInit {
   saveRegis(data: any) {
     console.log(data)
     let patient = data
-    patient.regNo=this.regNo
-    patient.sex=data.sex.genderId
+    patient.regNo = this.regNo
+    patient.sex = data.sex.genderId
     patient.doctor = data.doctor.doctorId
     patient.township = data.township.townshipId
     patient.regDate = moment(data.regDate).format("yyyy-MM-DDTHH:mm:ss");
@@ -217,6 +218,15 @@ export class RegistrationSetupComponent implements OnInit {
     this.patientService.savePatient(patient).subscribe({
       next: registration => {
         this.toastService.showSuccessToast("Registrations", "Success adding new Registration")
+        if (this.booking != undefined) {
+          let bookings
+          this.appintService.bookings.subscribe(data => {
+            bookings = data
+          })
+          let targetIndex =bookings.findIndex(data => data.bookingId ==this.booking.bookingId)
+          // this.bookings[targetIndex] = serverData
+          // this.appointService.bookings.next(this.bookings)
+        }
         this.appintService._booking = undefined
         this.onClear();
       },

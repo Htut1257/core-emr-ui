@@ -1,22 +1,28 @@
 mat-form-field.mat-form-field {
     font-size: 12px;
-  }
+}
 
-    .button-remove-rows,
-    .edit-btn {
-        margin-left: 5%;
-        padding: 0%;
-        width: min-content;
-      
-        height: 25px;
-        line-height: 32px;
+.button-remove-rows,
+.edit-btn {
+    margin-left: 5%;
+    padding: 0%;
+    width: min-content;
+
+    height: 25px;
+    line-height: 32px;
+}
+
+@media all and (max-width:30em) {
+
+    a.form-btn,
+    button.form-btn {
+        display: block;
+        margin: 0.4em auto;
     }
+}
 
-    @media all and (max-width:30em) {
-
-        a.form-btn,
-        button.form-btn {
-            display: block;
-            margin: 0.4em auto;
-        }
-    }
+.table-container {
+    margin-top: 25px;
+    height: 54vh;
+    overflow: auto;
+}

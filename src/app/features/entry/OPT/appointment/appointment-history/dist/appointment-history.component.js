@@ -45,12 +45,18 @@ var AppointmentHistoryComponent = /** @class */ (function () {
         var uri = '/opdBooking/getMessage';
         this.serverService.getServerSource(uri).subscribe(function (data) {
             var serverData = JSON.parse(data.data);
-            if (serverData.actionStatus = "ADD") {
+            console.log(serverData);
+            if (serverData.actionStatus == "ADD") {
+                console.log("add");
                 _this.bookings.push(serverData);
                 _this.appointService.bookings.next(_this.bookings);
             }
-            if (serverData.actionStatus = "UPDATE") {
-                _this.bookings[_this.bookings.indexOf(serverData.bookingSerialNo)] = serverData;
+            if (serverData.actionStatus == "UPDATE") {
+                console.log("update");
+                var targetIndex = _this.bookings.findIndex(function (data) { return data.bookingId == serverData.bookingId; });
+                _this.bookings[targetIndex] = serverData;
+                _this.appointService.bookings.next(_this.bookings);
+                //this.bookings[this.bookings.indexOf(serverData.bookingId)] = serverData
             }
         });
     };
@@ -58,7 +64,6 @@ var AppointmentHistoryComponent = /** @class */ (function () {
     AppointmentHistoryComponent.prototype.getBooking = function (filter) {
         var _this = this;
         this.appointService.getAppointment(filter).subscribe(function (appoint) {
-            console.log(appoint);
             _this.bookings = appoint;
             _this.dataSource = new table_1.MatTableDataSource(_this.bookings);
             _this.filterBooking();
@@ -98,7 +103,6 @@ var AppointmentHistoryComponent = /** @class */ (function () {
         model.bStatus = model.bstatus;
         this.appointService.updateAppointmentStatus(model).subscribe({
             next: function (appoint) {
-                console.log(appoint);
             },
             error: function (err) {
                 console.trace(err);

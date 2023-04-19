@@ -55,12 +55,19 @@ export class AppointmentHistoryComponent implements OnInit {
     let uri = '/opdBooking/getMessage'
     this.serverService.getServerSource(uri).subscribe(data => {
       let serverData = JSON.parse(data.data)
-      if (serverData.actionStatus = "ADD") {
+      console.log(serverData)
+      if (serverData.actionStatus =="ADD") {
+        console.log("add")
         this.bookings.push(serverData);
         this.appointService.bookings.next(this.bookings)
       }
-      if (serverData.actionStatus = "UPDATE") {
-        this.bookings[this.bookings.indexOf(serverData.bookingSerialNo)] = serverData
+      if (serverData.actionStatus == "UPDATE") {
+        console.log("update")
+        let targetIndex = this.bookings.findIndex(data => data.bookingId == serverData.bookingId)
+        this.bookings[targetIndex] = serverData
+        this.appointService.bookings.next(this.bookings)
+        //this.bookings[this.bookings.indexOf(serverData.bookingId)] = serverData
+
       }
     })
   }
@@ -68,7 +75,6 @@ export class AppointmentHistoryComponent implements OnInit {
   //get Appointment
   getBooking(filter: any) {
     this.appointService.getAppointment(filter).subscribe(appoint => {
-      console.log(appoint)
       this.bookings = appoint
       this.dataSource = new MatTableDataSource(this.bookings)
       this.filterBooking();
@@ -110,13 +116,13 @@ export class AppointmentHistoryComponent implements OnInit {
   }
 
   //confirm patient booking 
-  confirmBooking(model){
-    model.bStatus=model.bstatus
+  confirmBooking(model) {
+    model.bStatus = model.bstatus
     this.appointService.updateAppointmentStatus(model).subscribe({
-      next:appoint=>{
-        console.log(appoint);
+      next: appoint => {
+       
       },
-      error:err=>{
+      error: err => {
         console.trace(err)
       }
     })
