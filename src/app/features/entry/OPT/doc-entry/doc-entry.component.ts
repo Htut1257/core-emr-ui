@@ -96,7 +96,7 @@ export class DocEntryComponent implements OnInit {
 
   constructor(
     private route: Router, private docService: DoctorService,
-    private vitalService: VitalSignService,private entryService:DoctorEntryService,
+    private vitalService: VitalSignService, private entryService: DoctorEntryService,
     private autoService: AutocompleteService, private appointService: AppointmentService,
     private serverService: ServerService, public dialog: MatDialog
   ) {
@@ -354,16 +354,16 @@ export class DocEntryComponent implements OnInit {
       reVisitDate: '2023-04-27',
       drNotes: 'testing',
       examinations: examination,
-      treatments:treatment,
+      treatments: treatment,
       kvDrNotes: this.drNote
     }
     console.log(docMedic)
 
     this.entryService.saveDoctorMedical(docMedic).subscribe({
-      next:data=>{
+      next: data => {
         console.log(data)
       },
-      error:err=>{
+      error: err => {
         console.trace(err)
       }
     })
@@ -475,11 +475,11 @@ export class DocEntryComponent implements OnInit {
     let rowData = event.data
     let row = event.rowIndex
     var firstEditCol = event.columnApi.getAllDisplayedColumns()[0];
-    if (this.examinationApi.getFocusedCell() != undefined && this.examinationApi.getFocusedCell() != null) {
+    if (this.examinationApi.getFocusedCell()) {
       this.examinationApi.setFocusedCell(event.rowIndex, event.colDef.field);
       this.addNewRowtoTable(row, firstEditCol, this.examinationApi, rowData, this.drExamination, this.emptyExamination())
     }
-    if (this.treatmentApi.getFocusedCell() != undefined && this.treatmentApi.getFocusedCell() != null) {
+    if (this.treatmentApi.getFocusedCell()) {
       if (columnField == "cityObject") {
         this.treatmentApi.setFocusedCell(event.rowIndex, event.colDef.field);
       }
@@ -487,7 +487,7 @@ export class DocEntryComponent implements OnInit {
         this.addNewRowtoTable(row, firstEditCol, this.treatmentApi, rowData, this.drTreatment, this.emptydrTreat())
       }
     }
-    if (this.noteApi.getFocusedCell() != undefined && this.noteApi.getFocusedCell() != null) {
+    if (this.noteApi.getFocusedCell()) {
       if (columnField == "value") {
         this.addNewRowtoTable(row, firstEditCol, this.noteApi, rowData, this.drNote, this.emptyNote())
       }

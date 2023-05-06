@@ -8,61 +8,97 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 exports.__esModule = true;
 exports.OpdSetupComponent = void 0;
 var core_1 = require("@angular/core");
+var rxjs_1 = require("rxjs");
 var forms_1 = require("@angular/forms");
 var OpdSetupComponent = /** @class */ (function () {
-    function OpdSetupComponent(opdService, commonService, toastService, fb) {
-        var _this = this;
+    function OpdSetupComponent(opdService, commonService, toastService) {
         this.opdService = opdService;
         this.commonService = commonService;
         this.toastService = toastService;
-        this.fb = fb;
-        this.opdGroup = {};
-        this.subscription = this.commonService.isMobileObj$.subscribe(function (data) {
-            _this.opdGroupId = null;
-            if (data == false) {
-                if (_this.opdService._opdGroup) {
-                    _this.opdGroup = _this.opdService._opdGroup;
-                    _this.opdGroupId = _this.opdGroup.groupId;
-                    _this.initializeFormData(_this.opdGroup);
-                }
-            }
-        });
+        this.opdGroups = [];
+        this.opdCategory = [];
+        this.opdGroupControl = new forms_1.FormControl('');
     }
     OpdSetupComponent.prototype.ngOnInit = function () {
-        this.initializeForm();
+        this.getOpdGroup();
+        this.autocompleteFilter();
+        this.getOpdCategoryData();
+        this.initializeGridTable();
     };
-    OpdSetupComponent.prototype.initializeForm = function () {
-        this.opdGroupForm = this.fb.group({
-            groupName: ['', forms_1.Validators.required],
-            locationId: ['']
-        });
-    };
-    OpdSetupComponent.prototype.initializeFormData = function (data) {
-        console.log(data.groupName);
-        this.opdGroupForm.get('groupName').patchValue(data.groupName);
-        // this.opdGroupForm.get('locationId').patchValue("")
-    };
-    OpdSetupComponent.prototype.saveOpdGroup = function (data) {
-        var opdGroup = {
-            groupId: this.opdGroupId,
-            groupName: data.groupName,
-            locationId: data.locationId,
-            status: true
+    OpdSetupComponent.prototype.initializeGridTable = function () {
+        this.opdCategoryGridOption = {
+            columnDefs: this.opdCategoryColumnDef,
+            rowData: this.opdCategoryRow,
+            suppressScrollOnNewData: false
         };
-        console.log(opdGroup);
-        this.opdService.saveOpdGroup(opdGroup).subscribe({
-            next: function (opdGroup) {
-                console.log("saved");
-                console.log(opdGroup);
+    };
+    OpdSetupComponent.prototype.onGridReadyOpdCategory = function (params) {
+        this.opdCategoryApi = params.api;
+        this.opdCategoryColumn = params.columnApi;
+        this.opdCategoryApi.sizeColumnsToFit();
+    };
+    OpdSetupComponent.prototype.getOpdCategoryData = function () {
+        this.opdCategoryColumnDef = [
+            {
+                headerName: "Description",
+                field: "cat_name",
+                width: 100,
+                editable: true
+            },
+        ];
+        this.opdCategoryRow = [
+            { description: '' }
+        ];
+    };
+    OpdSetupComponent.prototype.cellEditingStopped = function (event) {
+    };
+    OpdSetupComponent.prototype.autocompleteFilter = function () {
+        var _this = this;
+        this.filteredGroup = this.opdGroupControl.valueChanges.pipe(rxjs_1.startWith(''), rxjs_1.map(function (value) { return (value ? _this._filterOpdGroup(value) : _this.opdGroups.slice()); }));
+    };
+    OpdSetupComponent.prototype.getOpdGroup = function () {
+        var _this = this;
+        this.opdService.getOpdGroup().subscribe({
+            next: function (opdGroups) {
+                _this.opdGroups = opdGroups;
             },
             error: function (err) {
                 console.trace(err);
             }
         });
     };
-    __decorate([
-        core_1.ViewChild('reactiveForm', { static: true })
-    ], OpdSetupComponent.prototype, "reactiveForm");
+    OpdSetupComponent.prototype.opdGroupDisplayFn = function (item) {
+        return item ? item.groupName : '';
+    };
+    //filter data for autocomplete
+    OpdSetupComponent.prototype._filterOpdGroup = function (value) {
+        var filterValue = value;
+        if (value.groupName != null) {
+            filterValue = value.groupName.toLowerCase();
+        }
+        else {
+            filterValue = value.toLowerCase();
+        }
+        return this.opdGroups.filter(function (data) { return data.groupName.toLowerCase().includes(filterValue); });
+    };
+    OpdSetupComponent.prototype.getOpdCategory = function () {
+        var _this = this;
+        this.opdService.getOpdCategory().subscribe({
+            next: function (opdCategory) {
+                _this.opdCategory = opdCategory;
+            },
+            error: function (err) {
+                console.trace(err);
+            }
+        });
+    };
+    //get selected data from autocomplete
+    OpdSetupComponent.prototype.getopdGroupData = function (event) {
+        this.opdGroup = event.option.value;
+        console.log(this.opdGroup);
+    };
+    OpdSetupComponent.prototype.saveOpdCategory = function () {
+    };
     OpdSetupComponent = __decorate([
         core_1.Component({
             selector: 'app-opd-setup',

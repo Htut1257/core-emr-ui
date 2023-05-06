@@ -1,24 +1,38 @@
 <div class="row">
-    <form #reactiveForm="ngForm" class="form" [formGroup]="opdGroupForm" (ngSubmit)="saveOpdGroup(opdGroupForm.value)">
+    <div class="col-4">
         <div class="row">
             <div class="col-12">
-                <mat-form-field class='col-12' appearance="outline">
-                    <mat-label>Group Name</mat-label>
-                    <input [id]="'groupName'" matInput type="text" name="groupName" formControlName="groupName">
-                </mat-form-field>
-            </div>
+                <div class="row">
+                    <div class="col-10">
+                        <mat-form-field class='col-10' appearance="outline">
+                            <mat-label>Opd Group</mat-label>
+                            <input [id]="'opdGroup'" matInput [matAutocomplete]="auto" type="text" name="doctor"
+                                [formControl]="opdGroupControl">
+                            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete"
+                                [displayWith]="opdGroupDisplayFn" (optionSelected)="getOpdGroupData($event)">
+                                <mat-option *ngFor="let item of filteredGroup|async " [value]="item">
+                                    {{item.groupName}}
+                                </mat-option>
+                            </mat-autocomplete>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-2">
+                        <div class="example-button-row float-right">
+                            <button [id]="'btnSave'" mat-raised-button type="submit" color="primary">New</button>
+                        </div>
+                    </div>
+                </div>
+            </div>  
             <div class="col-12">
-                <mat-form-field class='col-12' appearance="outline">
-                    <mat-label>Location Id</mat-label>
-                    <input [id]="'locationId'" matInput type="text" name="locationId" formControlName="locationId">
-                </mat-form-field>
+                <ag-grid-angular id="opdCategoryGrid" class="ag-theme-balham" style="height:80vh;width:100%;"
+                    [gridOptions]="opdCategoryGridOption" (gridReady)="onGridReadyOpdCategory($event)" 
+                    (cellEditingStopped)="cellEditingStopped($event)">
+                </ag-grid-angular>
             </div>
         </div>
- 
-        <div class="example-button-row float-right">
-            <button [id]="'btnSave'" mat-raised-button type="submit" color="primary"
-                [disabled]="!opdGroupForm.valid">Save</button>
-            <button mat-raised-button type="button" color="primary" >Clear</button>
-        </div>
-    </form>
+
+    </div>
+    <div class="col-8">
+
+    </div>
 </div>

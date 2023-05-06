@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable,BehaviorSubject} from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { OpdGroup, OpdCategory, OpdServiceModel } from '../../model/opd.model';
-import { AbstractService } from '../abstract-service/abstract.service';
 import { ApiSetting } from 'src/app/api/api-setting';
-var EmrEndPoint=ApiSetting.EmrEndPoint
+var EmrEndPoint = ApiSetting.EmrEndPoint
 const httpHeaders = new HttpHeaders({
   'Content-Type': 'application/json',
   'Access-Control-Allow-Origin': '*',
@@ -16,8 +15,8 @@ const httpHeaders = new HttpHeaders({
 })
 export class OpdService {
 
-  _opdGroups:OpdGroup[]=[]
-  _opdGroup:OpdGroup
+  _opdGroups: OpdGroup[] = []
+  _opdGroup: OpdGroup
 
   public opdGroups: BehaviorSubject<OpdGroup[]> = new BehaviorSubject<OpdGroup[]>([])
   public opdGroups$: Observable<OpdGroup[]> = this.opdGroups.asObservable()
@@ -28,21 +27,19 @@ export class OpdService {
 
   }
 
-
-
   //#region  opd setup
   getOpdGroup(): Observable<OpdGroup[]> {
-    let uri =`${EmrEndPoint}/opdSetup/getAllOPDGroup`
+    let uri = `${EmrEndPoint}/opdSetup/getAllOPDGroup`
     let httpOption = { headers: httpHeaders }
-    return new Observable(observable=>{
-      if(this._opdGroups.length>1){
+    return new Observable(observable => {
+      if (this._opdGroups.length > 1) {
         observable.next(this._opdGroups)
         this.opdGroups.next(this._opdGroups)
         return observable.complete()
       }
-      return this.http.get<OpdGroup[]>(uri, httpOption).subscribe(opdGroups=>{
-          observable.next(opdGroups)
-          this.opdGroups.next(opdGroups)  
+      return this.http.get<OpdGroup[]>(uri, httpOption).subscribe(opdGroups => {
+        observable.next(opdGroups)
+        this.opdGroups.next(opdGroups)
         observable.complete()
       })
     });
@@ -50,13 +47,13 @@ export class OpdService {
   }
 
   saveOpdGroup(data: OpdGroup): Observable<OpdGroup> {
-    let uri =`${EmrEndPoint}/opdSetup/saveOPDGroup`
+    let uri = `${EmrEndPoint}/opdSetup/saveOPDGroup`
     let httpOption = { headers: httpHeaders }
     return this.http.post<OpdGroup>(uri, data, httpOption)
   }
 
   deleteOpdGroup(id: string): Observable<string> {
-    let uri =`${EmrEndPoint}/opdSetup/deleteOPDGroup`
+    let uri = `${EmrEndPoint}/opdSetup/deleteOPDGroup`
     let httpParams = new HttpParams()
       .set('id', id)
     let httpOption = { headers: httpHeaders, params: httpParams }
@@ -66,16 +63,25 @@ export class OpdService {
   //#endregion opd setup
 
   //#region  opd category
-  getOpdCategory(): Observable<OpdGroup[]> {
-    let uri = ''
+  getOpdCategory(): Observable<OpdCategory[]> {
+    let uri = `${EmrEndPoint}/opdSetup/getAllOPDCategory`
     let httpOption = { headers: httpHeaders }
-    return this.http.get<OpdGroup[]>(uri, httpOption);
+    return this.http.get<OpdCategory[]>(uri, httpOption);
   }
 
-  saveOpdCategory(data: OpdGroup): Observable<OpdGroup> {
-    let uri = '';
+  getOpdCategorybyFilter(type:string,value:string): Observable<OpdCategory[]> {
+    let uri = `${EmrEndPoint}/opdSetup/getAllOPDCategoryByFilter`
+    let httpParams=new HttpParams()
+    .set('columnName',type)
+    .set('value',value)
+    let httpOption = { headers: httpHeaders,params:httpParams }
+    return this.http.get<OpdCategory[]>(uri, httpOption);
+  }
+  
+  saveOpdCategory(data: OpdCategory): Observable<OpdCategory> {
+    let uri = `${EmrEndPoint}/opdSetup/saveOPDCategory`;
     let httpOption = { headers: httpHeaders }
-    return this.http.post<OpdGroup>(uri, data, httpOption)
+    return this.http.post<OpdCategory>(uri, data, httpOption)
   }
 
   deleteOpdCategory(id: string): Observable<string> {

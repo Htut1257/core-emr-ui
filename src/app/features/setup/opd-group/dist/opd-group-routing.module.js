@@ -6,28 +6,26 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 exports.__esModule = true;
-exports.SetupRoutingModule = void 0;
+exports.OpdGroupRoutingModule = void 0;
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
+var opd_group_component_1 = require("./opd-group/opd-group.component");
+var opd_group_setup_component_1 = require("./opd-group-setup/opd-group-setup.component");
+var opd_group_list_component_1 = require("./opd-group-list/opd-group-list.component");
 var routes = [
-    {
-        path: 'opd-setup',
-        loadChildren: function () { return Promise.resolve().then(function () { return require('./opd-setup/opd-setup.module'); }).then(function (module) { return module.OpdSetupModule; }); }
-    },
-    {
-        path: 'opd-group',
-        loadChildren: function () { return Promise.resolve().then(function () { return require('./opd-group/opd-group.module'); }).then(function (module) { return module.OpdGroupModule; }); }
-    }
+    { path: '', component: opd_group_component_1.OpdGroupComponent },
+    { path: 'opd-goup-list', component: opd_group_list_component_1.OpdGroupListComponent },
+    { path: 'opd-group-setup', component: opd_group_setup_component_1.OpdGroupSetupComponent },
 ];
-var SetupRoutingModule = /** @class */ (function () {
-    function SetupRoutingModule() {
+var OpdGroupRoutingModule = /** @class */ (function () {
+    function OpdGroupRoutingModule() {
     }
-    SetupRoutingModule = __decorate([
+    OpdGroupRoutingModule = __decorate([
         core_1.NgModule({
             imports: [router_1.RouterModule.forChild(routes)],
             exports: [router_1.RouterModule]
         })
-    ], SetupRoutingModule);
-    return SetupRoutingModule;
+    ], OpdGroupRoutingModule);
+    return OpdGroupRoutingModule;
 }());
-exports.SetupRoutingModule = SetupRoutingModule;
+exports.OpdGroupRoutingModule = OpdGroupRoutingModule;
