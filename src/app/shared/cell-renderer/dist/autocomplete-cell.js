@@ -34,7 +34,8 @@ var AutocompleteCell = /** @class */ (function () {
     AutocompleteCell.prototype.agInit = function (params) {
         this.params = params;
         //to get witch field to use
-        console.log(params.colDef.field);
+        console.log(params);
+        this.columnObject = params.colDef.field;
         if (!params.rowData) {
             this.apiEndpoint = params.apiEndpoint;
             this.useApi = true;
@@ -49,12 +50,13 @@ var AutocompleteCell = /** @class */ (function () {
             this.gridWidth = params.gridWidth;
         this.columnDefs = params.columnDefs;
         this.propertyName = params.propertyRendered;
-        if (this.propertyName == "patternName") {
+        if (this.columnObject == "patternObj") {
             this.gridWidth = 200;
         }
-        console.log(this.gridWidth);
+        else if (this.columnObject == "examinationObj") {
+            this.gridWidth = 300;
+        }
         this.cellValue = params.value[this.propertyName];
-        console.log(this.columnDefs);
         this.returnObject = params.returnObject;
         if (!params.charPress) {
             if (this.cellValue)
@@ -133,7 +135,15 @@ var AutocompleteCell = /** @class */ (function () {
         }
     };
     AutocompleteCell.prototype.getApiData = function (filter) {
-        return this.autoService.getTreatmentData(filter);
+        if (this.columnObject == "cityObject") {
+            return this.autoService.getTreatmentData(filter);
+        }
+        else if (this.columnObject = "examinationObj") {
+            return this.autoService.getExaminationData(filter);
+        }
+        else {
+            return this.autoService.getTreatmentData(filter);
+        }
         // return this.httpClient.get(this.apiEndpoint + this.toQueryString(filter));
     };
     AutocompleteCell.prototype.toQueryString = function (filter) {

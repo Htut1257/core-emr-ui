@@ -27,12 +27,27 @@ var core_1 = require("@angular/core");
 var http_1 = require("@angular/common/http");
 var api_setting_1 = require("src/app/api/api-setting");
 var abstract_service_1 = require("../abstract-service/abstract.service");
+var rxjs_1 = require("rxjs");
 var uri = api_setting_1.ApiSetting.EmrMongoEndPoint;
 var VitalSignService = /** @class */ (function (_super) {
     __extends(VitalSignService, _super);
     function VitalSignService(http) {
         return _super.call(this, http, uri) || this;
     }
+    VitalSignService.prototype.getVitalSignByPatient = function (Id) {
+        var _this = this;
+        this.baseURL = uri + "/patient/findByBookingId";
+        var httpparams = new http_1.HttpParams()
+            .set("bid", Id);
+        return new rxjs_1.Observable(function (observable) {
+            _this.getByParams(httpparams).subscribe(function (vitalSigns) {
+                _this._vitalSigns = vitalSigns;
+                observable.next(vitalSigns);
+                observable.complete();
+            });
+        });
+        // return this.getByParams(httpparams)
+    };
     VitalSignService.prototype.saveVitalSign = function (data) {
         this.baseURL = uri + "/patient/saveVitalSign";
         console.log(this.baseURL);

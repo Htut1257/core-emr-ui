@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
-import { DrAutoCompleteItem } from '../../model/autocomplete-item.model';
+
 import { ApiSetting } from 'src/app/api/api-setting';
 import { relativeTimeThreshold } from 'moment';
 const httpHeader = new HttpHeaders({

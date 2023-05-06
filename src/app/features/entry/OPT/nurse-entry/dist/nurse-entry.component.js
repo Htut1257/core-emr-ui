@@ -15,12 +15,13 @@ var appointment_search_dialog_component_1 = require("../appointment/appointment-
 var moment = require("moment");
 var forms_1 = require("@angular/forms");
 var NurseEntryComponent = /** @class */ (function () {
-    function NurseEntryComponent(route, nurseService, appointService, docService, dialog) {
+    function NurseEntryComponent(route, nurseService, appointService, docService, serverService, dialog) {
         var _this = this;
         this.route = route;
         this.nurseService = nurseService;
         this.appointService = appointService;
         this.docService = docService;
+        this.serverService = serverService;
         this.dialog = dialog;
         this.doctors = [];
         this.docControl = new forms_1.FormControl();
@@ -41,7 +42,31 @@ var NurseEntryComponent = /** @class */ (function () {
             status: 'Doctor Waiting'
         };
         this.getBooking(filter);
+        this.getServerSideData();
         this.filteredDoc = this.docControl.valueChanges.pipe(rxjs_1.startWith(''), rxjs_1.map(function (name) { return (name ? _this._filterDoc(name) : _this.doctors.slice()); }));
+    };
+    NurseEntryComponent.prototype.getServerSideData = function () {
+        var _this = this;
+        var uri = '/opdBooking/getMessage';
+        this.serverService.getServerSource(uri).subscribe(function (data) {
+            var serverData = JSON.parse(data.data);
+            console.log(serverData);
+            if (serverData.actionStatus == "UPDATE") {
+                console.log("update");
+                var filter = {
+                    fromDate: _this.todayDate,
+                    toDate: _this.todayDate,
+                    doctorId: '-',
+                    regNo: '-',
+                    status: 'Doctor Waiting'
+                };
+                _this.getBooking(filter);
+                var targetIndex = _this.bookings.findIndex(function (data) { return data.bookingId == serverData.bookingId; });
+                _this.bookings[targetIndex] = serverData;
+                _this.appointService.bookings.next(_this.bookings);
+                //this.bookings[this.bookings.indexOf(serverData.bookingId)] = serverData
+            }
+        });
     };
     //get Appointment
     NurseEntryComponent.prototype.getBooking = function (filter) {

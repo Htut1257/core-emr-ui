@@ -6,6 +6,7 @@ import { AppointmentRoutingModule } from './appointment-routing.module';
 import { AppointmentHistoryComponent } from './appointment-history/appointment-history.component';
 import { AppointmentComponent } from './appointment/appointment.component';
 import { AppointmentSearchDialogComponent } from './appointment-search-dialog/appointment-search-dialog.component';
+import { AppointmentPatientDialogComponent } from './appointment-patient-dialog/appointment-patient-dialog.component';
 
 const components=[
   AppointmentComponent,
@@ -16,6 +17,7 @@ const components=[
   declarations: [
     components,
     AppointmentSearchDialogComponent,
+    AppointmentPatientDialogComponent,
   ],
   imports: [
     CommonModule,

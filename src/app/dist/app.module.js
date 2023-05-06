@@ -14,11 +14,11 @@ var app_component_1 = require("./app.component");
 var animations_1 = require("@angular/platform-browser/animations");
 var http_1 = require("@angular/common/http");
 //common modules
+var ag_grid_angular_1 = require("ag-grid-angular");
 //components modules
 var layouts_module_1 = require("./shared/layouts/layouts.module");
 var login_module_1 = require("./features/system/login/login.module");
 var registration_module_1 = require("./features/registration/registration.module");
-var ag_grid_angular_1 = require("ag-grid-angular");
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }

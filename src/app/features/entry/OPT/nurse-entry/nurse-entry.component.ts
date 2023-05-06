@@ -10,6 +10,7 @@ import { Booking } from 'src/app/core/model/booking.model';
 import { AppointmentService } from 'src/app/core/services/appointment-service/appointment.service';
 import { Doctor } from 'src/app/core/model/doctor.model';
 import { DoctorService } from 'src/app/core/services/doctor-service/doctor.service';
+import { ServerService } from 'src/app/core/services/server-service/server.service';
 import * as moment from 'moment';
 import { FormControl } from '@angular/forms';
 @Component({
@@ -30,6 +31,7 @@ export class NurseEntryComponent implements OnInit {
   constructor(
     private route: Router, private nurseService: NurseService,
     private appointService: AppointmentService, private docService: DoctorService,
+    private serverService:ServerService,
     public dialog: MatDialog
   ) {
     this.dataSource = new MatTableDataSource<Booking>(this.bookings)
@@ -47,12 +49,37 @@ export class NurseEntryComponent implements OnInit {
       status: 'Doctor Waiting'
     }
     this.getBooking(filter);
-
+    this.getServerSideData();
     this.filteredDoc = this.docControl.valueChanges.pipe(
       startWith(''),
       map(name => (name ? this._filterDoc(name) : this.doctors.slice()))
     );
+  }
 
+
+  getServerSideData() {
+    let uri = '/opdBooking/getMessage'
+    this.serverService.getServerSource(uri).subscribe(data => {
+      let serverData = JSON.parse(data.data)
+      console.log(serverData)
+
+      if (serverData.actionStatus == "UPDATE") {
+        console.log("update")
+        let filter = {
+          fromDate: this.todayDate,
+          toDate: this.todayDate,
+          doctorId: '-',
+          regNo: '-',
+          status: 'Doctor Waiting'
+        }
+        this.getBooking(filter);
+        let targetIndex = this.bookings.findIndex(data => data.bookingId == serverData.bookingId)
+        this.bookings[targetIndex] = serverData
+        this.appointService.bookings.next(this.bookings)
+        //this.bookings[this.bookings.indexOf(serverData.bookingId)] = serverData
+
+      }
+    })
   }
 
   //get Appointment

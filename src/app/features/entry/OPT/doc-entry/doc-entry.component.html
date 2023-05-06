@@ -3,7 +3,7 @@
         <div class="col-3 group-text-field-left">
             <mat-form-field class="col-12" appearance="outline" disabled>
                 <mat-label>Visit No</mat-label>
-                <input matInput type="text"  name="fromDate" value="BK1234567890123" [(ngModel)]="bookingId">
+                <input matInput type="text" name="fromDate" value="BK1234567890123" [(ngModel)]="bookingId">
             </mat-form-field>
         </div>
         <div class=" col-2 group-text-field-left">
@@ -32,7 +32,7 @@
         </div>
     </div>
 
-    <div class="row col-6  float-right"> 
+    <div class="row col-6  float-right">
         <div class="col-2">
             <span class="example-spacer"></span>
         </div>
@@ -56,7 +56,7 @@
         </div>
         <div class="col-6 example-button-row float-right">
             <span class="example-spacer "></span>
-            <button mat-raised-button type="submit" color="primary">Patients</button>
+            <button mat-raised-button type="submit" color="primary" (click)="searchPatient()">Patients</button>
             <button mat-raised-button type="submit" color="primary">Current</button>
             <button mat-raised-button type="submit" color="primary">Break</button>
             <button mat-raised-button type="submit" color="primary" (click)="setBookingStatus()">Save</button>
@@ -64,47 +64,13 @@
     </div>
 </div>
 
-
-<!-- <div class="col-12">
-    <button mat-flat-button (click)="isHide=!isHide">Hide Me</button>
-</div> -->
-
-<!-- <div class="row">
-     <div class="col-3">
-        <ag-grid-angular id="myGrid" (gridReady)="onGridReady($event)" class="ag-theme-balham"
-            style="height: 70vh;width:100%;" [rowData]="rowDatas" [columnDefs]="columnDefs"
-            (cellEditingStarted)="cellEditingStarted($event)" (cellEditingStopped)="cellEditingStopped($event)">
-        </ag-grid-angular>  
-    </div>
-    <div class="col-3 d-flex">
-        <ag-grid-angular id="myGrid1" (gridReady)="onGridReady1($event)" class="ag-theme-balham"
-            style="height: 70vh;width:100%;" [rowData]="rowDatas" [columnDefs]="columnDefs"
-            (cellEditingStarted)="cellEditingStarted($event)" (cellEditingStopped)="cellEditingStopped($event)">
-        </ag-grid-angular>
-    </div>
-    <div class="col-3">
-        <ag-grid-angular id="myGrid1" (gridReady)="onGridReady1($event)" class="ag-theme-balham"
-            style="height: 70vh;width:100%;" [rowData]="rowDatas" [columnDefs]="columnDefs"
-            (cellEditingStarted)="cellEditingStarted($event)" (cellEditingStopped)="cellEditingStopped($event)">
-        </ag-grid-angular>
-    </div>
-    <div class="col-3"> 
-        <ag-grid-angular id="myGrid1" (gridReady)="onGridReady1($event)" class="ag-theme-balham"
-            style="height: 70vh;width:100%;" [rowData]="rowDatas" [columnDefs]="columnDefs"
-            (cellEditingStarted)="cellEditingStarted($event)" (cellEditingStopped)="cellEditingStopped($event)">
-        </ag-grid-angular>
-    </div>
-</div> -->
-
 <div class="d-flex flex-row">
     <div class="col-3">
         <div class="row">
-            <mat-label class="col-2">Temp :</mat-label>
-            <mat-label class="col-2">95</mat-label>
-            <mat-label class="col-2">Bp :</mat-label>
-            <mat-label class="col-2">95</mat-label>
-            <mat-label class="col-2">/</mat-label>
-            <mat-label class="col-2">95</mat-label>
+            <mat-label class="col-6">Temp : {{temp}}</mat-label>
+            <mat-label class="col-6">Bp : {{bp}}</mat-label>
+
+
         </div>
     </div>
     <div class="flex-fill">
@@ -121,7 +87,9 @@
             <div class="col-4">
                 <mat-form-field class="col-12">
                     <mat-label>Re-Visit Date</mat-label>
-                    <input matInput type="text" name="fromDate" value="03/05/2023">
+                    <input matInput [matDatepicker]="picker1" [(ngModel)]="reVisitDate" name="fromDate" onfocus="this.select()">
+                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                    <mat-datepicker #picker1></mat-datepicker>
                 </mat-form-field>
             </div>
         </div>
@@ -133,15 +101,16 @@
 
 <div class="col-12 row">
     <div class="col-3">
-        <ag-grid-angular id="examinationGrid" (gridReady)="onGriReadyExamination($event)" class="ag-theme-balham"
-            style="height:60vh;width:100%;" [gridOptions]="examinationGridOption">
+        <ag-grid-angular id="examinationGrid" class="ag-theme-balham" style="height:60vh;width:100%;"
+            [gridOptions]="examinationGridOption" (gridReady)="onGriReadyExamination($event)"
+            [frameworkComponents]="frameworkComponents" (cellEditingStopped)="cellEditingStopped($event)">
         </ag-grid-angular>
     </div>
     <div class="col-6">
-        <ag-grid-angular id="treatmentGrid" style="height:60vh;width:100%;" class="ag-theme-balham" [gridOptions]="treatmentGridOption"
-            [frameworkComponents]="frameworkComponents" (gridReady)="onGridReadyTreatment($event)" 
-
-            (cellEditingStopped)="treatCellEditingStopped($event)">
+        <ag-grid-angular id="treatmentGrid" class="ag-theme-balham" style="height:60vh;width:100%;"
+            [gridOptions]="treatmentGridOption" (gridReady)="onGridReadyTreatment($event)"
+            [frameworkComponents]="frameworkComponents" (cellEditingStopped)="cellEditingStopped($event)">
+            <!-- (cellEditingStopped)="cellEditingStopped($event)" -->
         </ag-grid-angular>
     </div>
     <div class="col-3">
@@ -154,8 +123,8 @@
                 </mat-form-field>
             </div>
             <div class="col-12">
-                <ag-grid-angular id="noteGrid" (gridReady)="onGridReadyNote($event)" class="ag-theme-balham"
-                    style="height:40vh;width:100%;" [gridOptions]="noteGridOption">
+                <ag-grid-angular id="noteGrid" class="ag-theme-balham" style="height:40vh;width:100%;"
+                    [gridOptions]="noteGridOption" (gridReady)="onGridReadyNote($event)" (cellEditingStopped)="cellEditingStopped($event)">
                 </ag-grid-angular>
             </div>
         </div>
