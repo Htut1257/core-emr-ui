@@ -5,13 +5,8 @@ import { Booking } from '../../model/booking.model';
 import { AbstractService } from '../abstract-service/abstract.service';
 import { ApiSetting } from 'src/app/api/api-setting';
 var uri: any = `${ApiSetting.EmrEndPoint}`
+
 const httpHeaders = new HttpHeaders({
-  'Content-Type': 'application/json',
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'Content-Type',
-  'Access-Control-Allow-Methods': 'GET,POST,OPTIONS,DELETE,PUT',
-});
-const httpHeaderparams = new HttpHeaders({
   'Content-Type': 'application/x-www-form-urlencoded',
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token',

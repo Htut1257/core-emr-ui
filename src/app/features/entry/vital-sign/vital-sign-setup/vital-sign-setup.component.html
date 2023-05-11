@@ -80,7 +80,6 @@
                     <input matInput name="oxygenMethod" formControlName="oxygenMethod">
                 </mat-form-field>
             </div>
-
         </div>
         <div class="col-12">
             <h4>Other</h4><span class="example-spacer"></span>
@@ -98,7 +97,6 @@
                     <input matInput name="glucoUnit" formControlName="glucoUnit">
                 </mat-form-field>
             </div>
-
         </div>
         <div class="col-12">
             <h4>Measurement</h4><span class="example-spacer"></span>
@@ -138,6 +136,6 @@
     </div>
     <div class="example-button-row float-right">
         <button mat-raised-button type="submit" color="primary">Save</button>
-        <button mat-raised-button type="button" color="primary">Clear</button>
+        <button mat-raised-button type="button" color="primary" (click)="onClear()">Clear</button>
     </div>
 </form>

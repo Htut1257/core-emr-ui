@@ -27,3 +27,10 @@
 .mat-icon-button.mat-success {
   color:#155724;
 }
+
+
+.table-container {
+  margin-top: 25px;
+  height: 60vh;
+  overflow: auto;
+}

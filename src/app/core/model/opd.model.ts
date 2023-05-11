@@ -9,7 +9,7 @@ export interface OpdCategory {
     catId: string,
     catName: string,
     groupId: string,
-    migId: string,
+    migId: number,
     opdAccCode: string,
     ipdAccCode: string,
     depCode: string,
@@ -25,6 +25,7 @@ export interface OpdCategory {
     ipdDeptCode: string,
     userCode: string,
     expense: boolean,
+    updateStatus:string,
     status: boolean,
 
 }
@@ -32,6 +33,7 @@ export interface OpdCategory {
 export interface OpdServiceModel {
     serviceId: string,
     serviceName: string,
+    catId:string
     fees: number,
     fees1: number,
     cfs: boolean,
@@ -46,7 +48,8 @@ export interface OpdServiceModel {
     fees6: number,
     percent: boolean,
     labGroupId: number,
-    labRemark: string
+    labRemark: string,
+    serviceCost:number
 }
 
 export interface OpdHistory {

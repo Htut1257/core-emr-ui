@@ -1,0 +1,21 @@
+
+.mat-button.mat-primary,
+.mat-stroked-button.mat-primary {
+    color: #03A9F4;
+}
+.mat-button.mat-primary:hover,
+.mat-stroked-button.mat-primary:hover {
+  background-color: #f0fff3;
+}
+
+.mat-raised-button.mat-primary,
+.mat-flat-button.mat-primary,
+.mat-fab.mat-primary,
+.mat-mini-fab.mat-primary {
+  color: #f0fff3;
+  background-color: #03A9F4;
+}
+
+.mat-icon-button.mat-primary {
+  color:#03A9F4;
+}

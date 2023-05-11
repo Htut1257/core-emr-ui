@@ -85,6 +85,7 @@ export class VitalSignComponent implements OnInit {
   }
 
   getBooking(filter: any) {
+    console.log(filter)
     this.appointService.getAppointment(filter).subscribe(appoint => {
       this.bookings = appoint.filter((data: any) => data.bstatus === "Confirm")
       this.dataSource = new MatTableDataSource(this.bookings)
@@ -105,7 +106,8 @@ export class VitalSignComponent implements OnInit {
   searchBooking() {
     this.dialog.open(AppointmentSearchDialogComponent, {
       disableClose: true,
-      width: '50%'
+      width: '50%',
+      data:{'status':'Vital Sign'}
     })
       .afterClosed()
       .subscribe(result => {

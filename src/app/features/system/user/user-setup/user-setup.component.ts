@@ -1,12 +1,14 @@
 import { Component, OnInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, of, map, startWith } from 'rxjs'
-import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, AbstractControl, FormControl } from '@angular/forms';
 import { User } from 'src/app/core/model/user.model';
 import { Role } from 'src/app/core/model/role.model';
+import { Doctor } from 'src/app/core/model/doctor.model';
 import { UserService } from 'src/app/core/services/user-service/user-service.service';
 import { RoleService } from 'src/app/core/services/role-service/role-service.service';
 import { ToastService } from 'src/app/core/services/toast-service/toast-service.service';
+import { DoctorService } from 'src/app/core/services/doctor-service/doctor.service';
 @Component({
   selector: 'app-user-setup',
   templateUrl: './user-setup.component.html',
@@ -17,6 +19,11 @@ export class UserSetupComponent implements OnInit {
   userId: string = ''
   userList: User[]
   roleList: Role[]
+
+  doctors: Doctor[] = []
+  docControl=new FormControl('')
+  filteredDoc: Observable<any[]>;
+
   roleFilteredOption: Observable<any>
   userForm: FormGroup
   submitted: boolean = false
@@ -34,9 +41,12 @@ export class UserSetupComponent implements OnInit {
       this.isMobile = false
     }
   }
-  constructor(private route: Router, private formBuilder: FormBuilder,
+  constructor(
+    private route: Router, private formBuilder: FormBuilder,
     private userService: UserService, private roleService: RoleService,
-    private toastService: ToastService) {
+    private doctorService:DoctorService,
+    private toastService: ToastService
+    ) {
     this.user = {} as User
     this.getScreenSize();
   }
@@ -44,6 +54,11 @@ export class UserSetupComponent implements OnInit {
   ngOnInit(): void {
     this.InitialObject()
     this.getRole()
+
+    this.filteredDoc = this.docControl.valueChanges.pipe(
+      startWith(''),
+      map(name => (name ? this._filterDoc(name) : this.doctors.slice()))
+    );
   }
 
   //initialize User Object and Form
@@ -101,6 +116,33 @@ export class UserSetupComponent implements OnInit {
     return item ? item.roleName : ''
   }
 
+  getDoctor(id: string) {
+    this.doctorService.getDoctor(id).subscribe({
+      next: doctors => {
+        this.doctors = doctors;
+      },
+      error: err => {
+        console.trace(err)
+      }
+    })
+  }
+
+  DocDisplayFn(item: any) {
+    return item ? item.doctorName : '';
+  }
+
+  //filter data for autocomplete
+  private _filterDoc(value: any): any {
+    let filterValue = value
+    this.getDoctor(value)
+    if (value.doctorName != null) {
+      filterValue = value.doctorName.toLowerCase()
+    } else {
+      filterValue = value.toLowerCase()
+    }
+    return this.doctors.filter(data => data.doctorName.toLowerCase().includes(filterValue));
+  }
+
   //filter as autocomplete
   private roleFilter(value: any) {
     let filterValue = ''
@@ -124,7 +166,7 @@ export class UserSetupComponent implements OnInit {
   saveUser(user: any) {
     console.log(user)
     user.userCode = this.userId
-
+    user.uniqueId='00012023'
     this.userService.saveUser(user).subscribe({
       next(userData) {
         this.user = userData

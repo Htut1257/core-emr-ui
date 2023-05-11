@@ -1,0 +1,19 @@
+.container{
+    flex: 50%;
+    margin: 0 1% 0 1%;
+}
+
+.classContainer
+{
+    flex: 35%;
+    margin:0% 1% 0% 1%;
+}
+
+.row{
+    margin-left: 0% !important;
+    margin-right: 0% !important;
+  }
+
+  .card.card-border{
+    padding:5%
+  }

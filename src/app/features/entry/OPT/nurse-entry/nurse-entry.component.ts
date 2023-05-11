@@ -138,12 +138,12 @@ export class NurseEntryComponent implements OnInit {
   searchBooking() {
     this.dialog.open(AppointmentSearchDialogComponent, {
       disableClose: true,
-      width: '50%'
+      width: '50%',
+      data:{'status':'Doctor Waiting'}
     })
       .afterClosed()
       .subscribe(result => {
         if (result.dialogStatus) {
-          result.status = "Doctor Waiting"
           this.getBooking(result)
         }
       })

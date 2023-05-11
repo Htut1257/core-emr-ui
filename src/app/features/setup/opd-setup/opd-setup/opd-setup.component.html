@@ -1,12 +1,12 @@
 <div class="row">
-    <div class="col-4">
+    <div class="col-3">
         <div class="row">
             <div class="col-12">
                 <div class="row">
                     <div class="col-10">
                         <mat-form-field class='col-10' appearance="outline">
                             <mat-label>Opd Group</mat-label>
-                            <input [id]="'opdGroup'" matInput [matAutocomplete]="auto" type="text" name="doctor"
+                            <input [id]="'opdGroup'" matInput [matAutocomplete]="auto" type="text" name="opdGroup"
                                 [formControl]="opdGroupControl">
                             <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete"
                                 [displayWith]="opdGroupDisplayFn" (optionSelected)="getOpdGroupData($event)">
@@ -18,21 +18,56 @@
                     </div>
                     <div class="col-2">
                         <div class="example-button-row float-right">
-                            <button [id]="'btnSave'" mat-raised-button type="submit" color="primary">New</button>
+                            <button [id]="'btnSave'" mat-raised-button type="submit" color="primary"
+                                (click)="openOpdGroupDialog()">New</button>
                         </div>
                     </div>
                 </div>
-            </div>  
+            </div>
             <div class="col-12">
-                <ag-grid-angular id="opdCategoryGrid" class="ag-theme-balham" style="height:80vh;width:100%;"
-                    [gridOptions]="opdCategoryGridOption" (gridReady)="onGridReadyOpdCategory($event)" 
+                <mat-form-field class='col-12' appearance="outline">
+                    <mat-label>Opd Category</mat-label>
+                    <input [id]="'opdCategory'" matInput  type="text" name="opdCategory"
+                        [formControl]="opdCategoryControl">
+                    <mat-autocomplete autoActiveFirstOption  [displayWith]="opdCategoryDisplayFn"
+                        (optionSelected)="getOpdGroupData($event)">
+                        <mat-option *ngFor="let item of filteredCategory|async " [value]="item">
+                            {{item.catName}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+            </div>
+            <div class="col-12">
+                <ag-grid-angular id="opdCategoryGrid" class="ag-theme-balham" style="height:65vh;width:100%;"
+                    [gridOptions]="opdCategoryGridOption" (gridReady)="onGridReadyOpdCategory($event)"
                     (cellEditingStopped)="cellEditingStopped($event)">
                 </ag-grid-angular>
             </div>
         </div>
 
     </div>
-    <div class="col-8">
-
+    <div class="col-9">
+        <div class="row">
+            <div class="col-12">
+                <mat-form-field class='col-10' appearance="outline">
+                    <mat-label>Opd Service</mat-label>
+                    <input [id]="'opdService'" matInput  type="text" name="opdService"
+                        [formControl]="opdServiceControl">
+                    <mat-autocomplete autoActiveFirstOption [displayWith]="opdServiceDisplayFn"
+                        (optionSelected)="getOpdGroupData($event)">
+                        <mat-option *ngFor="let item of filteredService|async " [value]="item">
+                            {{item.serviceName}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+            </div>
+            <div class="col-12">
+                <ag-grid-angular id="opdServiceGrid" class="ag-theme-balham" style="height:75vh;width:100%;"
+                    [gridOptions]="opdServiceGridOption" (gridReady)="onGridReadyOpdService($event)"
+                    [frameworkComponents]="frameworkComponentsCheckBox"  (cellEditingStopped)="cellEditingStopped($event)"
+                    >
+                </ag-grid-angular>
+            </div>
+        </div>
     </div>
 </div>

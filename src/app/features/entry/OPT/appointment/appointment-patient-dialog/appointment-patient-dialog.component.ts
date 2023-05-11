@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA ,MatDialogRef} from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Booking } from 'src/app/core/model/booking.model';
 import { AppointmentService } from 'src/app/core/services/appointment-service/appointment.service';
@@ -16,12 +16,13 @@ export class AppointmentPatientDialogComponent implements OnInit {
   todayDate = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD')
 
 
-  displayedColumn: string[] = ["no", "date", "regno", "patient", "doctor", "phone", "serialno", "wl", "reg"]
+  displayedColumn: string[] = ["no", "date", "regno", "patient", "doctor", "phone", "serialno", "wl"]
   dataSource!: MatTableDataSource<Booking>
 
 
   constructor(
     private appointService: AppointmentService,
+    public dialogRef: MatDialogRef<AppointmentPatientDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
     this.bookings = []
@@ -32,13 +33,13 @@ export class AppointmentPatientDialogComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.data)
+    
     let filter = {
       fromDate:this.todayDate,
       toDate: this.todayDate,
       doctorId: '-',
       regNo: '-',
-      status: 'Doctor Waiting'
+      status: 'Doctor Room'
     }
     this.getBooking(filter);
   }
@@ -51,6 +52,10 @@ export class AppointmentPatientDialogComponent implements OnInit {
       this.dataSource = new MatTableDataSource(this.bookings)
     })
   }
+
+  getBookingRowData(data:Booking){
+    this.dialogRef.close(data);
+  } 
 
 
 }

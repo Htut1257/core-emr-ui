@@ -40,7 +40,6 @@ export class VitalSignSetupComponent implements OnInit {
     this.initializeForm();
   }
 
-
   initializeForm() {
     this.vitalForm = this.formBuilder.group({
       bookingId: [{ value: null, disabled: true }],
@@ -71,8 +70,6 @@ export class VitalSignSetupComponent implements OnInit {
     this.vitalForm.get('regNo').patchValue(data.regNo)
   }
 
-
-
   onSaveVital(data) {
     let Vital = data
     let booking: any = this.booking
@@ -81,12 +78,9 @@ export class VitalSignSetupComponent implements OnInit {
     Vital.bookingId = this.vitalForm.get('bookingId').value
     this.vitalService.saveVitalSign(Vital).subscribe({
       next: vital => {
-        console.log("vital saved")
-        console.log(vital)
         this.appointService.updateAppointmentStatus(booking).subscribe({
           next: booking => {
-            console.log("status changed")
-            console.log(booking)
+            this.onClear();
           }, error: err => {
             console.trace(err)
           }
@@ -115,7 +109,6 @@ export class VitalSignSetupComponent implements OnInit {
     this.vitalForm.reset()
     this.reactiveForm.resetForm()
   }
-
 
   focusElement(eleString: string, nextString: string, type: string) {
     if (type == "autocomplete") {

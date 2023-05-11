@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,Inject } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Observable, startWith, map } from 'rxjs'
 import { Doctor } from 'src/app/core/model/doctor.model';
@@ -34,6 +34,7 @@ const MY_DATE_FORMAT = {
 export class AppointmentSearchDialogComponent implements OnInit {
 
   doctors: Doctor[]
+  bookingStatus:string='-'
   filteredDoc: Observable<any[]>;
 
   appointForm
@@ -43,6 +44,7 @@ export class AppointmentSearchDialogComponent implements OnInit {
     private appointService: AppointmentService, private doctorService: DoctorService,
     private formBuilder: FormBuilder, private dateAdapter: DateAdapter<Date>,
     public dialogRef: MatDialogRef<AppointmentSearchDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
     this.dateAdapter.setLocale('en-GB');
     this.doctors = []
@@ -50,7 +52,8 @@ export class AppointmentSearchDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeForm();
-
+    this.bookingStatus=this.data.status
+    console.log(this.data.status)
     this.filteredDoc = this.appointForm.controls['doctor'].valueChanges.pipe(
       startWith(''),
       map(name => (name ? this._filterDoc(name) : this.doctors.slice()))
@@ -101,7 +104,7 @@ export class AppointmentSearchDialogComponent implements OnInit {
     filter.fromDate=moment(data.fromDate).format("yyyy-MM-DD")
     filter.toDate=moment(data.toDate).format("yyyy-MM-DD")
     filter.doctorId=filter.doctor!='-'?filter.doctor.doctorId:'-'
-    filter.status='-'
+    filter.status=this.bookingStatus
     filter.dialogStatus=true
     this.dialogRef.close(filter)
   }

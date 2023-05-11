@@ -22,7 +22,7 @@ export interface Item {
     itemName: String
 }
 
-export interface Pattern {
+export interface PatternItem {
 
 }
 

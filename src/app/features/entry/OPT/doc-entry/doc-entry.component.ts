@@ -16,6 +16,7 @@ import * as moment from 'moment';
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { MAT_DATE_FORMATS, MAT_DATE_LOCALE, DateAdapter } from '@angular/material/core';
 import { DoctorMedicalHistory } from 'src/app/core/model/doctor-entry.model';
+import { CheckboxRenderer } from 'src/app/shared/cell-renderer/checkbox-cell';
 const MY_DATE_FORMAT = {
   parse: {
     dateInput: 'DD/MM/YYYY', // this is how your date will be parsed from Input
@@ -92,7 +93,7 @@ export class DocEntryComponent implements OnInit {
   temp: any
   bp: any
 
-  doctorId: any = "047"
+  doctorId: any = "122"
 
   constructor(
     private route: Router, private docService: DoctorService,
@@ -102,6 +103,7 @@ export class DocEntryComponent implements OnInit {
   ) {
     this.frameworkComponents = {
       autoComplete: AutocompleteCell,
+      checkboxRenderer:CheckboxRenderer
     };
     this.examObj = {} as DrExamination
 
@@ -134,7 +136,7 @@ export class DocEntryComponent implements OnInit {
   getServerSideData() {
     let uri = '/opdBooking/getMessage'
     this.serverService.getServerSource(uri).subscribe(data => {
-      let serverData = JSON.parse(data.data)
+      let serverData = JSON.parse(data)
       this.bookingData = serverData
       if (serverData.bstatus == "Doctor Room") {
         if (this.doctorId == serverData.doctorId) {
@@ -206,8 +208,9 @@ export class DocEntryComponent implements OnInit {
           ]
         },
         valueFormatter: params => {
+          console.log(params)
           if (params.value) return params.value.desc;
-          return "";
+          return params.value;
         },
       }
     ]
@@ -358,7 +361,8 @@ export class DocEntryComponent implements OnInit {
       kvDrNotes: this.drNote
     }
     console.log(docMedic)
-
+   
+    return 
     this.entryService.saveDoctorMedical(docMedic).subscribe({
       next: data => {
         console.log(data)
@@ -548,9 +552,32 @@ export class DocEntryComponent implements OnInit {
       disableClose: false,
       width: '100%',
       data: { 'data key': 'data value' }
-    }).afterClosed().subscribe()
+    }).afterClosed().subscribe({
+      next:booking=>{
+        if(booking){
+          this.booking = booking
+          this.bookingId = booking.bookingId
+          this.bookingDate = booking.bkDate
+          this.regNo = booking.regNo
+          this.patientName = booking.patientName
+          this.getVitalSign(booking.bookingId);
+        }
+       
+
+      },
+      error:err=>{
+        console.trace(err)
+      }
+    })
   }
 
+
+    onClear(){
+      //this.examinationRow=this.emptyExamination()
+      this.treatmentRow=[this.emptydrTreat()]
+      this.treatmentGridOption.api.setRowData(this.treatmentRow)
+      
+    }
   // isEditing = false;
 
   // cellEditingStarted(event) {

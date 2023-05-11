@@ -37,10 +37,10 @@ const routes: Routes = [
     ]
   },
   {
-    path: 'setup',
+    path: 'setup',component:MainDefaultComponent,
     children: [
       {
-        path: 'opd',
+        path: '',
         loadChildren: () => import('./features/setup/setup.module').then(module => module.SetupModule)
       },
     ]

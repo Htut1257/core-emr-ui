@@ -96,22 +96,31 @@ export class OpdService {
 
 
   //#region  opd service
-  getOpdService(): Observable<OpdGroup[]> {
-    let uri = ''
+  getOpdService(): Observable<OpdServiceModel[]> {
+    let uri =  `${EmrEndPoint}/opdSetup/getAllOPDService`
     let httpOption = { headers: httpHeaders }
-    return this.http.get<OpdGroup[]>(uri, httpOption);
+    return this.http.get<OpdServiceModel[]>(uri, httpOption);
   }
 
-  saveOpdService(data: OpdGroup): Observable<OpdGroup> {
-    let uri = '';
+  getOpdServicebyFilter(type:string,value:string): Observable<OpdServiceModel[]> {
+    let uri = `${EmrEndPoint}/opdSetup/getAllOPDServiceByFilter`
+    let httpParams=new HttpParams()
+    .set('columnName',type)
+    .set('value',value)
+    let httpOption = { headers: httpHeaders,params:httpParams }
+    return this.http.get<OpdServiceModel[]>(uri, httpOption);
+  }
+
+  saveOpdService(data: OpdServiceModel): Observable<OpdServiceModel> {
+    let uri =  `${EmrEndPoint}/opdSetup/saveOPDService`
     let httpOption = { headers: httpHeaders }
-    return this.http.post<OpdGroup>(uri, data, httpOption)
+    return this.http.post<OpdServiceModel>(uri, data, httpOption)
   }
 
   deleteOpdService(id: string): Observable<string> {
-    let uri = ''
+    let uri =  `${EmrEndPoint}/opdSetup/deleteOPDService`
     let httpParams = new HttpParams()
-      .set('id', id)
+      .set('serId', id)
     let httpOption = { headers: httpHeaders, params: httpParams }
     return this.http.delete<string>(uri, httpOption)
   }

@@ -71,7 +71,7 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
     agInit(params: any): void {
         this.params = params;
         //to get witch field to use
-        console.log(params)
+     //   console.log(params)
         this.columnObject=params.colDef.field
         if (!params.rowData) {
             this.apiEndpoint = params.apiEndpoint;
