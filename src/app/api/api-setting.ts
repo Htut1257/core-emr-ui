@@ -18,7 +18,7 @@ export class ApiSetting {
         return 'http://localhost:8080';
     }
 
-    public static get EmrMongoEndPoint() {
+    public static get EmrMongoEndPoint(){
         return 'http://localhost:8082';
     }
 
