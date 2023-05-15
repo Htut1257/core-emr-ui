@@ -25,7 +25,7 @@ export class UserService extends AbstractService<User>{
     super(http, uri)
     this.userSubject$ = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('user')))
     this.$user = this.userSubject$
-    this.user = {} as User
+  //  this.user = {} as User
   }
 
   //get current User

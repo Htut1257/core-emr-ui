@@ -8,6 +8,7 @@ export interface User {
     password: string,
     active: boolean,
     role?: Role,
+    roleCode:string
     doctorId?:string
 }
 

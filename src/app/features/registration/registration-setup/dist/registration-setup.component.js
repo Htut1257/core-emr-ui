@@ -88,6 +88,8 @@ var RegistrationSetupComponent = /** @class */ (function () {
         this.registrationForm.get('dob').patchValue(this.todayDate);
     };
     RegistrationSetupComponent.prototype.initializeFormData = function (data) {
+        console
+            .log(data);
         this.regNo = data.regNo;
         this.registrationForm.get('regNo').patchValue(data.regNo);
         this.registrationForm.get('regDate').patchValue(data.bkDate);

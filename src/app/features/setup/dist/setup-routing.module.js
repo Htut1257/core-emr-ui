@@ -11,12 +11,16 @@ var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
 var routes = [
     {
-        path: 'opd-setup',
+        path: 'opd',
         loadChildren: function () { return Promise.resolve().then(function () { return require('./opd-setup/opd-setup.module'); }).then(function (module) { return module.OpdSetupModule; }); }
     },
     {
         path: 'opd-group',
         loadChildren: function () { return Promise.resolve().then(function () { return require('./opd-group/opd-group.module'); }).then(function (module) { return module.OpdGroupModule; }); }
+    },
+    {
+        path: 'pattern',
+        loadChildren: function () { return Promise.resolve().then(function () { return require('./pattern/pattern.module'); }).then(function (module) { return module.PatternModule; }); }
     }
 ];
 var SetupRoutingModule = /** @class */ (function () {

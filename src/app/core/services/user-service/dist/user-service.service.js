@@ -36,10 +36,12 @@ var UserService = /** @class */ (function (_super) {
         var _this = _super.call(this, http, uri) || this;
         _this.route = route;
         _this.userList = [];
+        _this.users = new rxjs_1.BehaviorSubject([]);
+        _this.users$ = _this.users.asObservable();
         _this.userSubject$ = new rxjs_1.BehaviorSubject(JSON.parse(localStorage.getItem('user')));
         _this.$user = _this.userSubject$;
-        _this.user = {};
         return _this;
+        //  this.user = {} as User
     }
     //get current User
     UserService.prototype.getUserValue = function () {
@@ -55,8 +57,16 @@ var UserService = /** @class */ (function (_super) {
     };
     //get user list
     UserService.prototype.getUser = function () {
+        var _this = this;
         this.baseURL = uri + "/user/get-appuser";
-        return this.getAll();
+        return new rxjs_1.Observable(function (observable) {
+            _this.getAll().subscribe(function (users) {
+                _this.userList = users;
+                _this.users.next(users);
+                observable.next(users);
+                observable.complete();
+            });
+        });
     };
     //add or save user
     UserService.prototype.saveUser = function (user) {

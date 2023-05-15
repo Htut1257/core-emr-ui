@@ -118,6 +118,8 @@ export class RegistrationSetupComponent implements OnInit {
   }
 
   initializeFormData(data) {
+    console
+    .log(data)
     this.regNo = data.regNo
     this.registrationForm.get('regNo').patchValue(data.regNo)
     this.registrationForm.get('regDate').patchValue(data.bkDate)
@@ -135,7 +137,6 @@ export class RegistrationSetupComponent implements OnInit {
     this.docService.getDoctor(id).subscribe({
       next: doctors => {
         this.doctors = doctors;
-
       },
       error: err => {
         console.trace(err)

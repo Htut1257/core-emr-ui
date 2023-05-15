@@ -37,33 +37,29 @@ export class UserSetupComponent implements OnInit {
     private doctorService: DoctorService,
     private toastService: ToastService, private commonService: CommonServiceService
   ) {
-    this.user = {} as User
+    // this.user = {} as User
     this.commonService.isMobileObj$.subscribe(data => {
-      if (data = false) {
-
+      console.log(this.userService.user)
+      if (data == false) {
+        if (this.userService.user != undefined) {
+          this.user = this.userService.user
+          this.userId = this.user.userCode
+          this.initializeFormData(this.user)
+        }
       }
     })
   }
 
   ngOnInit(): void {
-    this.InitialObject()
+    this.initializeForm()
     this.getRole()
-
     this.filteredDoc = this.docControl.valueChanges.pipe(
       startWith(''),
       map(name => (name ? this._filterDoc(name) : this.doctors.slice()))
     );
   }
 
-  //initialize User Object and Form
-  public InitialObject() {
-    this.initializeForm()
-    this.user = this.userService.user
-    if (Object.keys(this.user).length > 0) {
-      this.userId = this.user.userCode
-      this.initializeFormData(this.user)
-    }
-  }
+
 
   //initialize Form 
   initializeForm() {
@@ -80,30 +76,29 @@ export class UserSetupComponent implements OnInit {
 
   //initialize form data 
   initializeFormData(data: User) {
-    this.userForm.setValue({
-      userCode: data.userCode,
-      userName: data.userName,
-      userShortName: data.userShortName,
-      password: data.password,
-      email: data.email ? data.email : '',
-      role: data.role,
-      active: data.active,
-    })
+    this.userForm.get('userCode').patchValue(data.userCode)
+    this.userForm.get('userName').patchValue(data.userName)
+    this.userForm.get('userShortName').patchValue(data.userShortName)
+    this.userForm.get('password').patchValue(data.password)
+    this.userForm.get('email').patchValue(data.email)
+    let role=this.roleList.filter(item=>item.roleCode==data.roleCode)
+      
+    this.userForm.get('role').patchValue(role[0])
+    this.userForm.get('active').patchValue(data.active)
+   
   }
 
   //get role data
   getRole() {
     this.roleService.getRole().subscribe(roleData => {
+      console.log(roleData)
       this.roleList = roleData
       this.roleAutoComplete()
     })
 
   }
 
-  //compare role data with initial data
-  compareRole(r1: Role, r2: Role) {
-    return r1 && r2 ? r1.roleCode === r2.roleCode : r1 === r2
-  }
+
 
   //display name on role select
   roleDisplayFn(item: any) {
@@ -139,6 +134,7 @@ export class UserSetupComponent implements OnInit {
 
   //filter as autocomplete
   private roleFilter(value: any) {
+  
     let filterValue = ''
     if (value.roleName != null) {
       filterValue = value.roleName.toLowerCase()

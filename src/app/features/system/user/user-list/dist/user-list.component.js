@@ -8,55 +8,38 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 exports.__esModule = true;
 exports.UserListComponent = void 0;
 var core_1 = require("@angular/core");
-var user_setup_component_1 = require("../user-setup/user-setup.component");
+var table_1 = require("@angular/material/table");
 var UserListComponent = /** @class */ (function () {
-    function UserListComponent(route, dialog, userService, toastService) {
+    function UserListComponent(route, dialog, userService, toastService, commonService) {
+        var _this = this;
         this.route = route;
         this.dialog = dialog;
         this.userService = userService;
         this.toastService = toastService;
-        this.columnDefs = [];
-        this.domLayout = 'autoHeight';
+        this.commonService = commonService;
+        this.displayedColumn = ["position", "name", "short"];
         this.isMobile = false;
         this.user = {};
-        this.columnDefs = this.createColumnDefs();
-        this.getScreenSize();
+        this.dataSource = new table_1.MatTableDataSource(this.userList);
+        this.userService.users.subscribe(function (data) {
+            _this.dataSource.data = data;
+        });
+        this.commonService.isMobile$.subscribe(function (data) {
+            _this.isMobile = data;
+        });
     }
-    UserListComponent.prototype.getScreenSize = function () {
-        this.scrHeight = window.innerHeight;
-        this.scrWidth = window.innerWidth;
-        console.log(this.scrWidth);
-        if (parseInt(window.innerWidth.toString()) <= 400) {
-            this.isMobile = true;
-        }
-        else {
-            this.isMobile = false;
-        }
-    };
     UserListComponent.prototype.ngOnInit = function () {
         this.getUser();
     };
-    //get data ready for grid data
-    UserListComponent.prototype.onGridReady = function (params) {
-        this.api = params.api;
-        this.columnApi = params.columnApi;
-        this.api.sizeColumnsToFit();
-        params.api.resetRowHeights();
-    };
-    UserListComponent.prototype.onRowClicked = function (params) {
-        console.log('click');
-        this.userService.user = params.data;
-        if (this.isMobile) {
-            this.route.navigate(['/main/user/user-setup']);
-        }
-    };
     UserListComponent.prototype.onRowdblClicked = function (params) {
-        this.userService.user = params.data;
+        this.userService.user = params;
         if (this.isMobile) {
-            this.route.navigate(['/main/user/user-setup']);
-            return;
+            // this.route.navigate(['/main/user/user-setup'])
+            this.commonService.getCurrentObject(true);
         }
-        this.userSetupComponent.InitialObject();
+        else {
+            this.commonService.getCurrentObject(false);
+        }
     };
     //get userList
     UserListComponent.prototype.getUser = function () {
@@ -64,36 +47,10 @@ var UserListComponent = /** @class */ (function () {
         this.userService.getUser().subscribe(function (userData) {
             {
                 _this.userList = userData;
-                var colData_1 = [];
-                var objKey = Object.keys(_this.userList[0]);
-                objKey.forEach(function (key) { return colData_1.push({ field: key }); });
-                //this.columnDefs = colData
-                _this.rowData = _this.userList;
-                _this.defaultColDef = {
-                    enableValue: true,
-                    sortable: true,
-                    enableRowGroup: true,
-                    enablePivot: true,
-                    rowSelection: 'multiple',
-                    groupSelectsChildren: true
-                };
+                _this.dataSource = new table_1.MatTableDataSource(_this.userList);
             }
         });
     };
-    //define columns
-    UserListComponent.prototype.createColumnDefs = function () {
-        return [
-            //  { "field": "userCode" },
-            { "field": "userName" },
-            { "field": "userShortName" },
-        ];
-    };
-    __decorate([
-        core_1.HostListener('window:resize', ['$event'])
-    ], UserListComponent.prototype, "getScreenSize");
-    __decorate([
-        core_1.ViewChild(user_setup_component_1.UserSetupComponent)
-    ], UserListComponent.prototype, "userSetupComponent");
     UserListComponent = __decorate([
         core_1.Component({
             selector: 'app-user-list',
