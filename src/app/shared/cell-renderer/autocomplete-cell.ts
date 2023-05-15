@@ -13,7 +13,7 @@ import { PatternService } from 'src/app/core/services/pattern-service/pattern.se
 					background-color: transparant;
 					` },
     template: ` 
-		<input #input
+		<input #input [id]="'autoText'"
 			[(ngModel)]="inputValue"
 			(ngModelChange)="processDataInput($event)"
 			style=" height: 28px; font-weight: 400; font-size: 12px;"
@@ -141,6 +141,9 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
     @HostListener('keydown', ['$event'])
     onKeydown(event) {
         event.stopPropagation();
+        if(event.keyCode>=66 && event.keyCode<=90 || event.key=="Backspace"){
+            document.querySelector<HTMLInputElement>(`#autoText`)?.focus()
+        }
         if (event.key == "Escape") {
             this.params.api.stopEditing();
             return false;

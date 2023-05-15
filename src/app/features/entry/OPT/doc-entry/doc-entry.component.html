@@ -78,13 +78,25 @@
             <div class="col-2">
                 <p class="pt-2">Treatment</p>
             </div>
-            <div class="col-4">
+            <div class="col-2">
                 <mat-form-field class="col-12">
                     <mat-label>CF Fee</mat-label>
                     <input matInput type="text" name="fromDate" value="0">
                 </mat-form-field>
             </div>
-            <div class="col-4">
+            <div class="col-2">
+                <mat-form-field class="col-12">
+                    <mat-label>CF Type</mat-label>
+                    <input matInput type="text" name="fromDate" value="0">
+                </mat-form-field>
+            </div>
+            <div class="col-2">
+                <mat-form-field class="col-12">
+                    <mat-label>Days</mat-label>
+                    <input matInput type="text" name="fromDate" value="0">
+                </mat-form-field>
+            </div>
+            <div class="col-2">
                 <mat-form-field class="col-12">
                     <mat-label>Re-Visit Date</mat-label>
                     <input matInput [matDatepicker]="picker1" [(ngModel)]="reVisitDate" name="fromDate" onfocus="this.select()">
