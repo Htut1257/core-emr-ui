@@ -4,11 +4,16 @@ import { Grid, ColDef, GridOptions, GridApi, ColumnApi, Column, CellClickedEvent
 import { MatDialog } from '@angular/material/dialog';
 import { FormControl } from '@angular/forms';
 import { OpdGroup, OpdCategory, OpdServiceModel } from 'src/app/core/model/opd.model';
+
 import { OpdService } from 'src/app/core/services/opd-service/opd.service';
 import { CommonServiceService } from 'src/app/core/services/common-service/common-service.service';
 import { ToastService } from 'src/app/core/services/toast-service/toast-service.service';
+
 import { OpdGroupComponent } from '../../opd-group/opd-group/opd-group.component';
 import { CheckboxRenderer } from 'src/app/shared/cell-renderer/checkbox-cell';
+
+
+
 @Component({
   selector: 'app-opd-setup',
   templateUrl: './opd-setup.component.html',
@@ -19,18 +24,23 @@ export class OpdSetupComponent implements OnInit {
   //#region grid variable
 
   opdCategoryApi: GridApi
+  opdServiceApi: GridApi
+
   opdCategoryColumn: ColumnApi
+  opdServiceColumn: ColumnApi
+
   opdCategoryGridOption: GridOptions
+  opdServiceGridOption: GridOptions
+
   opdCategoryColumnDef: any
   opdCategoryRow: any
-
-  opdServiceApi: GridApi
-  opdServiceColumn: ColumnApi
-  opdServiceGridOption: GridOptions
   opdServiceColumnDef: any
   opdServiceRow: any
 
+  public frameworkComponentsCheckBox;
+
   //endregion grid variable
+
   opdGroup: OpdGroup
   opdGroups: OpdGroup[] = []
   opdCategory: OpdCategory
@@ -51,14 +61,14 @@ export class OpdSetupComponent implements OnInit {
   opdType: string = ''
 
 
-  public frameworkComponentsCheckBox;
+
   constructor(
     private opdService: OpdService,
     private commonService: CommonServiceService, private toastService: ToastService,
     public dialog: MatDialog
   ) {
     this.frameworkComponentsCheckBox = {
-      checkboxRenderer: CheckboxRenderer,
+      //  checkboxRenderer: CheckboxRenderer,
     }
   }
 
@@ -66,9 +76,8 @@ export class OpdSetupComponent implements OnInit {
     this.getOpdGroup()
     this.autocompleteFilter()
     this.getOpdCategoryData()
-    this.getOpdServiceData()
+    //this.getOpdServiceData()
     this.initializeGridTable()
-
   }
 
   initializeGridTable() {
@@ -76,20 +85,25 @@ export class OpdSetupComponent implements OnInit {
       columnDefs: this.opdCategoryColumnDef,
       rowData: this.opdCategoryRow,
       suppressScrollOnNewData: false,
-      onCellClicked: (event: CellClickedEvent) => {
-        this.getOpdServicesData(event);
+      onGridReady(event) {
+        this.opdCategoryApi = event.api
+        this.opdCategoryColumn = event.columnApi
+        this.opdCategoryApi.sizeColumnsToFit()
       },
+      // onCellClicked: (event: CellClickedEvent) => {
+      //   this.getOpdServicesData(event);
+      // },
     }
 
-    this.opdServiceGridOption = {
-      columnDefs: this.opdServiceColumnDef,
-      rowData: this.opdServiceRow,
-      suppressScrollOnNewData: false,
-    }
-
+    // this.opdServiceGridOption = {
+    //   columnDefs: this.opdServiceColumnDef,
+    //   rowData: this.opdServiceRow,
+    //   suppressScrollOnNewData: false,
+    // }
   }
 
-  onGridReadyOpdCategory(params) {
+  onGridReadyOpdCategory(params: any) {
+    console.log("on grid called")
     this.opdCategoryApi = params.api
     this.opdCategoryColumn = params.columnApi
     this.opdCategoryApi.sizeColumnsToFit()
@@ -105,109 +119,112 @@ export class OpdSetupComponent implements OnInit {
       },
     ]
     this.opdCategoryRow = [
-      this.emptyOpdCategory()
+      { catName: 'thisdada' }
     ]
   }
 
-  onGridReadyOpdService(params) {
-    this.opdServiceApi = params.api
-    this.opdServiceColumn = params.columnApi
-    this.opdServiceApi.sizeColumnsToFit()
-  }
+  // onGridReadyOpdService(params) {
+  //   this.opdServiceApi = params.api
+  //   this.opdServiceColumn = params.columnApi
+  //   this.opdServiceApi.sizeColumnsToFit()
+  // }
 
-  getOpdServiceData() {
-    this.opdServiceColumnDef = [
-      {
-        headerName: "Description",
-        field: "serviceName",
-        width: 170,
-        editable: true
-      },
-      {
-        headerName: "Fees",
-        field: "fees",
-        width: 70,
-        editable: true,
-        type: 'rightAligned'
-      },
-      {
-        headerName: "Srv Fee",
-        field: "fees1",
-        width: 80,
-        editable: true,
-        type: 'rightAligned'
-      },
-      {
-        headerName: "Mo Fee ",
-        field: "fees2",
-        width: 75,
-        editable: true,
-        type: 'rightAligned'
-      },
-      {
-        headerName: "Staff Fee",
-        field: "fees3",
-        width: 85,
-        editable: true,
-        type: 'rightAligned'
-      },
-      {
-        headerName: "Teach Fee",
-        field: "fees4",
-        width: 100,
-        editable: true,
-        type: 'rightAligned'
-      },
-      {
-        headerName: "Refer Fee",
-        field: "fees6",
-        width: 90,
-        editable: true,
-        type: 'rightAligned'
-      },
-      {
-        headerName: "Read Fee",
-        field: "fees5",
-        width: 90,
-        editable: true,
-        type: 'rightAligned'
-      },
-      {
-        headerName: "%",
-        field: "percent",
-        width: 50,
-        cellRenderer: "checkboxRenderer"
-      },
-      {
-        headerName: "CFS",
-        field: "cfs",
-        width: 65,
-        cellRenderer: "checkboxRenderer"
-      },
-      {
-        headerName: "Active",
-        field: "status",
-        width: 70,
-        cellRenderer: "checkboxRenderer"
-      },
-      {
-        headerName: "Doctor",
-        field: "doctor",
-        width: 100,
-        editable: true
-      },
-      {
-        headerName: "Cost",
-        field: "serviceCost",
-        width: 80,
-        editable: true,
-        type: 'rightAligned'
-      },
-    ]
-    this.opdServiceRow = [
-      this.emptyOpdServiceModel()
-    ]
-  }
+  // getOpdServiceData() {
+  //   this.opdServiceColumnDef = [
+  //     {
+  //       headerName: "Description",
+  //       field: "serviceName",
+  //       width: 170,
+  //       editable: true
+  //     },
+  //     {
+  //       headerName: "Fees",
+  //       field: "",
+  //       width: 70,
+  //       editable: true,
+  //       type: 'rightAligned'
+  //     },
+  //     {
+  //       headerName: "Srv Fee",
+  //       field: "fees1",
+  //       width: 80,
+  //       editable: true,
+  //       type: 'rightAligned'
+  //     },
+  //     {
+  //       headerName: "Mo Fee ",
+  //       field: "fees2",
+  //       width: 75,
+  //       editable: true,
+  //       type: 'rightAligned'
+  //     },
+  //     {
+  //       headerName: "Staff Fee",
+  //       field: "fees3",
+  //       width: 85,
+  //       editable: true,
+  //       type: 'rightAligned'
+  //     },
+  //     {
+  //       headerName: "Teach Fee",
+  //       field: "fees4",
+  //       width: 100,
+  //       editable: true,
+  //       type: 'rightAligned'
+  //     },
+  //     {
+  //       headerName: "Refer Fee",
+  //       field: "fees6",
+  //       width: 90,
+  //       editable: true,
+  //       type: 'rightAligned'
+  //     },
+  //     {
+  //       headerName: "Read Fee",
+  //       field: "fees5",
+  //       width: 90,
+  //       editable: true,
+  //       type: 'rightAligned'
+  //     },
+  //     {
+  //       headerName: "%",
+  //       field: "percent",
+  //       width: 50,
+  //       cellRenderer: "checkboxRenderer"
+  //     },
+  //     {
+  //       headerName: "CFS",
+  //       field: "cfs",
+  //       width: 65,
+  //       cellRenderer: "checkboxRenderer"
+  //     },
+  //     {
+  //       headerName: "Active",
+  //       field: "status",
+  //       width: 70,
+  //       cellRenderer: "checkboxRenderer"
+  //     },
+  //     {
+  //       headerName: "Doctor",
+  //       field: "doctor",
+  //       width: 100,
+  //       editable: true
+  //     },
+  //     {
+  //       headerName: "Cost",
+  //       field: "serviceCost",
+  //       width: 80,
+  //       editable: true,
+  //       type: 'rightAligned'
+  //     },
+  //   ]
+  //   this.opdServiceRow = [ // fees 1 to 5 percent cfs status doctor serviceCost
+  //     {
+  //       serviceName: '', fees: 0, fees1: 0, fees2: 0, fees3: 0, fees4: 0, fees5: 0,
+  //       percent: false, cfs: false, status: false, doctor: '', serviceCost: 0,
+  //     }
+  //   ]
+  // }
 
   cellEditingStopped(event) {
     let columnField = event.colDef.field
@@ -216,7 +233,7 @@ export class OpdSetupComponent implements OnInit {
     var firstEditCol = event.columnApi.getAllDisplayedColumns()[0];
     let tableParams = {
       rowIndex: row,
-      firstColumn: firstEditCol,
+      firstColumn: firstEditCol,  
       gridApi: this.opdCategoryApi,
       rowObj: null
     }
@@ -234,15 +251,15 @@ export class OpdSetupComponent implements OnInit {
       // }
     }
 
-    if (this.opdServiceApi.getFocusedCell()) {
-      tableParams = {
-        rowIndex: row,
-        firstColumn: firstEditCol,
-        gridApi: this.opdServiceApi,
-        rowObj: this.emptyOpdServiceModel()
-      }
-      this.onSaveOpdService(rowData, tableParams)
-    }
+    // if (this.opdServiceApi.getFocusedCell()) {
+    //   tableParams = {
+    //     rowIndex: row,
+    //     firstColumn: firstEditCol,
+    //     gridApi: this.opdServiceApi,
+    //     rowObj: this.emptyOpdServiceModel()
+    //   }
+    //   this.onSaveOpdService(rowData, tableParams)
+    // }
 
   }
 
@@ -272,29 +289,29 @@ export class OpdSetupComponent implements OnInit {
     }
   }
 
-  emptyOpdServiceModel(): OpdServiceModel {
-    return {
-      serviceId: null,
-      serviceName: '',
-      catId: '',
-      fees: 0,
-      fees1: 0,
-      cfs: false,
-      serviceCode: '',
-      status: false,
-      migId: 0,
-      doctor: '',
-      fees2: 0,
-      fees3: 0,
-      fees4: 0,
-      fees5: 0,
-      fees6: 0,
-      percent: false,
-      labGroupId: 0,
-      labRemark: '',
-      serviceCost: 0
-    }
-  }
+  // emptyOpdServiceModel(): OpdServiceModel {
+  //   return {
+  //     serviceId: null,
+  //     serviceName: '',
+  //     catId: '',
+  //     fees: 0,
+  //     fees1: 0,
+  //     cfs: false,
+  //     serviceCode: '',
+  //     status: false,
+  //     migId: 0,
+  //     doctor: '',
+  //     fees2: 0,
+  //     fees3: 0,
+  //     fees4: 0,
+  //     fees5: 0,
+  //     fees6: 0,
+  //     percent: false,
+  //     labGroupId: 0,
+  //     labRemark: '',
+  //     serviceCost: 0
+  //   }
+  // }
 
   //filter for autocomplete
   autocompleteFilter() {
@@ -363,13 +380,7 @@ export class OpdSetupComponent implements OnInit {
       next: opdCategory => {
 
         this.opdCategories = opdCategory
-        // let rowData = this.opdCategory.reduce(function (filtered: any, option: any) {
-        //   let someValue = {
-        //     description: option.catName
-        //   }
-        //   filtered.push(someValue)
-        //   return filtered
-        // }, [])
+
         this.opdCategoryRow = this.opdCategories
         if (this.opdCategoryRow.length < 1) {
           this.opdCategoryRow.push(this.emptyOpdCategory())
@@ -408,28 +419,28 @@ export class OpdSetupComponent implements OnInit {
   }
 
   getOpdService(type: string, value: string) {
-    this.opdService.getOpdServicebyFilter(type, value).subscribe({
-      next: opdServices => {
-        console.log(opdServices)
-        this.opdServices = opdServices
-        this.opdServiceRow = this.opdServices
-        if (this.opdServiceRow.length < 1) {
-          this.opdServiceRow.push(this.emptyOpdServiceModel())
-          this.opdServiceGridOption.api.setRowData(this.opdServiceRow)
-        }
-        else {
-          this.opdServiceGridOption.api.setRowData(this.opdServiceRow)
-          this.opdServiceApi.applyTransaction({
-            add: [
-              this.emptyOpdServiceModel()
-            ]
-          })
-        }
-      },
-      error: err => {
-        console.trace(err)
-      }
-    })
+    // this.opdService.getOpdServicebyFilter(type, value).subscribe({
+    //   next: opdServices => {
+    //     console.log(opdServices)
+    //     this.opdServices = opdServices
+    //     this.opdServiceRow = this.opdServices
+    //     if (this.opdServiceRow.length < 1) {
+    //       this.opdServiceRow.push(this.emptyOpdServiceModel())
+    //       this.opdServiceGridOption.api.setRowData(this.opdServiceRow)
+    //     }
+    //     else {
+    //       this.opdServiceGridOption.api.setRowData(this.opdServiceRow)
+    //       this.opdServiceApi.applyTransaction({
+    //         add: [
+    //           this.emptyOpdServiceModel()
+    //         ]
+    //       })
+    //     }
+    //   },
+    //   error: err => {
+    //     console.trace(err)
+    //   }
+    // })
   }
 
   //get selected data from Table cell

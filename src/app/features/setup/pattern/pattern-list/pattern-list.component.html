@@ -22,7 +22,7 @@
                 <td mat-cell class="td-number" *matCellDef="let element">{{element.factor}}</td>
             </ng-container>
             <tr mat-header-row *matHeaderRowDef="displayedColumn;sticky:true"></tr>
-            <tr mat-row *matRowDef="let row;columns:displayedColumn"></tr>
+            <tr mat-row *matRowDef="let row;columns:displayedColumn" (dblclick)="getRowData(row)"></tr>
 
         </table>
     </div>

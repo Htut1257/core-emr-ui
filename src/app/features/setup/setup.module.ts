@@ -8,6 +8,7 @@ import { SetupRoutingModule } from './setup-routing.module';
   ],
   imports: [
     CommonModule,
+  
     SetupRoutingModule
   ]
 })

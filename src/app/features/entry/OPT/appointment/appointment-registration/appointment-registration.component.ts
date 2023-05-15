@@ -1,18 +1,23 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Observable, map, startWith } from 'rxjs';
 import { FormGroup, FormBuilder, Validators, NgForm } from '@angular/forms';
-import { AppointmentService } from 'src/app/core/services/appointment-service/appointment.service';
-import * as moment from 'moment';
-import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
-import { MAT_DATE_FORMATS, MAT_DATE_LOCALE, DateAdapter } from '@angular/material/core';
+
+import { bookingType } from 'src/app/core/model/booking.model';
 import { Doctor } from 'src/app/core/model/doctor.model';
-import { DoctorService } from 'src/app/core/services/doctor-service/doctor.service';
 import { Gender } from 'src/app/core/model/gender.model';
-import { GenderService } from 'src/app/core/services/gender-service/gender.service';
 import { Patient } from 'src/app/core/model/patient.model';
+import { AppointmentService } from 'src/app/core/services/appointment-service/appointment.service';
+
+import { DoctorService } from 'src/app/core/services/doctor-service/doctor.service';
+import { GenderService } from 'src/app/core/services/gender-service/gender.service';
 import { PatientService } from 'src/app/core/services/patient-service/patient.service';
 import { CommonServiceService } from 'src/app/core/services/common-service/common-service.service';
 import { ToastService } from 'src/app/core/services/toast-service/toast-service.service';
+
+import * as moment from 'moment';
+import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
+import { MAT_DATE_FORMATS, MAT_DATE_LOCALE, DateAdapter } from '@angular/material/core';
+
 const MY_DATE_FORMAT = {
   parse: {
     dateInput: 'DD/MM/YYYY', // this is how your date will be parsed from Input
@@ -45,7 +50,7 @@ export class AppointmentRegistrationComponent implements OnInit {
   patient: Patient[] = []
   filteredPatient: Observable<any[]>
   gender: Gender[]
-
+  bookingTypes:any[]=bookingType
   todayDate = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD')
   isLoading: boolean = false
 
@@ -81,6 +86,7 @@ export class AppointmentRegistrationComponent implements OnInit {
       patient: ['', Validators.required],
       doctor: [null, Validators.required],
       bkPhone: [''],
+      bkType:[null],
     });
     this.appointForm.get('bkDate').patchValue(this.todayDate)
   }
@@ -89,6 +95,8 @@ export class AppointmentRegistrationComponent implements OnInit {
     this.docService.getDoctor(id).subscribe({
       next: doctors => {
         this.doctors = doctors;
+        console.log(doctors)
+        console.log(this.doctors)
       },
       error: err => {
         console.trace(err)

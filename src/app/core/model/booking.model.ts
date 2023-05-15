@@ -13,3 +13,15 @@ export interface Booking {
     actionStatus: string
     bStatus: string
 }
+
+
+export const bookingType: any = [
+    {
+        id:'1',
+        description:'Normal'
+    },
+    {
+        id:'2',
+        description:'Emergency'
+    }
+]

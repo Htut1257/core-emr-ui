@@ -68,9 +68,7 @@ export class DocEntryComponent implements OnInit {
   treatmentRow: any
   noteRow: any
 
-  examinationAutoData: any
-  treatmentAutoDaata: any
-  noteAutoData: any
+
 
   public frameworkComponents;
   loop: boolean = false
@@ -166,6 +164,7 @@ export class DocEntryComponent implements OnInit {
   }
 
   InitializeGridTable() {
+
     this.examinationGridOption = {
       columnDefs: this.examinationColumnDef,
       rowData: this.examinationRow,
@@ -183,10 +182,12 @@ export class DocEntryComponent implements OnInit {
       rowData: this.noteRow,
       suppressScrollOnNewData: false
     }
+    console.log(this.noteGridOption)
   }
 
   //table for diagnosis 
   onGriReadyExamination(params) {
+    console.log("on grid called")
     this.examinationApi = params.api
     this.examinationColumn = params.columnApi
     this.examinationApi.sizeColumnsToFit()
@@ -221,7 +222,6 @@ export class DocEntryComponent implements OnInit {
           ]
         },
         valueFormatter: params => {
-          console.log(params)
           if (params.value) return params.value.desc;
           return params.value;
         },
@@ -369,7 +369,7 @@ export class DocEntryComponent implements OnInit {
         fees6: option.cityObject.fees6,
         isPercent: option.cityObject.isPercent,
         serviceCost: option.cityObject.serviceCost,
-        itemUnit:option.cityObject.itemUnit
+        itemUnit: option.cityObject.itemUnit
       }
       filtered.push(someNewValue);
       return filtered
@@ -382,9 +382,7 @@ export class DocEntryComponent implements OnInit {
   }
 
   saveMedHistory() {
-    console.log(this.drExamination)
-    console.log(this.drTreatment)
-    console.log(this.drNote)
+
 
     let docMedic = {
       visitId: this.bookingData.bookingId,
@@ -401,9 +399,9 @@ export class DocEntryComponent implements OnInit {
       kvDrNotes: this.drNote
     }
     console.log(docMedic)
-     let booking: any = this.booking
-     booking.bStatus = booking.bstatus
-   
+    let booking: any = this.booking
+    booking.bStatus = booking.bstatus
+
     this.entryService.saveDoctorMedical(docMedic).subscribe({
       next: data => {
         this.appointService.updateAppointmentStatus(booking).subscribe({
@@ -422,68 +420,12 @@ export class DocEntryComponent implements OnInit {
 
   }
 
-  setBookingStatus() {
-    console.log(this.drExamination)
-    console.log(this.drTreatment)
-    console.log(this.drNote)
 
-    let examination = this.drExamination.reduce(function (filtered: any, option: any) {
-      var someNewValue = {
-        desc: option.examinationObj.desc
-      }
-      filtered.push(someNewValue);
-      return filtered
-    }, [])
-
-    let treatment = this.drTreatment.reduce(function (filtered: any, option: any) {
-      var someNewValue = {
-        group: option.cityObject.itemOption,
-        subGroup: option.cityObject.itemType,
-        code: option.cityObject.itemId,
-        desc: option.cityObject.itemName,
-        pattern: option.pattern,
-        days: option.day,
-        qty: option.aty,
-
-      }
-      filtered.push(someNewValue);
-      return filtered
-    }, [])
-    let docMedic = {
-      visitId: this.bookingData.bookingId,
-      visitDate: this.bookingData.bkDate,
-      regNo: this.bookingData.regNo,
-      admissionNo: ' ',
-      patientName: this.bookingData.patientName,
-      drId: this.bookingData.doctorId,
-      drName: this.bookingData.doctorName,
-      reVisitDate: '2023-04-27',
-      drNotes: 'testing',
-      examinations: this.savetoDrExam(),
-      treatments: this.savetoDrTreatment(),
-      kvDrNotes: this.drNote
-    }
-    console.log(docMedic)
-
-    return
-    this.entryService.saveDoctorMedical(docMedic).subscribe({
-      next: data => {
-        console.log(data)
-      },
-      error: err => {
-        console.trace(err)
-      }
-    })
-
-    return
-
-
-  }
 
   treatCellEditingStopped(event) {
     this.treatmentApi.setFocusedCell(event.rowIndex, event.colDef.field);
     let columnField = event.colDef.field
-    console.log(event)
+
   }
 
   @HostListener('keydown', ['$event'])
@@ -613,7 +555,7 @@ export class DocEntryComponent implements OnInit {
         itemName: '',
         relStr: '',
         fees: 0,
-        fees1: 0, 
+        fees1: 0,
         fees2: 0,
         fees3: 0,
         fees4: 0,
@@ -624,8 +566,8 @@ export class DocEntryComponent implements OnInit {
         itemUnit: '',
       },
       patternObj: {
-        patternCode:'',
-        despEng:''
+        patternCode: '',
+        despEng: ''
       },
       day: '',
       qty: 0,
@@ -667,7 +609,7 @@ export class DocEntryComponent implements OnInit {
     }).afterClosed().subscribe({
       next: booking => {
         if (booking) {
-          this.bookingData=booking
+          this.bookingData = booking
           this.booking = booking
           this.bookingId = booking.bookingId
           this.bookingDate = booking.bkDate
@@ -691,22 +633,7 @@ export class DocEntryComponent implements OnInit {
     this.treatmentGridOption.api.setRowData(this.treatmentRow)
 
   }
-  // isEditing = false;
 
-  // cellEditingStarted(event) {
-  //   this.isEditing = true
-  //   console.log("is editing")
-  //   //  this.api.setFocusedCell(event.rowIndex, event.colDef.field);
-  // }
-
-  // currIndex = 0
-  // cellEditingStopped(event) {
-  //   console.log(event)
-  //   this.currIndex = event.node.childIndex
-  //   this.isEditing = false
-  //   console.log("stop editing")
-  //   this.api.setFocusedCell(event.rowIndex, event.colDef.field);
-  // }
 
 }
 
