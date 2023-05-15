@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 export class SseService {
 
     getEventSource(url: string): EventSource {
-        return new EventSource(url, { withCredentials: true })
+        return new EventSource(url)
     }
 
 }

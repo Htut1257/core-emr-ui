@@ -100,6 +100,7 @@ export class AppointmentHistoryComponent implements OnInit {
     this.dialog.open(AppointmentSearchDialogComponent, {
       disableClose: true,
       width: '50%',
+      data:{'status':'-'}
     })
       .afterClosed()
       .subscribe(result => {

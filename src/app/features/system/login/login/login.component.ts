@@ -46,13 +46,23 @@ export class LoginComponent implements OnInit {
     this.userService.loginUser(user.userName, user.password).subscribe({
       next: data => {
         this.user = data
+     
         if (this.user == null) {
           this.resetForm()
           document.querySelector<HTMLInputElement>(`#name`).focus()
           return
         }
         localStorage.setItem('user',JSON.stringify(this.user))
-        this.route.navigate(['/main'])
+        if(this.user.uniqueId){
+          this.route.navigate(['/main/opd/doctor-entry'])
+        }
+        else{
+          this.route.navigate(['/main'])
+        }
+      
+      },
+      error:err=>{
+        console.log(err)
       }
     })
   }

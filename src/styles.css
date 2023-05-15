@@ -1,5 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~bootstrap/dist/css/bootstrap.css";
+/* @import '~material-icons/iconfont/material-icons.scss'; */
 @import "./assets/styles/button-style.css";
 @import 'ag-grid-community/styles/ag-grid.css';
 
@@ -109,3 +110,4 @@ body {
     height: 80vh;
     overflow-y: auto;
 }
+

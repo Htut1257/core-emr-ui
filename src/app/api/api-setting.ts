@@ -1,6 +1,6 @@
 export class ApiSetting {
     public static get UserApiEndPoint() {
-        return 'http://localhost:8079';
+        return 'http://192.168.100.183:8079';
     }
 
     public static get AccountApiEndPoint() {
@@ -15,11 +15,11 @@ export class ApiSetting {
     }
 
     public static get EmrEndPoint() {
-        return 'http://localhost:8080';
+        return 'http://192.168.100.183:8080';
     }
 
     public static get EmrMongoEndPoint(){
-        return 'http://localhost:8082';
+        return 'http://192.168.100.183:8082';
     }
 
 }

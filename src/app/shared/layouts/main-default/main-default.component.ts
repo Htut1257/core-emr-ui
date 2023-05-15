@@ -1,4 +1,5 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild,HostListener } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild,HostListener ,ChangeDetectorRef} from '@angular/core';
+import{Subscription} from 'rxjs'
 import { Router } from '@angular/router';
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { DoctorStatusModalComponent } from 'src/app/features/entry/OPT/doctor-status-modal/doctor-status-modal.component';
@@ -16,15 +17,20 @@ export class MainDefaultComponent implements OnInit, AfterViewInit {
   loading: boolean = false;
   dialogRef: MatDialogRef<any>;
   @ViewChild('appDrawer') appDrawer: ElementRef;
+  subscription:Subscription
   constructor(
     private route: Router, private commonService: CommonServiceService,
-    public dialog: MatDialog
+    public dialog: MatDialog,private cdr:ChangeDetectorRef
   ) {
-
+   
   }
 
   ngOnInit(): void {
     this.items = navItems;
+    this.subscription=this.commonService.isProgress$.subscribe(data=>{
+      this.loading=data
+      this.cdr.detectChanges()
+    })
   }
 
   ngAfterViewInit(): void {

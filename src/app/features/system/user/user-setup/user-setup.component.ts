@@ -9,6 +9,7 @@ import { UserService } from 'src/app/core/services/user-service/user-service.ser
 import { RoleService } from 'src/app/core/services/role-service/role-service.service';
 import { ToastService } from 'src/app/core/services/toast-service/toast-service.service';
 import { DoctorService } from 'src/app/core/services/doctor-service/doctor.service';
+import { CommonServiceService } from 'src/app/core/services/common-service/common-service.service';
 @Component({
   selector: 'app-user-setup',
   templateUrl: './user-setup.component.html',
@@ -21,34 +22,27 @@ export class UserSetupComponent implements OnInit {
   roleList: Role[]
 
   doctors: Doctor[] = []
-  docControl=new FormControl('')
+  docControl = new FormControl('')
   filteredDoc: Observable<any[]>;
 
   roleFilteredOption: Observable<any>
   userForm: FormGroup
   submitted: boolean = false
   isMobile = false
-  scrHeight: any;
-  scrWidth: any;
-  @HostListener('window:resize', ['$event'])
-  getScreenSize() {
-    this.scrHeight = window.innerHeight;
-    this.scrWidth = window.innerWidth;
-    console.log(this.scrWidth)
-    if (parseInt(window.innerWidth.toString()) <= 400) {
-      this.isMobile = true
-    } else {
-      this.isMobile = false
-    }
-  }
+
+
   constructor(
     private route: Router, private formBuilder: FormBuilder,
     private userService: UserService, private roleService: RoleService,
-    private doctorService:DoctorService,
-    private toastService: ToastService
-    ) {
+    private doctorService: DoctorService,
+    private toastService: ToastService, private commonService: CommonServiceService
+  ) {
     this.user = {} as User
-    this.getScreenSize();
+    this.commonService.isMobileObj$.subscribe(data => {
+      if (data = false) {
+
+      }
+    })
   }
 
   ngOnInit(): void {
@@ -79,7 +73,7 @@ export class UserSetupComponent implements OnInit {
       userShortName: [''],
       password: ['', Validators.required],
       email: [''],
-      role: ['', Validators.required],
+      role: [null, Validators.required],
       active: [true],
     });
   }
@@ -164,9 +158,10 @@ export class UserSetupComponent implements OnInit {
 
   //add or edit user
   saveUser(user: any) {
-    console.log(user)
+
     user.userCode = this.userId
-    user.uniqueId='00012023'
+    user.doctor = this.docControl.value
+    user.uniqueId = user.doctor.doctorId
     this.userService.saveUser(user).subscribe({
       next(userData) {
         this.user = userData
@@ -196,40 +191,18 @@ export class UserSetupComponent implements OnInit {
     this.route.navigate(['/main/user/user-list'])
   }
 
-  //key enter event
-  focusNext(event: any) {
-    let eleString = event.srcElement.id
-    let nextString = ''
-    switch (eleString) {
-      case 'userName': {
-        nextString = 'shortName'
-        document.querySelector<HTMLInputElement>(`#${nextString}`)?.focus()
-        break
-      }
-      case 'shortName': {
-        nextString = 'password'
-        document.querySelector<HTMLInputElement>(`#${nextString}`)?.focus()
-        break
-      }
-      case 'password': {
-        nextString = 'email'
-        document.querySelector<HTMLInputElement>(`#${nextString}`)?.focus()
-        break
-      }
-      case 'email': {
-        nextString = 'role'
-        document.querySelector<HTMLInputElement>(`#${nextString}`)?.focus()
-        break
-      }
-      case 'role': {
-        if (this.userForm.controls['role'].value == null) {
-          break
-        }
-        nextString = 'btnSave'
-        document.querySelector<HTMLInputElement>(`#${nextString}`)?.focus()
-        break
+  focusElement(eleString: string, nextString: string, type: string) {
+    if (type == "autocomplete") {
+      if (this.userForm.controls['' + eleString + ''].value == null) {
+        return
       }
     }
+    if (type == "option") {
+      if (this.userForm.controls['' + eleString + ''].value == null) {
+        return
+      }
+    }
+    document.querySelector<HTMLInputElement>(`#${nextString}`)?.focus()
   }
 
   //block auto submit 

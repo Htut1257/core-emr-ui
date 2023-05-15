@@ -17,6 +17,10 @@ export class CommonServiceService {
   private titleSubject: BehaviorSubject<any> = new BehaviorSubject<any>(localStorage.getItem('headerName'));
   public titleSubject$: Observable<any> = this.titleSubject.asObservable();
 
+  //for progres bar 
+  public isProgress: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
+  public isProgress$: Observable<any> = this.isProgress.asObservable()
+
   //for configurating mobile screen
   public isMobile: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
   public isMobile$: Observable<any> = this.isMobile.asObservable()
@@ -42,7 +46,7 @@ export class CommonServiceService {
         this.isMobile.next(true)
       }
     }
-    
+
   }
 
   //to open close navigation
@@ -61,8 +65,10 @@ export class CommonServiceService {
     this.titleSubject.next(name)
   }
 
-   //get screen size
-   getSize(size: any) {
+  
+
+  //get screen size
+  getSize(size: any) {
     this.sizeSubject$.next(size);
     if (size.width <= 750 || size.width <= 875) {
       this.isMobile.next(true)

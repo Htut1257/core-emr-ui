@@ -410,6 +410,7 @@ export class OpdSetupComponent implements OnInit {
   getOpdService(type: string, value: string) {
     this.opdService.getOpdServicebyFilter(type, value).subscribe({
       next: opdServices => {
+        console.log(opdServices)
         this.opdServices = opdServices
         this.opdServiceRow = this.opdServices
         if (this.opdServiceRow.length < 1) {

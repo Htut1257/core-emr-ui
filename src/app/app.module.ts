@@ -12,6 +12,7 @@ import { AgGridModule } from 'ag-grid-angular';
 import { LayoutsModule } from './shared/layouts/layouts.module';
 import { LoginModule } from './features/system/login/login.module';
 import { RegistrationModule } from './features/registration/registration.module';
+import { HttpInterceptorService } from './shared/http-interceptor/http-interceptor.service';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,7 @@ import { RegistrationModule } from './features/registration/registration.module'
 
   ],
   providers: [
-    
+    { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptorService, multi: true }
   ],
   bootstrap: [AppComponent]
 })

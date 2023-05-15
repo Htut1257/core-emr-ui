@@ -2,6 +2,9 @@
 <!-- <button mat-mini-fab color="primary" class="float" (click)="openDialog()">
     <mat-icon>filter_list</mat-icon>
 </button> -->
+<div *ngIf="loading">
+  <mat-progress-bar color="warn" mode="indeterminate"></mat-progress-bar>
+</div>
 <div class="sticky-container">
   <ul class="sticky">
     <li>

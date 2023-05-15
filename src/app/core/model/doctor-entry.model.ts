@@ -21,14 +21,22 @@ export interface DoctorTreatment {
     group: string
     subGroup: string
     code: string
-    desp: string
+    desc: string
     pattern: string
-    days:number
+    days: number
     qty: number
-    price: number
-    discount: number
-    amount: number
     remark: string
+    relStr: string
+    fees: number
+    fees1: number
+    fees2: number
+    fees3: number
+    fees4: number
+    fees5: number
+    fees6: number
+    isPercent:boolean
+    serviceCost:number
+    itemUnit:string
 }
 
 export interface DoctorNote {

@@ -1,6 +1,8 @@
 import { Component, AfterViewInit, ViewChild, ViewEncapsulation, ElementRef, HostListener } from '@angular/core';
 import { ICellEditorAngularComp } from 'ag-grid-angular';
+import { Pattern } from 'src/app/core/model/pattern.model';
 import { AutocompleteService } from 'src/app/core/services/autocomplete-service/autocomplete.service';
+import { PatternService } from 'src/app/core/services/pattern-service/pattern.service';
 @Component({
     selector: 'auto-complete',
     encapsulation: ViewEncapsulation.None,
@@ -53,8 +55,12 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
 
     @ViewChild("input") input: ElementRef;
 
-    constructor(private autoService: AutocompleteService) { }
-    columnObject:any;
+    constructor(
+        private autoService: AutocompleteService, private patternService: PatternService,
+    ) {
+
+    }
+    columnObject: any;
 
     ngAfterViewInit() {
         window.setTimeout(() => {
@@ -71,8 +77,8 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
     agInit(params: any): void {
         this.params = params;
         //to get witch field to use
-     //   console.log(params)
-        this.columnObject=params.colDef.field
+        //   console.log(params)
+        this.columnObject = params.colDef.field
         if (!params.rowData) {
             this.apiEndpoint = params.apiEndpoint;
             this.useApi = true;
@@ -87,7 +93,7 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
         this.propertyName = params.propertyRendered;
         if (this.columnObject == "patternObj") {
             this.gridWidth = 200
-        }else if (this.columnObject == "examinationObj") {
+        } else if (this.columnObject == "examinationObj") {
             this.gridWidth = 300
         }
         this.cellValue = params.value[this.propertyName];
@@ -170,11 +176,15 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
     }
 
     getApiData(filter) {
-        if (this.columnObject=="cityObject") {
+        if (this.columnObject == "cityObject") {
             return this.autoService.getTreatmentData(filter)
-        } else if (this.columnObject="examinationObj") {
+        } else if (this.columnObject == "examinationObj") {
             return this.autoService.getExaminationData(filter)
-        }else{
+        } else if (this.columnObject == "patternObj") {
+            // return this.autoService.getTreatmentData(filter)
+            return this.patternService.getPattern()
+        }
+        else {
             return this.autoService.getTreatmentData(filter)
         }
         // return this.httpClient.get(this.apiEndpoint + this.toQueryString(filter));

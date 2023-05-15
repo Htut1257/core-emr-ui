@@ -14,8 +14,13 @@ var uri: any = `${ApiSetting.UserApiEndPoint}`
 export class UserService extends AbstractService<User>{
   user: User
   userList: User[] = []
+
   $user: Observable<User>
   userSubject$!: BehaviorSubject<User>
+
+  users:BehaviorSubject<User[]>=new BehaviorSubject<User[]>([])
+  users$:Observable<User[]>=this.users.asObservable();
+
   constructor(@Inject(HttpClient) http: HttpClient, private route: Router) {
     super(http, uri)
     this.userSubject$ = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('user')))
@@ -40,7 +45,14 @@ export class UserService extends AbstractService<User>{
   //get user list
   getUser(): Observable<User[]> {
     this.baseURL = `${uri}/user/get-appuser`;
-    return this.getAll();
+    return new Observable(observable=>{
+      this.getAll().subscribe(users=>{
+        this.userList=users
+        this.users.next(users)
+        observable.next(users)
+        observable.complete()
+      })
+    })
   }
 
   //add or save user

@@ -1,0 +1,14 @@
+.mat-progress-bar-primary {
+    color: #00b900;
+}
+.mat-button.mat-primary:hover,
+.mat-stroked-button.mat-primary:hover {
+  background-color: #f0fff3;
+}
+
+.mat-progress-bar.mat-primary
+{
+  color: #f0fff3;
+  background-color: #03A9F4;
+}
+

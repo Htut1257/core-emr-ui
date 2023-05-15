@@ -1,19 +1,19 @@
 <div class=" col-12">
     <form [formGroup]="userForm" class="form" (ngSubmit)="saveUser(userForm.value)"
         (keydown.enter)="handleEnter($event)">
-        <div class="row">
+        <div class="row">   
             <div class="form-group col-md-6">
                 <mat-form-field class='col-12' appearance="outline">
                     <mat-label>User Code</mat-label>
                     <input [id]="'userCode'" matInput type="text" formControlName="userCode" name="userCode"
-                        (keydown.enter)="focusNext($event)">
+                        (keyup.enter)="focusElement('userCode','userName','text')">
                 </mat-form-field>
             </div>
             <div class="form-group col-md-6">
                 <mat-form-field class='col-12' appearance="outline">
                     <mat-label>User Name</mat-label>
                     <input [id]="'userName'" matInput type="text" formControlName="userName" name="userName"
-                        (keydown.enter)="focusNext($event)">
+                        (keyup.enter)="focusElement('userName','shortName','text')">
                     <mat-error>Please Enter User Name</mat-error>
                 </mat-form-field>
             </div>
@@ -21,7 +21,7 @@
                 <mat-form-field class='col-12' appearance="outline">
                     <mat-label>User Short</mat-label>
                     <input [id]="'shortName'" matInput type="text" formControlName="userShortName" name="userShortName"
-                        (keydown.enter)="focusNext($event)">
+                        (keyup.enter)="focusElement('shortName','password','text')">
                     <mat-error>Please Enter Short Name</mat-error>
                 </mat-form-field>
             </div>
@@ -29,7 +29,7 @@
                 <mat-form-field class='col-12' appearance="outline">
                     <mat-label>Password</mat-label>
                     <input [id]="'password'" matInput type="text" formControlName="password" name="password"
-                        (keydown.enter)="focusNext($event)">
+                        (keyup.enter)="focusElement('password','email','text')">
                     <mat-error>Please Enter Password</mat-error>
                 </mat-form-field>
             </div>
@@ -37,14 +37,14 @@
                 <mat-form-field class='col-12' appearance="outline">
                     <mat-label>Email</mat-label>
                     <input [id]="'email'" matInput type="text" formControlName="email" name="email"
-                        (keydown.enter)="focusNext($event)">
+                        (keyup.enter)="focusElement('email','role','text')">
                 </mat-form-field>
             </div>
             <div class="form-group col-md-6">
                 <mat-form-field class='col-12' appearance="outline">
                     <mat-label>Role</mat-label>
                     <input [id]="'role'" matInput [matAutocomplete]="auto" type="text" formControlName="role"
-                        name="role" (keydown.enter)="focusNext($event)">
+                        name="role" (keyup.enter)="focusElement('role','doctor','autocomplete')">
                     <mat-autocomplete #auto="matAutocomplete" [displayWith]="roleDisplayFn">
                         <mat-option *ngFor="let item of roleFilteredOption|async" [value]="item">
                             {{item.roleName}}
@@ -57,7 +57,7 @@
                 <mat-form-field class='col-12' appearance="outline">
                     <mat-label>Doctor</mat-label>
                     <input [id]="'doctor'" matInput [matAutocomplete]="auto1" type="text" name="doctor"
-                        [formControl]="docControl" >
+                        [formControl]="docControl" (keyup.enter)="focusElement('doctor','btnSave','autocomplete')">
                     <mat-autocomplete autoActiveFirstOption #auto1="matAutocomplete" [displayWith]="DocDisplayFn">
                         <mat-option *ngFor="let item of filteredDoc|async " [value]="item">
                             {{item.doctorName}}
