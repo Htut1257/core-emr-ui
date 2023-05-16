@@ -81,13 +81,17 @@
             <div class="col-2">
                 <mat-form-field class="col-12">
                     <mat-label>CF Fee</mat-label>
-                    <input matInput type="text" name="fromDate" value="0">
+                    <input matInput [formControl]="cfFeeControl" type="text" name="fromDate" value="0">
                 </mat-form-field>
             </div>
             <div class="col-2">
                 <mat-form-field class="col-12">
                     <mat-label>CF Type</mat-label>
-                    <input matInput type="text" name="fromDate" value="0">
+                    <mat-select [id]="'cfType'" name="cfType">
+                        <mat-option *ngFor="let item of cfFees" [value]="item" (onSelectionChange)="getDoctorFeeData(item)">
+                            {{item.serviceName}}
+                        </mat-option>
+                    </mat-select>
                 </mat-form-field>
             </div>
             <div class="col-2">
@@ -99,7 +103,8 @@
             <div class="col-2">
                 <mat-form-field class="col-12">
                     <mat-label>Re-Visit Date</mat-label>
-                    <input matInput [matDatepicker]="picker1" [(ngModel)]="reVisitDate" name="fromDate" onfocus="this.select()">
+                    <input matInput [matDatepicker]="picker1" [(ngModel)]="reVisitDate" name="fromDate"
+                        onfocus="this.select()">
                     <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
                     <mat-datepicker #picker1></mat-datepicker>
                 </mat-form-field>
@@ -136,7 +141,8 @@
             </div>
             <div class="col-12">
                 <ag-grid-angular id="noteGrid" class="ag-theme-balham" style="height:40vh;width:100%;"
-                    [gridOptions]="noteGridOption" (gridReady)="onGridReadyNote($event)" (cellEditingStopped)="cellEditingStopped($event)">
+                    [gridOptions]="noteGridOption" (gridReady)="onGridReadyNote($event)"
+                    (cellEditingStopped)="cellEditingStopped($event)">
                 </ag-grid-angular>
             </div>
         </div>

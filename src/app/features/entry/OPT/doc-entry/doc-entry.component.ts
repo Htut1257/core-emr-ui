@@ -15,6 +15,7 @@ import { VitalSignService } from 'src/app/core/services/vital-sign-service/vital
 import { DoctorEntryService } from 'src/app/core/services/doctor-entry-service/doctor-entry.service';
 import { ServerService } from 'src/app/core/services/server-service/server.service';
 import { UserService } from 'src/app/core/services/user-service/user-service.service';
+import { CfFeeService } from 'src/app/core/services/cf-fee-service/cf-fee.service';
 
 import { AutocompleteCell } from 'src/app/shared/cell-renderer/autocomplete-cell';
 import { CheckboxRenderer } from 'src/app/shared/cell-renderer/checkbox-cell';
@@ -23,6 +24,9 @@ import { AppointmentPatientDialogComponent } from '../appointment/appointment-pa
 import * as moment from 'moment';
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { MAT_DATE_FORMATS, MAT_DATE_LOCALE, DateAdapter } from '@angular/material/core';
+import { OpdCfFee } from 'src/app/core/model/cf-fee.model';
+import { FormControl } from '@angular/forms';
+import { DataRowOutlet } from '@angular/cdk/table';
 
 
 const MY_DATE_FORMAT = {
@@ -102,11 +106,14 @@ export class DocEntryComponent implements OnInit {
   user: User
   doctorId: string
 
+  cfFeeControl=new FormControl(0)
+  cfFees:OpdCfFee[]=[]
+
   constructor(
     private route: Router, private docService: DoctorService,
     private vitalService: VitalSignService, private entryService: DoctorEntryService,
     private autoService: AutocompleteService, private appointService: AppointmentService,
-    private userService: UserService,
+    private userService: UserService, private cfFeeService: CfFeeService,
     private serverService: ServerService, public dialog: MatDialog
   ) {
     this.frameworkComponents = {
@@ -114,7 +121,11 @@ export class DocEntryComponent implements OnInit {
       checkboxRenderer: CheckboxRenderer
     };
     this.examObj = {} as DrExamination
-
+    this.user = this.userService.getUserValue()
+    if (this.user) {
+      this.doctorId = this.user.doctorId
+      this.getDoctorCfFee(this.doctorId)
+    }
   }
 
   ngOnInit(): void {
@@ -125,9 +136,6 @@ export class DocEntryComponent implements OnInit {
     this.getNoteData();
     this.InitializeGridTable();
     this.getServerSideData();
-
-    this.user = this.userService.getUserValue()
-    this.doctorId = this.user.doctorId
   }
 
   getVitalSign(bookingId: string) {
@@ -142,6 +150,22 @@ export class DocEntryComponent implements OnInit {
         console.trace(err)
       }
     })
+  }
+
+  getDoctorCfFee(id: string) {
+    this.cfFeeService.getOpdCfFeeByDoctor(id).subscribe({
+      next: fees => {
+        this.cfFees=fees
+      },
+      error: err => {
+        console.trace(err)
+      }
+    })
+  }
+
+  getDoctorFeeData(fees:OpdCfFee){
+    console.log(fees)
+    this.cfFeeControl.patchValue(fees.fees)
   }
 
   getServerSideData() {
@@ -162,6 +186,8 @@ export class DocEntryComponent implements OnInit {
       }
     })
   }
+
+
 
   InitializeGridTable() {
 
@@ -191,7 +217,7 @@ export class DocEntryComponent implements OnInit {
     this.examinationApi = params.api
     this.examinationColumn = params.columnApi
     this.examinationApi.sizeColumnsToFit()
-
+   
   }
 
   //table for treatment
@@ -199,6 +225,7 @@ export class DocEntryComponent implements OnInit {
     this.treatmentApi = params.api
     this.treatmentColumn = params.columnApi
     this.treatmentApi.sizeColumnsToFit()
+
   }
 
   onGridReadyNote(params) {
@@ -240,6 +267,7 @@ export class DocEntryComponent implements OnInit {
         headerName: "Description",
         field: "cityObject",
         editable: true,
+        
         cellEditor: 'autoComplete',
         cellEditorParams: {
           'propertyRendered': 'itemName',

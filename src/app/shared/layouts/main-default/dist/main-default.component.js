@@ -11,15 +11,22 @@ var core_1 = require("@angular/core");
 var doctor_status_modal_component_1 = require("src/app/features/entry/OPT/doctor-status-modal/doctor-status-modal.component");
 var nav_item_model_1 = require("src/app/core/model/nav-item.model");
 var MainDefaultComponent = /** @class */ (function () {
-    function MainDefaultComponent(route, commonService, dialog) {
+    function MainDefaultComponent(route, commonService, dialog, cdr) {
         this.route = route;
         this.commonService = commonService;
         this.dialog = dialog;
+        this.cdr = cdr;
         this.items = [];
         this.loading = false;
     }
     MainDefaultComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        console.log(window.location.hostname);
         this.items = nav_item_model_1.navItems;
+        this.subscription = this.commonService.isProgress$.subscribe(function (data) {
+            _this.loading = data;
+            _this.cdr.detectChanges();
+        });
     };
     MainDefaultComponent.prototype.ngAfterViewInit = function () {
         this.commonService.appDrawer = this.appDrawer;
