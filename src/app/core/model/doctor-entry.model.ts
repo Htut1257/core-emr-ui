@@ -1,3 +1,5 @@
+import { OpdCfFee } from "./cf-fee.model"
+
 export interface DoctorMedicalHistory {
     visitId: string
     visitDate: string
@@ -8,9 +10,11 @@ export interface DoctorMedicalHistory {
     drName: string,
     reVisitDate: string,
     drNotes: string,
+    cfType?:any
+    cfFees:string
     examinations?: DoctorExamination[]
     treatments?: DoctorTreatment[]
-    kvDrNotes: DoctorNote[]
+    kvDrNotes?: DoctorNote[]
 }
 
 export interface DoctorExamination {

@@ -3,31 +3,31 @@
         <div class="col-3 group-text-field-left">
             <mat-form-field class="col-12" appearance="outline" disabled>
                 <mat-label>Visit No</mat-label>
-                <input matInput type="text" name="fromDate" value="BK1234567890123" [(ngModel)]="bookingId">
+                <input matInput type="text" name="bookingId" [(ngModel)]="bookingId">
             </mat-form-field>
         </div>
         <div class=" col-2 group-text-field-left">
             <mat-form-field class="col-12" appearance="outline">
                 <mat-label>Visit Date</mat-label>
-                <input matInput type="text" name="fromDate" value="03/05/2023" [(ngModel)]="bookingDate">
+                <input matInput type="text" name="reVisitDate" [(ngModel)]="bookingDate">
             </mat-form-field>
         </div>
         <div class=" col-2 group-text-field-left">
             <mat-form-field class="col-12" appearance="outline">
                 <mat-label>Reg No</mat-label>
-                <input matInput type="text" name="fromDate" value="123652023" [(ngModel)]="regNo">
+                <input matInput type="text" name="regNo" [(ngModel)]="regNo">
             </mat-form-field>
         </div>
         <div class=" col-2 group-text-field-left">
             <mat-form-field class="col-12" appearance="outline">
                 <mat-label>Adm No</mat-label>
-                <input matInput type="text" name="fromDate" value="123652023">
+                <input matInput type="text" name="admNo" value="123652023">
             </mat-form-field>
         </div>
         <div class=" col-3 group-text-field-left">
             <mat-form-field class="col-12" appearance="outline">
                 <mat-label>Name</mat-label>
-                <input matInput type="text" name="fromDate" value="U Kaung Myaint Kyaw" [(ngModel)]="patientName">
+                <input matInput type="text" name="patientName" [(ngModel)]="patientName">
             </mat-form-field>
         </div>
     </div>
@@ -80,15 +80,11 @@
             </div>
             <div class="col-2">
                 <mat-form-field class="col-12">
-                    <mat-label>CF Fee</mat-label>
-                    <input matInput [formControl]="cfFeeControl" type="text" name="fromDate" value="0">
-                </mat-form-field>
-            </div>
-            <div class="col-2">
-                <mat-form-field class="col-12">
                     <mat-label>CF Type</mat-label>
                     <mat-select [id]="'cfType'" name="cfType">
-                        <mat-option *ngFor="let item of cfFees" [value]="item" (onSelectionChange)="getDoctorFeeData(item)">
+                        <mat-option value="0">Select CF fees</mat-option>
+                        <mat-option *ngFor="let item of cfFees" [value]="item"
+                            (onSelectionChange)="getDoctorFeeData(item)">
                             {{item.serviceName}}
                         </mat-option>
                     </mat-select>
@@ -96,8 +92,15 @@
             </div>
             <div class="col-2">
                 <mat-form-field class="col-12">
+                    <mat-label>CF Fee</mat-label>
+                    <input matInput [(ngModel)]="cfFee" type="text" name="fromDate" value="0">
+                </mat-form-field>
+            </div>
+            <div class="col-2">
+                <mat-form-field class="col-12">
                     <mat-label>Days</mat-label>
-                    <input matInput type="text" name="fromDate" value="0">
+                    <input matInput [(ngModel)]="pharmacyDays" name="pharmacyDays"
+                        (keyup.enter)="confirmPharmacyDate()">
                 </mat-form-field>
             </div>
             <div class="col-2">
@@ -136,7 +139,7 @@
                 <mat-form-field class='col-12'>
                     <mat-label>Note</mat-label>
                     <textarea style="height:15vh" matInput placeholder="Ex. It makes me feel..."
-                        name="address"></textarea>
+                        [(ngModel)]="doctorNote" name="doctorNote"></textarea>
                 </mat-form-field>
             </div>
             <div class="col-12">

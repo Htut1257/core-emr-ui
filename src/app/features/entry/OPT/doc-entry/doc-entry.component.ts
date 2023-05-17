@@ -7,6 +7,9 @@ import { DrExamination, DrNote, DrTreatment } from 'src/app/core/model/autocompl
 import { User } from 'src/app/core/model/user.model';
 import { VitalSign } from 'src/app/core/model/vital-sign.model';
 import { DoctorExamination, DoctorMedicalHistory, DoctorTreatment } from 'src/app/core/model/doctor-entry.model';
+import { OpdVisitDate } from 'src/app/core/model/opd-visit-day.model';
+import { OpdCfFee } from 'src/app/core/model/cf-fee.model';
+import { Booking } from 'src/app/core/model/booking.model';
 
 import { DoctorService } from 'src/app/core/services/doctor-service/doctor.service';
 import { AutocompleteService } from 'src/app/core/services/autocomplete-service/autocomplete.service';
@@ -16,6 +19,8 @@ import { DoctorEntryService } from 'src/app/core/services/doctor-entry-service/d
 import { ServerService } from 'src/app/core/services/server-service/server.service';
 import { UserService } from 'src/app/core/services/user-service/user-service.service';
 import { CfFeeService } from 'src/app/core/services/cf-fee-service/cf-fee.service';
+import { OpdVisitDateService } from 'src/app/core/services/opd-visit-date-service/opd-visit-date.service';
+
 
 import { AutocompleteCell } from 'src/app/shared/cell-renderer/autocomplete-cell';
 import { CheckboxRenderer } from 'src/app/shared/cell-renderer/checkbox-cell';
@@ -24,9 +29,6 @@ import { AppointmentPatientDialogComponent } from '../appointment/appointment-pa
 import * as moment from 'moment';
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { MAT_DATE_FORMATS, MAT_DATE_LOCALE, DateAdapter } from '@angular/material/core';
-import { OpdCfFee } from 'src/app/core/model/cf-fee.model';
-import { FormControl } from '@angular/forms';
-import { DataRowOutlet } from '@angular/cdk/table';
 
 
 const MY_DATE_FORMAT = {
@@ -52,6 +54,7 @@ const MY_DATE_FORMAT = {
 })
 export class DocEntryComponent implements OnInit {
   //#region table grid variables
+
   examinationApi: GridApi
   treatmentApi: GridApi
   noteApi: GridApi
@@ -72,48 +75,49 @@ export class DocEntryComponent implements OnInit {
   treatmentRow: any
   noteRow: any
 
-
-
   public frameworkComponents;
   loop: boolean = false
+
+
   //#endregion table grid variables
 
+  user: User
   examObj: DrExamination
   treatObj: DrTreatment
+  vitalSign: any
+  docMedical: DoctorMedicalHistory
 
   drExamination: DrExamination[] = []
   drTreatment: DrTreatment[] = []
   drNote: DrNote[] = []
 
-  bookingData: any
-  vitalSign: any
+  cfFees: OpdCfFee[] = []
+  opdVisitDate: OpdVisitDate[] = []
+
+
+  doctorId: string
+  bookingId: string
+  bookingDate: string
+  regNo: string
+  patientName: string
+  cfFee: number
+  pharmacyDays: number
+  reVisitDate: string
+  doctorNote: string
+  temp: number
+  bp: string
 
   todayDate = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD')
 
-  reVisitDate: string = ''
-
-  docMedical: DoctorMedicalHistory
-
   booking: any
-  bookingId: any
-  bookingDate: any
-  regNo: any
-  patientName: any
 
-  temp: any
-  bp: any
-
-  user: User
-  doctorId: string
-
-  cfFeeControl=new FormControl(0)
-  cfFees:OpdCfFee[]=[]
 
   constructor(
     private route: Router, private docService: DoctorService,
     private vitalService: VitalSignService, private entryService: DoctorEntryService,
     private autoService: AutocompleteService, private appointService: AppointmentService,
     private userService: UserService, private cfFeeService: CfFeeService,
+    private visitDateService: OpdVisitDateService,
     private serverService: ServerService, public dialog: MatDialog
   ) {
     this.frameworkComponents = {
@@ -121,9 +125,10 @@ export class DocEntryComponent implements OnInit {
       checkboxRenderer: CheckboxRenderer
     };
     this.examObj = {} as DrExamination
+    this.vitalSign = {} as VitalSign
     this.user = this.userService.getUserValue()
     if (this.user) {
-      this.doctorId = this.user.doctorId
+      this.doctorId = "211"//this.user.doctorId
       this.getDoctorCfFee(this.doctorId)
     }
   }
@@ -136,12 +141,37 @@ export class DocEntryComponent implements OnInit {
     this.getNoteData();
     this.InitializeGridTable();
     this.getServerSideData();
+    this.getVisitDate()
+  }
+
+
+  onInitData(booking: Booking) {
+    this.booking = booking
+    this.bookingId = booking.bookingId.toString()
+    this.bookingDate = booking.bkDate.toString()
+    this.regNo = booking.regNo
+    this.patientName = booking.patientName
+    this.getVitalSign(booking.bookingId.toString());
+  }
+
+  getServerSideData() {
+    let uri = '/opdBooking/getMessage'
+    this.serverService.getServerSource(uri).subscribe(data => {
+      let serverData = JSON.parse(data.data)
+      this.booking = serverData
+      if (serverData.bstatus == "Doctor Room") {
+        if (this.doctorId == serverData.doctorId) {//
+          console.log(this.booking)
+          this.onInitData(this.booking)
+        }
+      }
+    })
   }
 
   getVitalSign(bookingId: string) {
     this.vitalService.getVitalSignByPatient(bookingId).subscribe({
       next: vitalSign => {
-        console.log(vitalSign)
+        console.log(vitalSign.length)
         this.vitalSign = vitalSign
         this.temp = this.vitalSign.temperature
         this.bp = this.vitalSign.bpUpper + "/" + this.vitalSign.bpLower
@@ -155,7 +185,8 @@ export class DocEntryComponent implements OnInit {
   getDoctorCfFee(id: string) {
     this.cfFeeService.getOpdCfFeeByDoctor(id).subscribe({
       next: fees => {
-        this.cfFees=fees
+        console.log(fees)
+        this.cfFees = fees
       },
       error: err => {
         console.trace(err)
@@ -163,34 +194,26 @@ export class DocEntryComponent implements OnInit {
     })
   }
 
-  getDoctorFeeData(fees:OpdCfFee){
-    console.log(fees)
-    this.cfFeeControl.patchValue(fees.fees)
+  getDoctorFeeData(fees: OpdCfFee) {
+    this.cfFee = fees.fees
   }
 
-  getServerSideData() {
-    let uri = '/opdBooking/getMessage'
-    this.serverService.getServerSource(uri).subscribe(data => {
-      console.log(data)
-      let serverData = JSON.parse(data.data)
-      this.bookingData = serverData
-      if (serverData.bstatus == "Doctor Room") {
-        if (this.doctorId == serverData.doctorId) {
-          this.booking = serverData
-          this.bookingId = serverData.bookingId
-          this.bookingDate = serverData.bkDate
-          this.regNo = serverData.regNo
-          this.patientName = serverData.patientName
-          this.getVitalSign(serverData.bookingId);
-        }
+  getVisitDate() {
+    this.visitDateService.getReVisitDate().subscribe({
+      next: visitDate => {
+        this.opdVisitDate = visitDate
+      },
+      error: err => {
+        console.trace(err)
       }
     })
   }
 
+  getReVisitData(row: OpdVisitDate) {
 
+  }
 
   InitializeGridTable() {
-
     this.examinationGridOption = {
       columnDefs: this.examinationColumnDef,
       rowData: this.examinationRow,
@@ -208,16 +231,13 @@ export class DocEntryComponent implements OnInit {
       rowData: this.noteRow,
       suppressScrollOnNewData: false
     }
-    console.log(this.noteGridOption)
   }
 
   //table for diagnosis 
   onGriReadyExamination(params) {
-    console.log("on grid called")
     this.examinationApi = params.api
     this.examinationColumn = params.columnApi
     this.examinationApi.sizeColumnsToFit()
-   
   }
 
   //table for treatment
@@ -225,9 +245,9 @@ export class DocEntryComponent implements OnInit {
     this.treatmentApi = params.api
     this.treatmentColumn = params.columnApi
     this.treatmentApi.sizeColumnsToFit()
-
   }
 
+  //table for note
   onGridReadyNote(params) {
     this.noteApi = params.api
     this.noteColumn = params.columnApi
@@ -256,8 +276,7 @@ export class DocEntryComponent implements OnInit {
     ]
 
     this.examinationRow = [
-      { 'examinationObj': { 'desc': '', } },
-
+      this.emptyExamination()
     ]
   }
 
@@ -267,7 +286,7 @@ export class DocEntryComponent implements OnInit {
         headerName: "Description",
         field: "cityObject",
         editable: true,
-        
+
         cellEditor: 'autoComplete',
         cellEditorParams: {
           'propertyRendered': 'itemName',
@@ -285,12 +304,6 @@ export class DocEntryComponent implements OnInit {
           return "";
         },
       },
-      // {
-      //   headerName: "Pattern",
-      //   field: "pattern",
-      //   width: 100,
-      //   editable: true
-      // },
       {
         headerName: "Pattern",
         field: "patternObj",
@@ -313,13 +326,15 @@ export class DocEntryComponent implements OnInit {
         headerName: "Days",
         field: "day",
         width: 100,
-        editable: true
+        editable: true,
+        type: 'rightAligned'
       },
       {
         headerName: "Qty",
         field: "qty",
         width: 100,
-        editable: true
+        editable: true,
+        type: 'rightAligned'
       },
       {
         headerName: "Remark",
@@ -329,13 +344,7 @@ export class DocEntryComponent implements OnInit {
       },
     ]
     this.treatmentRow = [
-      {
-        'cityObject': { 'itemName': '', 'itemOption': '', 'itemType': '', },
-        'patternObj': { 'patternCode': '', 'despEng': '' },
-        'day': '',
-        'qty': '',
-        'remark': ''
-      },
+      this.emptydrTreat()
     ]
   }
 
@@ -353,109 +362,55 @@ export class DocEntryComponent implements OnInit {
       }
     ]
     this.noteRow = [
-      { key: 'key remark1', value: 'value remark1' }
+      this.emptyNote()
     ]
   }
 
-  //save list to mappable obj
-  savetoDrExam(): DoctorExamination[] {
-    return this.drExamination.reduce(function (filtered: any, option: any) {
-      var someNewValue = {
-        desc: option.examinationObj.desc
+  emptyExamination(): DrExamination {
+    return {
+      examinationObj: {
+        desc: ''
       }
-      filtered.push(someNewValue);
-      return filtered
-    }, [])
-  }
-
-  //save list to mappable obj
-  savetoDrTreatment(): DoctorTreatment[] {
-    return this.drTreatment.reduce(function (filtered: any, option: any) {
-      var someNewValue = {
-        // group: option.cityObject.itemOption,
-        // subGroup: option.cityObject.itemType,
-        // code: option.cityObject.itemId,
-        // desc: option.cityObject.itemName,
-        // pattern: option.pattern,
-        // days: option.day,
-        // qty: option.aty,
-        group: option.cityObject.itemOption,
-        subGroup: option.cityObject.itemType,
-        code: option.cityObject.itemId,
-        desc: option.cityObject.itemName,
-        pattern: option.patternObj,
-        days: option.day,
-        qty: option.qty,
-        remark: option.remark,
-        relStr: option.cityObject.relStr,
-        fees: option.cityObject.fees,
-        fees1: option.cityObject.fees1,
-        fees2: option.cityObject.fees2,
-        fees3: option.cityObject.fees3,
-        fees4: option.cityObject.fees4,
-        fees5: option.cityObject.fees5,
-        fees6: option.cityObject.fees6,
-        isPercent: option.cityObject.isPercent,
-        serviceCost: option.cityObject.serviceCost,
-        itemUnit: option.cityObject.itemUnit
-      }
-      filtered.push(someNewValue);
-      return filtered
-    }, [])
-  }
-
-  //save list to mappable obj
-  savetoDrNote() {
-
-  }
-
-  saveMedHistory() {
-
-
-    let docMedic = {
-      visitId: this.bookingData.bookingId,
-      visitDate: this.bookingData.bkDate,
-      regNo: this.bookingData.regNo,
-      admissionNo: ' ',
-      patientName: this.bookingData.patientName,
-      drId: this.bookingData.doctorId,
-      drName: this.bookingData.doctorName,
-      reVisitDate: '2023-04-27',
-      drNotes: 'testing',
-      examinations: this.savetoDrExam(),
-      treatments: this.savetoDrTreatment(),
-      kvDrNotes: this.drNote
     }
-    console.log(docMedic)
-    let booking: any = this.booking
-    booking.bStatus = booking.bstatus
+  }
 
-    this.entryService.saveDoctorMedical(docMedic).subscribe({
-      next: data => {
-        this.appointService.updateAppointmentStatus(booking).subscribe({
-          next: booking => {
-            console.log("status changed")
-            console.log(booking)
-          }, error: err => {
-            console.trace(err)
-          }
-        })
+  emptydrTreat(): DrTreatment {
+    return {
+      cityObject: {
+        itemOption: '',
+        itemType: '',
+        itemId: '',
+        itemName: '',
+        relStr: '',
+        fees: 0,
+        fees1: 0,
+        fees2: 0,
+        fees3: 0,
+        fees4: 0,
+        fees5: 0,
+        fees6: 0,
+        isPercent: '',
+        serviceCost: 0,
+        itemUnit: '',
       },
-      error: err => {
-        console.trace(err)
-      }
-    })
-
+      patternObj: {
+        patternCode: '',
+        despEng: ''
+      },
+      day: '',
+      qty: 0,
+      remark: '',
+    }
   }
 
-
-
-  treatCellEditingStopped(event) {
-    this.treatmentApi.setFocusedCell(event.rowIndex, event.colDef.field);
-    let columnField = event.colDef.field
-
+  emptyNote(): DrNote {
+    return {
+      key: '',
+      value: ''
+    }
   }
 
+  //grid navigation
   @HostListener('keydown', ['$event'])
   onKeydown(event) {
     event.stopPropagation();
@@ -484,6 +439,7 @@ export class DocEntryComponent implements OnInit {
     return true
   }
 
+  //navigate grid func
   navigateExaminationGrid() {
     let cell: any = this.examinationApi.getFocusedCell()
     if (cell != undefined) {
@@ -495,6 +451,7 @@ export class DocEntryComponent implements OnInit {
     }
   }
 
+  //navigate each cell in table
   navigateTreatmentGrid() {
     let cell: any = this.treatmentApi.getFocusedCell()
     if (cell != undefined) {
@@ -516,6 +473,7 @@ export class DocEntryComponent implements OnInit {
     }
   }
 
+  //navigate each cell in table
   navigateNoteGrid() {
     let cell: any = this.noteApi.getFocusedCell()
     if (cell != undefined) {
@@ -554,9 +512,28 @@ export class DocEntryComponent implements OnInit {
       }
       if (columnField == "patternObj") {
         this.treatmentApi.setFocusedCell(event.rowIndex, event.colDef.field);
+
+        let rowData = event.data
+        rowData.qty = rowData.patternObj.factor * rowData.day
+        let rowIndex = this.treatmentGridOption.api.getRowNode(event.node.id).rowIndex;
+        this.treatmentRow[rowIndex] = rowData;
+        this.treatmentGridOption.api.setRowData(this.treatmentRow);
+
+      }
+      if (columnField == "day") {
+        this.treatmentApi.setFocusedCell(event.rowIndex, event.colDef.field);
+        let rowData = event.data
+        rowData.qty = rowData.patternObj.factor * rowData.day
+        let rowIndex = this.treatmentGridOption.api.getRowNode(event.node.id).rowIndex;
+        this.treatmentRow[rowIndex] = rowData;
+        this.treatmentGridOption.api.setRowData(this.treatmentRow);
+        this.reVisitDate = moment(this.reVisitDate, "YYYY-MM-DD").add(rowData.day, 'day').format('YYYY-MM-DD')
       }
       if (columnField == "remark") {
-        this.addNewRowtoTable(row, firstEditCol, this.treatmentApi, rowData, this.drTreatment, this.emptydrTreat())
+        let treatRow: any = this.emptydrTreat()
+
+        treatRow.day = rowData.day
+        this.addNewRowtoTable(row, firstEditCol, this.treatmentApi, rowData, this.drTreatment, treatRow)
       }
     }
     if (this.noteApi.getFocusedCell()) {
@@ -566,51 +543,7 @@ export class DocEntryComponent implements OnInit {
     }
   }
 
-  emptyExamination(): DrExamination {
-    return {
-      examinationObj: {
-        desc: ''
-      }
-    }
-  }
-
-  emptydrTreat(): DrTreatment {
-    return {
-      cityObject: {
-        itemOption: '',
-        itemType: '',
-        itemId: '',
-        itemName: '',
-        relStr: '',
-        fees: 0,
-        fees1: 0,
-        fees2: 0,
-        fees3: 0,
-        fees4: 0,
-        fees5: 0,
-        fees6: 0,
-        isPercent: '',
-        serviceCost: 0,
-        itemUnit: '',
-      },
-      patternObj: {
-        patternCode: '',
-        despEng: ''
-      },
-      day: '',
-      qty: 0,
-      remark: '',
-    }
-
-  }
-
-  emptyNote(): DrNote {
-    return {
-      key: '',
-      value: ''
-    }
-  }
-
+  //add new row to table
   addNewRowtoTable(rowIndex: any, firstColumn: any, gridApi: GridApi, rowData: Object, lstRow: any[], rowObj: Object) {
     let currentRow = lstRow[rowIndex]
     if (currentRow != undefined) {
@@ -629,6 +562,21 @@ export class DocEntryComponent implements OnInit {
     }
   }
 
+  //set date and pharmancy day
+  confirmPharmacyDate() {
+    this.reVisitDate = this.todayDate
+    for (let item of this.treatmentRow) {
+      item.day = this.pharmacyDays
+    }
+    this.treatmentGridOption.api.setRowData(this.treatmentRow);
+    let treatRow: any = this.emptydrTreat()
+    treatRow.day = this.pharmacyDays
+    this.treatmentApi.applyTransaction({
+      add: [treatRow]
+    })
+    this.reVisitDate = moment(this.reVisitDate, "YYYY-MM-DD").add(this.pharmacyDays, 'day').format('YYYY-MM-DD')
+  }
+
   searchPatient() {
     this.dialog.open(AppointmentPatientDialogComponent, {
       disableClose: false,
@@ -637,16 +585,9 @@ export class DocEntryComponent implements OnInit {
     }).afterClosed().subscribe({
       next: booking => {
         if (booking) {
-          this.bookingData = booking
           this.booking = booking
-          this.bookingId = booking.bookingId
-          this.bookingDate = booking.bkDate
-          this.regNo = booking.regNo
-          this.patientName = booking.patientName
-          this.getVitalSign(booking.bookingId);
+          this.onInitData(this.booking)
         }
-
-
       },
       error: err => {
         console.trace(err)
@@ -654,14 +595,112 @@ export class DocEntryComponent implements OnInit {
     })
   }
 
+  //save list to mappable obj
+  savetoDrExam(): DoctorExamination[] {
+    return this.drExamination.reduce(function (filtered: any, option: any) {
+      var someNewValue = {
+        desc: option.examinationObj.desc
+      }
+      filtered.push(someNewValue);
+      return filtered
+    }, [])
+  }
 
-  onClear() {
-    //this.examinationRow=this.emptyExamination()
-    this.treatmentRow = [this.emptydrTreat()]
-    this.treatmentGridOption.api.setRowData(this.treatmentRow)
+  //save list to mappable obj
+  savetoDrTreatment(): DoctorTreatment[] {
+    return this.drTreatment.reduce(function (filtered: any, option: any) {
+      var someNewValue = {
+        group: option.cityObject.itemOption,
+        subGroup: option.cityObject.itemType,
+        code: option.cityObject.itemId,
+        desc: option.cityObject.itemName,
+        pattern: option.patternObj,
+        days: option.day,
+        qty: option.qty,
+        remark: option.remark,
+        relStr: option.cityObject.relStr,
+        fees: option.cityObject.fees,
+        fees1: option.cityObject.fees1,
+        fees2: option.cityObject.fees2,
+        fees3: option.cityObject.fees3,
+        fees4: option.cityObject.fees4,
+        fees5: option.cityObject.fees5,
+        fees6: option.cityObject.fees6,
+        isPercent: option.cityObject.isPercent,
+        serviceCost: option.cityObject.serviceCost,
+        itemUnit: option.cityObject.itemUnit
+      }
+      filtered.push(someNewValue);
+      return filtered
+    }, [])
+  }
+
+  //save list to mappable obj
+  savetoDrNote() {
 
   }
 
+  //save all data
+  saveMedHistory() {
+    let docMedic = {
+      visitId: this.booking.bookingId,
+      visitDate: this.booking.bkDate,
+      regNo: this.booking.regNo,
+      admissionNo: '',
+      patientName: this.booking.patientName,
+      drId: this.booking.doctorId,
+      drName: this.booking.doctorName,
+      cfType: null,
+      cfFees: this.cfFee.toString(),
+      reVisitDate: this.reVisitDate,
+      drNotes: this.doctorNote,
+      examinations: this.savetoDrExam(),
+      treatments: this.savetoDrTreatment(),
+      kvDrNotes: this.drNote
+    }
+    console.log(docMedic)
+    let booking: any = this.booking
+    booking.bStatus = booking.bstatus
+    this.onClear()
+    return
+    this.entryService.saveDoctorMedical(docMedic).subscribe({
+      next: data => {
+        this.appointService.updateAppointmentStatus(booking).subscribe({
+          next: booking => {
+            console.log("status changed")
+            console.log(booking)
+          }, error: err => {
+            console.trace(err)
+          }
+        })
+      },
+      error: err => {
+        console.trace(err)
+      }
+    })
+  }
+
+  onClear() {
+    this.examinationRow = [this.emptyExamination()]
+    this.treatmentRow = [this.emptydrTreat()]
+    this.noteRow = [this.emptyNote()]
+
+    this.examinationGridOption.api.setRowData(this.examinationRow)
+    this.treatmentGridOption.api.setRowData(this.treatmentRow)
+    this.noteGridOption.api.setRowData(this.noteRow)
+
+    this.bookingId = ''
+    this.bookingDate = ''
+    this.regNo = ''
+    this.patientName = ''
+    this.cfFee = 0
+    this.pharmacyDays = 0
+    this.reVisitDate = ''
+    this.doctorNote = ''
+    this.temp = 0
+    this.bp = ''
+
+  }
 
 }
 

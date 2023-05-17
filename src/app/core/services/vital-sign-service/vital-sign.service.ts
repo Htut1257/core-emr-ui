@@ -33,8 +33,7 @@ export class VitalSignService extends AbstractService<VitalSign>{
 
   saveVitalSign(data: VitalSign): Observable<VitalSign> {
     this.baseURL=`${uri}/patient/saveVitalSign`
-    console.log(this.baseURL)
-    return this.http.post<VitalSign>(uri, data)
+    return this.save(data)
   }
 
 

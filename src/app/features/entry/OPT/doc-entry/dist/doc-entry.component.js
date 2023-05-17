@@ -27,7 +27,7 @@ var MY_DATE_FORMAT = {
     }
 };
 var DocEntryComponent = /** @class */ (function () {
-    function DocEntryComponent(route, docService, vitalService, entryService, autoService, appointService, userService, cfFeeService, serverService, dialog) {
+    function DocEntryComponent(route, docService, vitalService, entryService, autoService, appointService, userService, cfFeeService, visitDateService, serverService, dialog) {
         this.route = route;
         this.docService = docService;
         this.vitalService = vitalService;
@@ -36,16 +36,24 @@ var DocEntryComponent = /** @class */ (function () {
         this.appointService = appointService;
         this.userService = userService;
         this.cfFeeService = cfFeeService;
+        this.visitDateService = visitDateService;
         this.serverService = serverService;
         this.dialog = dialog;
         this.loop = false;
         this.drExamination = [];
         this.drTreatment = [];
         this.drNote = [];
+        this.bookingId = new forms_1.FormControl('');
+        this.bookingDate = new forms_1.FormControl('');
+        this.regNo = new forms_1.FormControl('');
+        this.patientName = new forms_1.FormControl('');
+        this.reVisitDate = new forms_1.FormControl('');
+        this.pharmacyDays = new forms_1.FormControl('');
         this.todayDate = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD');
-        this.reVisitDate = '';
         this.cfFeeControl = new forms_1.FormControl(0);
         this.cfFees = [];
+        this.visitDateControl = new forms_1.FormControl(0);
+        this.opdVisitDate = [];
         this.frameworkComponents = {
             autoComplete: autocomplete_cell_1.AutocompleteCell,
             checkboxRenderer: checkbox_cell_1.CheckboxRenderer
@@ -58,12 +66,13 @@ var DocEntryComponent = /** @class */ (function () {
         }
     }
     DocEntryComponent.prototype.ngOnInit = function () {
-        this.reVisitDate = this.todayDate;
+        this.reVisitDate.patchValue(this.todayDate);
         this.getExaminationData();
         this.getTreatmentData();
         this.getNoteData();
         this.InitializeGridTable();
         this.getServerSideData();
+        this.getVisitDate();
     };
     DocEntryComponent.prototype.getVitalSign = function (bookingId) {
         var _this = this;
@@ -93,6 +102,20 @@ var DocEntryComponent = /** @class */ (function () {
     DocEntryComponent.prototype.getDoctorFeeData = function (fees) {
         console.log(fees);
         this.cfFeeControl.patchValue(fees.fees);
+    };
+    DocEntryComponent.prototype.getVisitDate = function () {
+        var _this = this;
+        this.visitDateService.getReVisitDate().subscribe({
+            next: function (visitDate) {
+                console.log(visitDate);
+                _this.opdVisitDate = visitDate;
+            },
+            error: function (err) {
+                console.trace(err);
+            }
+        });
+    };
+    DocEntryComponent.prototype.getReVisitData = function (row) {
     };
     DocEntryComponent.prototype.getServerSideData = function () {
         var _this = this;
@@ -197,12 +220,6 @@ var DocEntryComponent = /** @class */ (function () {
                     return "";
                 }
             },
-            // {
-            //   headerName: "Pattern",
-            //   field: "pattern",
-            //   width: 100,
-            //   editable: true
-            // },
             {
                 headerName: "Pattern",
                 field: "patternObj",
@@ -226,13 +243,15 @@ var DocEntryComponent = /** @class */ (function () {
                 headerName: "Days",
                 field: "day",
                 width: 100,
-                editable: true
+                editable: true,
+                type: 'rightAligned'
             },
             {
                 headerName: "Qty",
                 field: "qty",
                 width: 100,
-                editable: true
+                editable: true,
+                type: 'rightAligned'
             },
             {
                 headerName: "Remark",
@@ -246,7 +265,7 @@ var DocEntryComponent = /** @class */ (function () {
                 'cityObject': { 'itemName': '', 'itemOption': '', 'itemType': '' },
                 'patternObj': { 'patternCode': '', 'despEng': '' },
                 'day': '',
-                'qty': '',
+                'qty': 0,
                 'remark': ''
             },
         ];
@@ -317,7 +336,6 @@ var DocEntryComponent = /** @class */ (function () {
     DocEntryComponent.prototype.savetoDrNote = function () {
     };
     DocEntryComponent.prototype.saveMedHistory = function () {
-        var _this = this;
         var docMedic = {
             visitId: this.bookingData.bookingId,
             visitDate: this.bookingData.bkDate,
@@ -335,21 +353,21 @@ var DocEntryComponent = /** @class */ (function () {
         console.log(docMedic);
         var booking = this.booking;
         booking.bStatus = booking.bstatus;
-        this.entryService.saveDoctorMedical(docMedic).subscribe({
-            next: function (data) {
-                _this.appointService.updateAppointmentStatus(booking).subscribe({
-                    next: function (booking) {
-                        console.log("status changed");
-                        console.log(booking);
-                    }, error: function (err) {
-                        console.trace(err);
-                    }
-                });
-            },
-            error: function (err) {
-                console.trace(err);
-            }
-        });
+        // this.entryService.saveDoctorMedical(docMedic).subscribe({
+        //   next: data => {
+        //     this.appointService.updateAppointmentStatus(booking).subscribe({
+        //       next: booking => {
+        //         console.log("status changed")
+        //         console.log(booking)
+        //       }, error: err => {
+        //         console.trace(err)
+        //       }
+        //     })
+        //   },
+        //   error: err => {
+        //     console.trace(err)
+        //   }
+        // })
     };
     DocEntryComponent.prototype.treatCellEditingStopped = function (event) {
         this.treatmentApi.setFocusedCell(event.rowIndex, event.colDef.field);
@@ -448,9 +466,25 @@ var DocEntryComponent = /** @class */ (function () {
             }
             if (columnField == "patternObj") {
                 this.treatmentApi.setFocusedCell(event.rowIndex, event.colDef.field);
+                var rowData_1 = event.data;
+                rowData_1.qty = rowData_1.patternObj.factor * rowData_1.day;
+                var rowIndex = this.treatmentGridOption.api.getRowNode(event.node.id).rowIndex;
+                this.treatmentRow[rowIndex] = rowData_1;
+                this.treatmentGridOption.api.setRowData(this.treatmentRow);
+            }
+            if (columnField == "day") {
+                this.treatmentApi.setFocusedCell(event.rowIndex, event.colDef.field);
+                var rowData_2 = event.data;
+                rowData_2.qty = rowData_2.patternObj.factor * rowData_2.day;
+                var rowIndex = this.treatmentGridOption.api.getRowNode(event.node.id).rowIndex;
+                this.treatmentRow[rowIndex] = rowData_2;
+                this.treatmentGridOption.api.setRowData(this.treatmentRow);
+                this.reVisitDate.patchValue(moment(this.reVisitDate.value, "YYYY-MM-DD").add(rowData_2.day, 'day').format('YYYY-MM-DD'));
             }
             if (columnField == "remark") {
-                this.addNewRowtoTable(row, firstEditCol, this.treatmentApi, rowData, this.drTreatment, this.emptydrTreat());
+                var treatRow = this.emptydrTreat();
+                treatRow.day = rowData.day;
+                this.addNewRowtoTable(row, firstEditCol, this.treatmentApi, rowData, this.drTreatment, treatRow);
             }
         }
         if (this.noteApi.getFocusedCell()) {
@@ -516,6 +550,20 @@ var DocEntryComponent = /** @class */ (function () {
             gridApi.ensureColumnVisible(firstColumn);
             gridApi.setFocusedCell(rowIndex + 1, firstColumn);
         }
+    };
+    DocEntryComponent.prototype.confirmPharmacyDate = function () {
+        this.reVisitDate.patchValue(this.todayDate);
+        for (var _i = 0, _a = this.treatmentRow; _i < _a.length; _i++) {
+            var item = _a[_i];
+            item.day = this.pharmacyDays;
+        }
+        this.treatmentGridOption.api.setRowData(this.treatmentRow);
+        var treatRow = this.emptydrTreat();
+        treatRow.day = this.pharmacyDays;
+        this.treatmentApi.applyTransaction({
+            add: [treatRow]
+        });
+        //this.reVisitDate.patchValue(moment(this.reVisitDate.value, "YYYY-MM-DD").add(this.pharmacyDays, 'day').format('YYYY-MM-DD'))
     };
     DocEntryComponent.prototype.searchPatient = function () {
         var _this = this;
