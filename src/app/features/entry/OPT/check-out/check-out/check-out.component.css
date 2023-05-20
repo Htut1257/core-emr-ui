@@ -8,6 +8,7 @@
   .container {
     flex:65%;
     margin: 0 1% 0 1%;
+    overflow: auto;
   }
 
   .row{

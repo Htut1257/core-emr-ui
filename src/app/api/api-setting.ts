@@ -1,13 +1,13 @@
 export class ApiSetting {
     public static get UserApiEndPoint() {
-        return 'http://192.168.100.183:8079';
+        return 'http://192.168.100.252:8079';
     }
 
     public static get AccountApiEndPoint() {
-        return 'http://192.168.100.213:8079';
+        return 'http://192.168.100.252:8079';
     }
     public static get InventoryApiEndPoint() {
-        return 'http://192.168.100.213:8079';
+        return 'http://192.168.100.252:8079';
     }
 
     public static get PayRollApiEndPoint() {
@@ -15,11 +15,11 @@ export class ApiSetting {
     }
 
     public static get EmrEndPoint() {
-        return 'http://192.168.100.48:8080';
+        return 'http://192.168.100.252:8080';
     }
 
     public static get EmrMongoEndPoint(){
-        return 'http://192.168.100.183:8082';
+        return 'http://192.168.100.252:8082';
     }
 
 }

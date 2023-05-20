@@ -2,24 +2,24 @@ import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, BehaviorSubject } from "rxjs"
 import { AbstractService } from '../abstract-service/abstract.service';
-import { CheckOut } from 'src/app/features/entry/OPT/check-out/check-out-list/check-out-list.component';
+
 import { ApiSetting } from 'src/app/api/api-setting';
 var uri: any = `${ApiSetting.PayRollApiEndPoint}`
 @Injectable({
   providedIn: 'root'
 })
-export class CheckOutService extends AbstractService<CheckOut>{
+export class CheckOutService extends AbstractService<any>{
   checkOut: any
   constructor(@Inject(HttpClient) http: HttpClient) {
     super(http, uri)
   }
 
-  getCheckup(): Observable<CheckOut[]> {
+  getCheckup(): Observable<any[]> {
     this.baseURL =`${uri}/setup/get-Bonus`
     return this.getAll()
   }
 
-  saveCheckup(checkOut: CheckOut) {
+  saveCheckup(checkOut: any) {
     this.baseURL =`${uri}/setup/save-Bonus`
     this.save(checkOut);
   }

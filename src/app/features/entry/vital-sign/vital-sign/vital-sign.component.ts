@@ -87,7 +87,7 @@ export class VitalSignComponent implements OnInit {
   getBooking(filter: any) {
     console.log(filter)
     this.appointService.getAppointment(filter).subscribe(appoint => {
-      this.bookings = appoint.filter((data: any) => data.bstatus === "Confirm")
+      this.bookings = appoint//.filter((data: any) => data.bstatus === "Confirm")
       this.dataSource = new MatTableDataSource(this.bookings)
     })
 

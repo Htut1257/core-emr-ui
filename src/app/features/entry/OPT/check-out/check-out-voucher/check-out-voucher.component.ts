@@ -1,137 +1,197 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { GridOptions, SelectionChangedEvent, ColDef } from 'ag-grid-community';
+import { GridOptions, SelectionChangedEvent, ColDef, ColumnApi, GridApi } from 'ag-grid-community';
+import * as moment from 'moment';
 import { CheckOutService } from 'src/app/core/services/check-out-service/check-out.service';
 @Component({
   selector: 'app-check-out-voucher',
   templateUrl: './check-out-voucher.component.html',
   styleUrls: ['./check-out-voucher.component.css']
+
 })
 export class CheckOutVoucherComponent implements OnInit {
-  checkOut: any
-  //for check out table
-  gridOptionsCheckOut: GridOptions
-  gridApiCheckOut: any
-  gridColumnApiCheckOut: any
+  //#region grid variable
 
-  //for payment table
-  gridOptionsPayment: GridOptions
-  gridApiPayment: any
-  gridColumnApiPayment: any
+  checkOut: any[] = []
 
-  defaultColDef: any
-  columns: any
-  rows: any
+  checkOutGridOption: GridOptions
+  paymentGridOption: GridOptions
+
+  checkOutApi: GridApi
+  paymentApi: GridApi
+
+  checkOutColumn: ColumnApi
+  paymentColumn: ColumnApi
+
+  checkOutColumnDef: any
+  paymentColumnDef: any
+
+  checkOutRow: any
+  paymentRow: any
+
+
+  //#endregion grid variable
+
+  voucherDate: FormControl = new FormControl('')
+  todayDate: string = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD')
 
   constructor(private route: Router, private checkService: CheckOutService) {
     if (this.checkService.checkOut != undefined) {
       this.checkOut = this.checkService.checkOut
     }
-    this.defaultColDef = {
-      resizable: true,
-    };
-    this.initCheckOutTable();
-    this.initPaymentTable();
+
+
   }
 
   ngOnInit(): void {
+    this.getCheckOutData()
+    this.getPaymentData()
+    this.initializeGridTable()
+    this.voucherDate.patchValue(this.todayDate)
+  }
+
+  initializeGridTable() {
+    this.checkOutGridOption = {
+      columnDefs: this.checkOutColumnDef,
+      rowData: this.checkOutRow,
+      suppressScrollOnNewData: false,
+      onGridReady(event) {
+        this.checkOutApi = event.api
+        this.checkOutColumn = event.columnApi
+        this.checkOutApi.sizeColumnsToFit()
+      },
+    }
+
+    this.paymentGridOption = {
+      columnDefs: this.paymentColumnDef,
+      rowData: this.paymentRow,
+      suppressScrollOnNewData: false,
+      onGridReady(event) {
+        this.paymentApi = event.api
+        this.paymentColumn = event.columnApi
+        this.paymentApi.sizeColumnsToFit()
+      },
+    }
 
   }
 
-  initCheckOutTable() {
-    this.columns = [
-      { headerName: "Code", field: "code", editable: true, resizeable: true },
-      { headerName: "Description", field: "desp", editable: true },
-      { headerName: "Exp Date", field: "expDate", editable: true },
-      { headerName: "Qty", field: "qty", editable: true },
-      { headerName: "Price", field: "price", editable: true },
-      { headerName: "Discount", field: "discount", editable: true },
-      { headerName: "Amount", field: "amount", editable: true },
+  getCheckOutData() {
+    this.checkOutColumnDef = [
+      {
+        headerName: 'Code',
+        field: 'itemId',
+        width: 50,
+        editable: true,
+      },
+      {
+        headerName: 'Description',
+        field: 'itemObject',
+        width: 100,
+        editable: true,
+      },
+      {
+        headerName: 'Pattern',
+        field: 'pattern',
+        width: 50,
+        editable: true,
+      },
+      {
+        headerName: 'Day',
+        field: 'day',
+        width: 30,
+        editable: true,
+        type: 'rightAligned'
+      },
+      {
+        headerName: 'Qty',
+        field: 'qty',
+        width: 30,
+        editable: true,
+        type: 'rightAligned'
+      },
+      {
+        headerName: 'Price',
+        field: 'price',
+        width: 50,
+        editable: true,
+        type: 'rightAligned'
+      },
+      {
+        headerName: 'Discount',
+        field: 'discount',
+        width: 50,
+        editable: true,
+        type: 'rightAligned'
+      },
+      {
+        headerName: 'Amount',
+        field: 'amount',
+        width: 50,
+        editable: true,
+        type: 'rightAligned'
+      },
+      {
+        headerName: 'Remark',
+        field: 'remark',
+        width: 100,
+        editable: true,
+      },
+
     ]
-    this.rows = [
-      { code: 1, desp: 'test', expDate: '01/02/2023', qty: 5, price: 1000, discount: 5, amount: 5000 },
-      { code: 1, desp: 'test', expDate: '01/02/2023', qty: 5, price: 1000, discount: 5, amount: 5000 },
-      { code: 1, desp: 'test', expDate: '01/02/2023', qty: 5, price: 1000, discount: 5, amount: 5000 }
-    ]
-    this.gridOptionsCheckOut = <GridOptions>{
-      enableCellEditingOnBackspace: true,
-      columnDefs: this.columns,
-      animateRows: true,
-      rowData: this.rows,
-      defaultColDef: {
-        resizable: true
+    this.checkOutRow = [
+      {
+        itemId: '', itemObject: '', pattern: '', day: 0, qty: 0, price: 0, discount: 0, amount: 0, remark: ''
+      }, {
+        itemId: '', itemObject: '', pattern: '', day: 0, qty: 0, price: 0, discount: 0, amount: 0, remark: ''
+      },
+      {
+        itemId: '', itemObject: '', pattern: '', day: 0, qty: 0, price: 0, discount: 0, amount: 0, remark: ''
+      },
+      {
+        itemId: '', itemObject: '', pattern: '', day: 0, qty: 0, price: 0, discount: 0, amount: 0, remark: ''
+      },
+      {
+        itemId: '', itemObject: '', pattern: '', day: 0, qty: 0, price: 0, discount: 0, amount: 0, remark: ''
+      }, {
+        itemId: '', itemObject: '', pattern: '', day: 0, qty: 0, price: 0, discount: 0, amount: 0, remark: ''
+      },
+      {
+        itemId: '', itemObject: '', pattern: '', day: 0, qty: 0, price: 0, discount: 0, amount: 0, remark: ''
+      }, {
+        itemId: '', itemObject: '', pattern: '', day: 0, qty: 0, price: 0, discount: 0, amount: 0, remark: ''
       }
-    };
-  }
-
-  initPaymentTable() {
-    this.columns = [
-      { field: 'type', headerName: 'Payment Type', editable: true },
-      { field: 'price', headerName: 'Amount', editable: true },
-    ]
-    this.rows = [
-      { type: 'Toyota', price: 35000 },
-      { type: 'Ford', price: 32000 },
-      { type: 'Porsche', price: 72000 },
-    ]
-    this.gridOptionsPayment = <GridOptions>{
-      enableCellEditingOnBackspace: true,
-      columnDefs: this.columns,
-      animateRows: true,
-      rowData: this.rows,
-      defaultColDef: {
-        resizable: true
+      , {
+        itemId: '', itemObject: '', pattern: '', day: 0, qty: 0, price: 0, discount: 0, amount: 0, remark: ''
       }
-    };
+      , {
+        itemId: '', itemObject: '', pattern: '', day: 0, qty: 0, price: 0, discount: 0, amount: 0, remark: ''
+      }
+
+    ]
   }
 
-  onGridReady(params) {
-    console.log(params)
-    this.gridApiCheckOut = params.api;
-    this.gridColumnApiCheckOut = params.columnApi;
-    this.gridApiCheckOut.sizeColumnsToFit();
+  getPaymentData() {
+    this.paymentColumnDef = [
 
-    
-  }
+    ]
+    this.paymentRow = [
 
-  onGridReadyPay(params) {
-    this.gridApiPayment = params.api;
-    this.gridColumnApiPayment = params.columnApi;
-   this.gridApiPayment.sizeColumnsToFit();
-  }
-
-  cellEditingStarted(event) {
-
-  }
-
-
-  cellEditingStopped(event) {
-    console.log(event)
-    this.gridApiCheckOut.applyTransaction({ add: [{}] })
-    let row = event.rowIndex + 1
-
-    var firstEditCol = event.columnApi.getAllDisplayedColumns()[0];
-    console.log(row + "::" + event.rowIndex)
-    this.gridApiCheckOut.ensureIndexVisible(0)
-    this.gridApiCheckOut.ensureColumnVisible(firstEditCol);
-    this.gridApiCheckOut.setFocusedCell(row, firstEditCol);
-
+    ]
   }
 
   //get single row data
   getRowData() {
-    var rowNode = this.gridApiCheckOut.getRenderedNodes()//.rowData
-    console.log(rowNode)
+    // var rowNode = this.gridApiCheckOut.getRenderedNodes()//.rowData
+    // console.log(rowNode)
   }
 
   //get the current changed data
   onSelectionChanged(event: SelectionChangedEvent) {
-    const selectedData = this.gridApiCheckOut.getSelectedRows();
+    //const selectedData = this.gridApiCheckOut.getSelectedRows();
     console.log('Selection Changed', event);
   }
 
-  addNewRow() {
-    alert("ok")
-  }
+
 
 }

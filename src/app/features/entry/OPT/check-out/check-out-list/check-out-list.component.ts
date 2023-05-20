@@ -1,37 +1,62 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs'
+import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
+import { Booking } from 'src/app/core/model/booking.model';
+import { ServerService } from 'src/app/core/services/server-service/server.service';
+import { AppointmentService } from 'src/app/core/services/appointment-service/appointment.service';
 import { CheckOutService } from 'src/app/core/services/check-out-service/check-out.service';
-
-export interface CheckOut {
-  regNo: string;
-  admNo: string;
-  Name: string;
-
-}
-
-const table_data: CheckOut[] = [
-  { regNo: '20231511', admNo: '20231511', Name: 'Nay Myo Htut', },
-  { regNo: '20231512', admNo: '20231512', Name: 'Aung Bone Khant', },
-  { regNo: '20231513', admNo: '20231513', Name: 'Wai Yan Hein', },
-  { regNo: '20231514', admNo: '20231514', Name: 'Myo Thi Ha Zaw', },
-  { regNo: '20231515', admNo: '20231515', Name: 'U Win Swe', },
-  { regNo: '20231516', admNo: '20231516', Name: 'U Min Zaw', },
-  { regNo: '20231517', admNo: '20231517', Name: 'Kyaw Thu Ya ung', },
-  { regNo: '20231518', admNo: '20231518', Name: 'Myo Thu Win', },
-  { regNo: '20231519', admNo: '20231519', Name: 'Aung Naing Oo', },
-  { regNo: '202315110', admNo: '202315110', Name: 'Thet Win Naung' },
-];
+import { AppointmentSearchDialogComponent } from '../../appointment/appointment-search-dialog/appointment-search-dialog.component';
+import * as moment from 'moment';
 @Component({
   selector: 'app-check-out-list',
   templateUrl: './check-out-list.component.html',
   styleUrls: ['./check-out-list.component.css']
 })
-export class CheckOutListComponent {
-  dataSource: MatTableDataSource<CheckOut>
+export class CheckOutListComponent implements OnInit {
+  bookings: Booking[] = []
+  todayDate = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD')
+
+  dataSource: MatTableDataSource<Booking>
   displayedColumns: string[] = ["reg", "adm", "name"]
-  constructor(private route: Router, private checkService: CheckOutService) {
-    this.dataSource = new MatTableDataSource<CheckOut>(table_data)
+
+  constructor(
+    private route: Router, private serverService: ServerService,
+    private appointService: AppointmentService, private checkService: CheckOutService,
+    public dialog:MatDialog,
+  ) {
+
+  }
+
+
+  ngOnInit(): void {
+    let filter = {
+      fromDate: this.todayDate,
+      toDate: this.todayDate,
+      doctorId: '-',
+      regNo: '-',
+      status: 'Billing'
+    }
+    this.getBooking(filter);
+    this.getServerSideData();
+  }
+
+  getServerSideData() {
+    let uri = '/opdBooking/getMessage'
+    this.serverService.getServerSource(uri).subscribe(data => {
+      let serverData = JSON.parse(data.data)
+      console.log(serverData)
+    })
+  }
+
+  //get Appointment
+  getBooking(filter: any) {
+    this.appointService.getAppointment(filter).subscribe(appoint => {
+      this.bookings = appoint
+      console.log(this.bookings)
+      this.dataSource = new MatTableDataSource(this.bookings)
+    })
   }
 
   //get all checkout
@@ -45,5 +70,20 @@ export class CheckOutListComponent {
     this.checkService.checkOut = data
     this.route.navigate(['/main/opd/check-out/voucher'])
   }
+
+  searchBooking() {
+    this.dialog.open(AppointmentSearchDialogComponent, {
+      disableClose: true,
+      width: '50%',
+      data:{'status':'Billing'}
+    })
+      .afterClosed()
+      .subscribe(result => {
+        if (result.dialogStatus) {
+          this.getBooking(result)
+        }
+      })
+  }
+
 
 }
