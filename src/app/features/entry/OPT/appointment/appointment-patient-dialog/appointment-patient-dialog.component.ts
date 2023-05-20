@@ -35,11 +35,12 @@ export class AppointmentPatientDialogComponent implements OnInit {
   ngOnInit(): void {
     
     let filter = {
-      fromDate:this.todayDate,
+      fromDate:'2022-01-01',
       toDate: this.todayDate,
       doctorId: '-',
       regNo: '-',
-      status: 'Doctor Room'
+      status: '-'
+    //  status: 'Doctor Room'
     }
     this.getBooking(filter);
   }
@@ -48,7 +49,6 @@ export class AppointmentPatientDialogComponent implements OnInit {
   getBooking(filter: any) {
     this.appointService.getAppointment(filter).subscribe(appoint => {
       this.bookings = appoint
-      console.log(appoint)
       this.dataSource = new MatTableDataSource(this.bookings)
     })
   }

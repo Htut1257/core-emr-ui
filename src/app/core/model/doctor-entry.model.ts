@@ -14,7 +14,7 @@ export interface DoctorMedicalHistory {
     cfFees:string
     examinations?: DoctorExamination[]
     treatments?: DoctorTreatment[]
-    kvDrNotes?: DoctorNote[]
+    kvDrNotes: DoctorNote[]
 }
 
 export interface DoctorExamination {

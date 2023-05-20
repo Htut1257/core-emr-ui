@@ -15,6 +15,22 @@ export class DoctorEntryService extends AbstractService<DoctorMedicalHistory>{
     super(http, uri)
   }
 
+  getDoctorMedical():Observable<DoctorMedicalHistory[]>{
+    this.baseURL = `${uri}/opdMedical/get-opdMedicalHis`
+    console.log(this.baseURL)
+    // return this.http.post<VitalSign>(uri, data)
+    return this.getAll()
+  }//getOPDMedicalHisCashier
+
+  getDoctorMedicalByVisitId(visitId:string):Observable<DoctorMedicalHistory[]>{
+    this.baseURL = `${uri}/opdMedical/find-opdMedicalHis-visitId`
+    console.log(this.baseURL)
+    // return this.http.post<VitalSign>(uri, data)
+    let httpParams=new HttpParams()
+    .set('visitId',visitId)
+    return this.getByParams(httpParams)
+  }//
+
   saveDoctorMedical(data: DoctorMedicalHistory): Observable<DoctorMedicalHistory> {
     this.baseURL = `${uri}/opdMedical/save-opdMedicalHis`
     console.log(this.baseURL)

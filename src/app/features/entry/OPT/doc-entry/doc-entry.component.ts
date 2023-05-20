@@ -21,7 +21,6 @@ import { UserService } from 'src/app/core/services/user-service/user-service.ser
 import { CfFeeService } from 'src/app/core/services/cf-fee-service/cf-fee.service';
 import { OpdVisitDateService } from 'src/app/core/services/opd-visit-date-service/opd-visit-date.service';
 
-
 import { AutocompleteCell } from 'src/app/shared/cell-renderer/autocomplete-cell';
 import { CheckboxRenderer } from 'src/app/shared/cell-renderer/checkbox-cell';
 import { AppointmentPatientDialogComponent } from '../appointment/appointment-patient-dialog/appointment-patient-dialog.component';
@@ -166,6 +165,78 @@ export class DocEntryComponent implements OnInit {
         }
       }
     })
+  }
+
+  getDocMedicalHistory(visitId: string) {
+    this.entryService.getDoctorMedicalByVisitId(visitId).subscribe({
+      next: entry => {
+        console.log(entry)
+        let data: any = entry
+        this.renderExaminationData(data.examinations)
+        this.renderTreatmetData(data.treatments)
+        this.renderDocNote(data.kvDrNotes)
+      },
+      error: err => {
+        console.trace(err)
+      }
+    })
+  }
+
+  renderExaminationData(data: DrExamination[]) {
+    this.examinationRow = data.reduce(function (filtered: any, option: any) {
+      var someNewValue = {
+        examinationObj: {
+          desc: option.desc
+        }
+      }
+      filtered.push(someNewValue);
+      return filtered
+    }, [])
+    this.examinationRow.push(this.emptyExamination())
+    this.examinationGridOption.api.setRowData(this.examinationRow)
+
+
+  }
+
+  renderTreatmetData(data: DrTreatment[]) {
+    this.treatmentRow = data.reduce(function (filtered: any, option: any) {
+      var someValue = {
+        cityObject: {
+          itemOption:option.group,
+          itemType: option.subGroup,
+          itemId: option.code,
+          itemName: option.desc,
+          relStr: option.relStr,
+          fees:  option.fees,
+          fees1: option.fees1,
+          fees2: option.fees2,
+          fees3: option.fees3,
+          fees4: option.fees4,
+          fees5: option.fees5,
+          fees6: option.fees6,
+          isPercent: option.isPercent,
+          serviceCost: option.serviceCost,
+          itemUnit: option.itemUnit,
+        },
+        patternObj: {
+          patternCode: option.pattern.patternCode,
+          despEng: option.pattern.despEng
+        },
+        day: option.days,
+        qty: option.qty,
+        remark: option.remark,
+      }
+      filtered.push(someValue)
+      return filtered
+    }, [])
+    this.treatmentRow.push(this.emptydrTreat())
+    this.treatmentGridOption.api.setRowData(this.treatmentRow)
+  }
+
+  renderDocNote(data: DrNote[]) {
+    this.noteRow = data
+    this.noteRow.push(this.emptyNote)
+    this.noteGridOption.api.setRowData(this.noteRow)
   }
 
   getVitalSign(bookingId: string) {
@@ -587,6 +658,8 @@ export class DocEntryComponent implements OnInit {
         if (booking) {
           this.booking = booking
           this.onInitData(this.booking)
+          console.log(this.booking)
+          this.getDocMedicalHistory(this.booking.bookingId)
         }
       },
       error: err => {
