@@ -1,6 +1,6 @@
 export class ApiSetting {
     public static get UserApiEndPoint() {
-        return 'http://localhost:8079';
+        return 'http://163.44.197.237:8079';
     }
 
     public static get AccountApiEndPoint() {
