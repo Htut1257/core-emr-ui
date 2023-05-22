@@ -99,7 +99,6 @@ export class DocEntryComponent implements OnInit {
   bookingDate: string
   regNo: string
   patientName: string
-  cfType=new FormControl(null)
   cfFee: number
   pharmacyDays: number
   reVisitDate: string
