@@ -30,6 +30,7 @@ import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/mat
 import { MAT_DATE_FORMATS, MAT_DATE_LOCALE, DateAdapter } from '@angular/material/core';
 
 
+
 const MY_DATE_FORMAT = {
   parse: {
     dateInput: 'DD/MM/YYYY', // this is how your date will be parsed from Input
@@ -98,6 +99,7 @@ export class DocEntryComponent implements OnInit {
   bookingDate: string
   regNo: string
   patientName: string
+  cfType=new FormControl(null)
   cfFee: number
   pharmacyDays: number
   reVisitDate: string
@@ -735,7 +737,6 @@ export class DocEntryComponent implements OnInit {
     let booking: any = this.booking
     booking.bStatus = booking.bstatus
     this.onClear()
-    return
     this.entryService.saveDoctorMedical(docMedic).subscribe({
       next: data => {
         this.appointService.updateAppointmentStatus(booking).subscribe({
