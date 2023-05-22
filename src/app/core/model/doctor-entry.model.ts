@@ -12,7 +12,7 @@ export interface DoctorMedicalHistory {
     reVisitDate: string,
     drNotes: string,
     cfType?:any
-    cfFees:string
+    cfFees:number
     examinations?: DoctorExamination[]
     treatments?: DoctorTreatment[]
     kvDrNotes: DoctorNote[]
