@@ -35,12 +35,12 @@ export class AppointmentPatientDialogComponent implements OnInit {
   ngOnInit(): void {
     
     let filter = {
-      fromDate:'2022-01-01',
+      fromDate:this.todayDate,
       toDate: this.todayDate,
       doctorId: '-',
       regNo: '-',
-      status: '-'
-    //  status: 'Doctor Room'
+      //tatus: '-'
+      status: 'Doctor Room'
     }
     this.getBooking(filter);
   }

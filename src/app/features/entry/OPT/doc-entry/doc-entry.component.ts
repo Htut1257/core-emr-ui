@@ -125,7 +125,7 @@ export class DocEntryComponent implements OnInit {
     this.vitalSign = {} as VitalSign
     this.user = this.userService.getUserValue()
     if (this.user) {
-      this.doctorId = "211"//this.user.doctorId
+      this.doctorId = this.user.doctorId
       this.getDoctorCfFee(this.doctorId)
     }
   }
@@ -725,7 +725,7 @@ export class DocEntryComponent implements OnInit {
       patientName: this.booking.patientName,
       drId: this.booking.doctorId,
       drName: this.booking.doctorName,
-      cfType: null,
+      cfType: null,//this.cfFees,
       cfFees: this.cfFee.toString(),
       reVisitDate: this.reVisitDate,
       drNotes: this.doctorNote,
@@ -736,13 +736,13 @@ export class DocEntryComponent implements OnInit {
     console.log(docMedic)
     let booking: any = this.booking
     booking.bStatus = booking.bstatus
-    this.onClear()
     this.entryService.saveDoctorMedical(docMedic).subscribe({
       next: data => {
         this.appointService.updateAppointmentStatus(booking).subscribe({
           next: booking => {
             console.log("status changed")
             console.log(booking)
+            this.onClear()
           }, error: err => {
             console.trace(err)
           }
