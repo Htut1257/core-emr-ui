@@ -1,6 +1,7 @@
 import { OpdCfFee } from "./cf-fee.model"
 
 export interface DoctorMedicalHistory {
+    id:string
     visitId: string
     visitDate: string
     regNo: string

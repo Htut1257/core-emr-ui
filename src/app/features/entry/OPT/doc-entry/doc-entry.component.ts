@@ -77,7 +77,6 @@ export class DocEntryComponent implements OnInit {
   public frameworkComponents;
   loop: boolean = false
 
-
   //#endregion table grid variables
 
   user: User
@@ -93,7 +92,7 @@ export class DocEntryComponent implements OnInit {
   cfFees: OpdCfFee[] = []
   opdVisitDate: OpdVisitDate[] = []
 
-
+  medicalHisId: string
   doctorId: string
   bookingId: string
   bookingDate: string
@@ -107,10 +106,7 @@ export class DocEntryComponent implements OnInit {
   bp: string
 
   todayDate = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD')
-
   booking: any
-
-
   constructor(
     private route: Router, private docService: DoctorService,
     private vitalService: VitalSignService, private entryService: DoctorEntryService,
@@ -134,7 +130,6 @@ export class DocEntryComponent implements OnInit {
 
   ngOnInit(): void {
     this.reVisitDate = this.todayDate
-
     this.getExaminationData();
     this.getTreatmentData();
     this.getNoteData();
@@ -142,7 +137,6 @@ export class DocEntryComponent implements OnInit {
     this.getServerSideData();
     this.getVisitDate()
   }
-
 
   onInitData(booking: Booking) {
     this.booking = booking
@@ -170,11 +164,17 @@ export class DocEntryComponent implements OnInit {
   getDocMedicalHistory(visitId: string) {
     this.entryService.getDoctorMedicalByVisitId(visitId).subscribe({
       next: entry => {
-        console.log(entry)
-        let data: any = entry
-        this.renderExaminationData(data.examinations)
-        this.renderTreatmetData(data.treatments)
-        this.renderDocNote(data.kvDrNotes)
+        if (entry) {
+          let data: any = entry
+          this.medicalHisId = data.id
+          this.cfFee = data.cfFees
+          this.pharmacyDays = data.treatments[0].days
+          this.reVisitDate = moment(data.reVisitDate, 'YYYY-MM-DD').format('YYYY-MM-DD')
+          this.renderExaminationData(data.examinations)
+          this.renderTreatmetData(data.treatments)
+          this.renderDocNote(data.kvDrNotes)
+        }
+
       },
       error: err => {
         console.trace(err)
@@ -202,12 +202,12 @@ export class DocEntryComponent implements OnInit {
     this.treatmentRow = data.reduce(function (filtered: any, option: any) {
       var someValue = {
         cityObject: {
-          itemOption:option.group,
+          itemOption: option.group,
           itemType: option.subGroup,
           itemId: option.code,
           itemName: option.desc,
           relStr: option.relStr,
-          fees:  option.fees,
+          fees: option.fees,
           fees1: option.fees1,
           fees2: option.fees2,
           fees3: option.fees3,
@@ -242,7 +242,7 @@ export class DocEntryComponent implements OnInit {
   getVitalSign(bookingId: string) {
     this.vitalService.getVitalSignByPatient(bookingId).subscribe({
       next: vitalSign => {
-        console.log(vitalSign.length)
+
         this.vitalSign = vitalSign
         this.temp = this.vitalSign.temperature
         this.bp = this.vitalSign.bpUpper + "/" + this.vitalSign.bpLower
@@ -658,7 +658,6 @@ export class DocEntryComponent implements OnInit {
         if (booking) {
           this.booking = booking
           this.onInitData(this.booking)
-          console.log(this.booking)
           this.getDocMedicalHistory(this.booking.bookingId)
         }
       },
@@ -716,6 +715,7 @@ export class DocEntryComponent implements OnInit {
   //save all data
   saveMedHistory() {
     let docMedic = {
+      id: this.medicalHisId,
       visitId: this.booking.bookingId,
       visitDate: this.booking.bkDate,
       regNo: this.booking.regNo,
@@ -772,7 +772,6 @@ export class DocEntryComponent implements OnInit {
     this.doctorNote = ''
     this.temp = 0
     this.bp = ''
-
   }
 
 }
