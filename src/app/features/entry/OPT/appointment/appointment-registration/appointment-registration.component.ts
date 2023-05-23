@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Observable, map, startWith } from 'rxjs';
+import { Observable, filter, map, startWith, switchMap } from 'rxjs';
 import { FormGroup, FormBuilder, Validators, NgForm } from '@angular/forms';
 
 import { bookingType } from 'src/app/core/model/booking.model';
@@ -46,11 +46,11 @@ export class AppointmentRegistrationComponent implements OnInit {
   @ViewChild('reactiveForm', { static: true }) reactiveForm: NgForm
 
   doctors: Doctor[] = []
-  filteredDoc: Observable<any[]>;
+  filteredDoc: Observable<Doctor[]>;
   patient: Patient[] = []
-  filteredPatient: Observable<any[]>
+  filteredPatient: Observable<Patient[]>
   gender: Gender[]
-  bookingTypes:any[]=bookingType
+  bookingTypes: any[] = bookingType
   todayDate = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD')
   isLoading: boolean = false
 
@@ -69,12 +69,16 @@ export class AppointmentRegistrationComponent implements OnInit {
 
     this.filteredDoc = this.appointForm.controls['doctor'].valueChanges.pipe(
       startWith(''),
-      map(name => (name ? this._filterDoc(name) : this.doctors.slice()))
+      switchMap(name => {
+        return name ? this._filterDoc(name) : []
+      })
     );
 
     this.filteredPatient = this.appointForm.controls['patient'].valueChanges.pipe(
       startWith(''),
-      map(name => (name ? this._filterPatient(name) : this.patient.slice()))
+      switchMap(name => {
+        return name ? this._filterPatient(name) : []
+      })
     )
 
   }
@@ -86,22 +90,18 @@ export class AppointmentRegistrationComponent implements OnInit {
       patient: ['', Validators.required],
       doctor: [null, Validators.required],
       bkPhone: [''],
-      bkType:[null],
+      bkType: [null],
     });
     this.appointForm.get('bkDate').patchValue(this.todayDate)
   }
 
-  getDoctor(id: string) {
-    this.docService.getDoctor(id).subscribe({
-      next: doctors => {
-        this.doctors = doctors;
-        console.log(doctors)
-        console.log(this.doctors)
-      },
-      error: err => {
-        console.trace(err)
-      }
-    })
+  getDoctor(name: string) {
+    return this.docService.getDoctorActiveByName(name).pipe(
+      filter(data => !!data),
+      map(item => {
+        return item.filter(option => option.doctorName.toLowerCase().includes(name))
+      })
+    )
   }
 
   DocDisplayFn(item: any) {
@@ -109,26 +109,18 @@ export class AppointmentRegistrationComponent implements OnInit {
   }
 
   //filter data for autocomplete
-  private _filterDoc(value: any): any {
+  private _filterDoc(value: any): Observable<Doctor[]> {
     let filterValue = value
-    this.getDoctor(value)
-    if (value.doctorName != null) {
-      filterValue = value.doctorName.toLowerCase()
-    } else {
-      filterValue = value.toLowerCase()
-    }
-    return this.doctors.filter(data => data.doctorName.toLowerCase().includes(filterValue));
+    return this.getDoctor(filterValue)
   }
 
   getPatient(name: string) {
-    this.patientService.getPatientByName(name).subscribe({
-      next: data => {
-        this.patient = data
-      },
-      error: err => {
-        console.trace(err)
-      }
-    })
+    return this.patientService.getPatientByName(name).pipe(
+      filter(data => !!data),
+      map(item => {
+        return item.filter(option => option.patientName.toLowerCase().includes(name))
+      })
+    )
   }
 
   patientDisplayFn(item: any) {
@@ -136,15 +128,9 @@ export class AppointmentRegistrationComponent implements OnInit {
   }
 
   //filter data for autocomplete
-  private _filterPatient(value: any) {
-    let filterValue = value
-    this.getPatient(value)
-    if (value.patientName != null) {
-      filterValue = value.patientName.toLowerCase()
-    } else {
-      filterValue = value.toLowerCase()
-    }
-    return this.patient.filter(data => data.patientName.toLowerCase().includes(filterValue));
+  private _filterPatient(value: any): Observable<Patient[]> {
+    let filteredValue = value
+    return this.getPatient(filteredValue)
   }
 
   getGender() {

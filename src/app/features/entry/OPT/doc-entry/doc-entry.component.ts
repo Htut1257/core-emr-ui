@@ -76,6 +76,7 @@ export class DocEntryComponent implements OnInit {
   noteRow: any
 
   public frameworkComponents;
+  //table grid navigation for cell
   loop: boolean = false
 
   //#endregion table grid variables
@@ -100,7 +101,8 @@ export class DocEntryComponent implements OnInit {
   regNo: string
   patientName: string
   cfFee: number
-  pharmacyDays: number
+  foc:boolean
+  pharmacyDays: number = 1
   reVisitDate: string
   doctorNote: string
   temp: number
@@ -136,7 +138,7 @@ export class DocEntryComponent implements OnInit {
     this.getNoteData();
     this.InitializeGridTable();
     this.getServerSideData();
-    this.getVisitDate()
+    // this.getVisitDate()
   }
 
   onInitData(booking: Booking) {
@@ -175,7 +177,6 @@ export class DocEntryComponent implements OnInit {
           this.renderTreatmetData(data.treatments)
           this.renderDocNote(data.kvDrNotes)
         }
-
       },
       error: err => {
         console.trace(err)
@@ -243,10 +244,12 @@ export class DocEntryComponent implements OnInit {
   getVitalSign(bookingId: string) {
     this.vitalService.getVitalSignByPatient(bookingId).subscribe({
       next: vitalSign => {
+        if (vitalSign) {
+          this.vitalSign = vitalSign
+          this.temp = this.vitalSign.temperature
+          this.bp = this.vitalSign.bpUpper + "/" + this.vitalSign.bpLower
+        }
 
-        this.vitalSign = vitalSign
-        this.temp = this.vitalSign.temperature
-        this.bp = this.vitalSign.bpUpper + "/" + this.vitalSign.bpLower
       },
       error: err => {
         console.trace(err)
@@ -289,13 +292,16 @@ export class DocEntryComponent implements OnInit {
     this.examinationGridOption = {
       columnDefs: this.examinationColumnDef,
       rowData: this.examinationRow,
-      suppressScrollOnNewData: false
+      suppressScrollOnNewData: false,
     }
 
     this.treatmentGridOption = {
       columnDefs: this.treatmentColumnDef,
       rowData: this.treatmentRow,
-      suppressScrollOnNewData: false
+      suppressScrollOnNewData: false,
+      defaultColDef:{
+        resizable:true
+      }
     }
 
     this.noteGridOption = {
@@ -310,6 +316,7 @@ export class DocEntryComponent implements OnInit {
     this.examinationApi = params.api
     this.examinationColumn = params.columnApi
     this.examinationApi.sizeColumnsToFit()
+  
   }
 
   //table for treatment
@@ -317,6 +324,7 @@ export class DocEntryComponent implements OnInit {
     this.treatmentApi = params.api
     this.treatmentColumn = params.columnApi
     this.treatmentApi.sizeColumnsToFit()
+    
   }
 
   //table for note
@@ -379,7 +387,7 @@ export class DocEntryComponent implements OnInit {
       {
         headerName: "Pattern",
         field: "patternObj",
-        editable: true,
+        editable: params => params.data.cityObject.itemOption == "Pharmacy",
         cellEditor: 'autoComplete',
         cellEditorParams: {
           'propertyRendered': 'patternCode',
@@ -398,14 +406,14 @@ export class DocEntryComponent implements OnInit {
         headerName: "Days",
         field: "day",
         width: 100,
-        editable: true,
+        editable: params => params.data.cityObject.itemOption == "Pharmacy",
         type: 'rightAligned'
       },
       {
         headerName: "Qty",
         field: "qty",
         width: 100,
-        editable: true,
+        editable: params => params.data.cityObject.itemOption == "Pharmacy",
         type: 'rightAligned'
       },
       {
@@ -469,7 +477,7 @@ export class DocEntryComponent implements OnInit {
         patternCode: '',
         despEng: ''
       },
-      day: '',
+      day: '1',
       qty: 0,
       remark: '',
     }
@@ -574,27 +582,53 @@ export class DocEntryComponent implements OnInit {
     let rowData = event.data
     let row = event.rowIndex
     var firstEditCol = event.columnApi.getAllDisplayedColumns()[0];
-    if (this.examinationApi.getFocusedCell()) {
-      this.examinationApi.setFocusedCell(event.rowIndex, event.colDef.field);
+    if (this.examinationApi.getFocusedCell()) { 
+      if(rowData.examinationObj.desc==""){
+        this.examinationApi.setFocusedCell(row, columnField);
+        return 
+      }
+     
       this.addNewRowtoTable(row, firstEditCol, this.examinationApi, rowData, this.drExamination, this.emptyExamination())
+      this.focusTableCell(row + 1, firstEditCol, this.examinationApi)
     }
+
     if (this.treatmentApi.getFocusedCell()) {
       if (columnField == "cityObject") {
-        this.treatmentApi.setFocusedCell(event.rowIndex, event.colDef.field);
+        let itemType = rowData.cityObject.itemOption
+        if(rowData.cityObject.itemId==''){
+          this.treatmentApi.setFocusedCell(row, columnField);
+          return 
+        }
+        if (itemType == "Pharmacy") {
+          let treatRow: any = this.emptydrTreat()
+          treatRow.day = this.pharmacyDays
+          this.addNewRowtoTable(row, firstEditCol, this.treatmentApi, rowData, this.drTreatment, treatRow)
+          this.treatmentApi.setFocusedCell(row, "patternObj");
+          return
+        }
+        rowData.qty = 1
+        rowData.day = ''
+        this.treatmentRow[row] = rowData;
+        this.treatmentGridOption.api.setRowData(this.treatmentRow);
+        let treatRow: any = this.emptydrTreat()
+        treatRow.day = this.pharmacyDays
+        this.addNewRowtoTable(row, firstEditCol, this.treatmentApi, rowData, this.drTreatment, treatRow)
+        this.focusTableCell(row + 1, firstEditCol, this.treatmentApi)
       }
       if (columnField == "patternObj") {
-        this.treatmentApi.setFocusedCell(event.rowIndex, event.colDef.field);
-
-        let rowData = event.data
+        this.treatmentApi.setFocusedCell(row, columnField);
         rowData.qty = rowData.patternObj.factor * rowData.day
-        let rowIndex = this.treatmentGridOption.api.getRowNode(event.node.id).rowIndex;
-        this.treatmentRow[rowIndex] = rowData;
+        this.treatmentRow[row] = rowData;
         this.treatmentGridOption.api.setRowData(this.treatmentRow);
-
+        let treatRow: any = this.emptydrTreat()
+        treatRow.day = this.pharmacyDays
+        this.treatmentApi.applyTransaction({
+          add: [treatRow]
+        })
+        this.focusTableCell(row + 1, firstEditCol, this.treatmentApi)
       }
       if (columnField == "day") {
-        this.treatmentApi.setFocusedCell(event.rowIndex, event.colDef.field);
-        let rowData = event.data
+        this.treatmentApi.setFocusedCell(row, columnField);
         rowData.qty = rowData.patternObj.factor * rowData.day
         let rowIndex = this.treatmentGridOption.api.getRowNode(event.node.id).rowIndex;
         this.treatmentRow[rowIndex] = rowData;
@@ -603,11 +637,11 @@ export class DocEntryComponent implements OnInit {
       }
       if (columnField == "remark") {
         let treatRow: any = this.emptydrTreat()
-
         treatRow.day = rowData.day
         this.addNewRowtoTable(row, firstEditCol, this.treatmentApi, rowData, this.drTreatment, treatRow)
       }
     }
+
     if (this.noteApi.getFocusedCell()) {
       if (columnField == "value") {
         this.addNewRowtoTable(row, firstEditCol, this.noteApi, rowData, this.drNote, this.emptyNote())
@@ -628,17 +662,27 @@ export class DocEntryComponent implements OnInit {
       gridApi.applyTransaction({
         add: [rowObj]
       })
-      gridApi.ensureIndexVisible(0)
-      gridApi.ensureColumnVisible(firstColumn);
-      gridApi.setFocusedCell(rowIndex + 1, firstColumn);
+      // gridApi.ensureIndexVisible(0)
+      // gridApi.ensureColumnVisible(firstColumn);
+      // gridApi.setFocusedCell(rowIndex + 1, firstColumn);
     }
+  }
+
+  //focusing table cell
+  focusTableCell(rowIndex: any, column: any, gridApi: GridApi) {
+    gridApi.ensureIndexVisible(0)
+    gridApi.ensureColumnVisible(column);
+    gridApi.setFocusedCell(rowIndex, column);
   }
 
   //set date and pharmancy day
   confirmPharmacyDate() {
     this.reVisitDate = this.todayDate
     for (let item of this.treatmentRow) {
-      item.day = this.pharmacyDays
+      if (item.cityObject.itemOption == "Pharmacy") {
+        item.day = this.pharmacyDays
+        item.qty = this.pharmacyDays * item.patternObj.factor
+      }
     }
     this.treatmentGridOption.api.setRowData(this.treatmentRow);
     let treatRow: any = this.emptydrTreat()
@@ -649,6 +693,7 @@ export class DocEntryComponent implements OnInit {
     this.reVisitDate = moment(this.reVisitDate, "YYYY-MM-DD").add(this.pharmacyDays, 'day').format('YYYY-MM-DD')
   }
 
+  //search the patient of current doctor session 
   searchPatient() {
     this.dialog.open(AppointmentPatientDialogComponent, {
       disableClose: false,
@@ -768,7 +813,7 @@ export class DocEntryComponent implements OnInit {
     this.patientName = ''
     this.cfFee = 0
     this.pharmacyDays = 0
-    this.reVisitDate = ''
+    this.reVisitDate = this.todayDate
     this.doctorNote = ''
     this.temp = 0
     this.bp = ''

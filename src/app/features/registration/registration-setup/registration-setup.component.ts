@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, map, startWith } from 'rxjs';
+import { Observable, filter, map, pipe, startWith, switchMap } from 'rxjs';
 import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { Patient } from 'src/app/core/model/patient.model';
 import { PatientService } from 'src/app/core/services/patient-service/patient.service';
@@ -68,7 +68,6 @@ export class RegistrationSetupComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeForm();
-    this.getTownship();
     this.getGender();
     if (this.appintService._booking != undefined) {
       this.booking = this.appintService._booking
@@ -78,12 +77,16 @@ export class RegistrationSetupComponent implements OnInit {
 
     this.filteredDoc = this.registrationForm.controls['doctor'].valueChanges.pipe(
       startWith(''),
-      map(name => (name ? this._filterDoc(name) : this.doctors.slice()))
+      switchMap(name => {
+        return name ? this._filterDoc(name) : []
+      })
     );
 
     this.filteredTown = this.registrationForm.controls['township'].valueChanges.pipe(
       startWith(''),
-      map(name => (name ? this._filterTown(name) : this.towns.slice()))
+      switchMap(name => {
+        return name ? this._filterTown(name) : []
+      })
     );
   }
 
@@ -119,7 +122,7 @@ export class RegistrationSetupComponent implements OnInit {
 
   initializeFormData(data) {
     console
-    .log(data)
+      .log(data)
     this.regNo = data.regNo
     this.registrationForm.get('regNo').patchValue(data.regNo)
     this.registrationForm.get('regDate').patchValue(data.bkDate)
@@ -133,26 +136,22 @@ export class RegistrationSetupComponent implements OnInit {
 
   }
 
-  getDoctor(id: string) {
-    this.docService.getDoctor(id).subscribe({
-      next: doctors => {
-        this.doctors = doctors;
-      },
-      error: err => {
-        console.trace(err)
-      }
-    })
+  getDoctor(name: string) {
+    return this.docService.getDoctorActiveByName(name).pipe(
+      filter(data => !!data),
+      map(item => {
+        return item.filter(option => option.doctorName.toLowerCase().includes(name))
+      })
+    )
   }
 
-  getTownship() {
-    this.townService.getAllTownship().subscribe({
-      next: towns => {
-        this.towns = towns
-      },
-      error: err => {
-        console.trace(err)
-      }
-    })
+  getTownship(name: string) {
+    return this.townService.getTownshipByName(name).pipe(
+      filter(data => !!data),
+      map(item => {
+        return item.filter(option => option.townshipName.toLowerCase().includes(name))
+      })
+    )
   }
 
   getGender() {
@@ -175,16 +174,10 @@ export class RegistrationSetupComponent implements OnInit {
   }
 
   //filter data for autocomplete
-  private _filterDoc(value: any): any {
+  private _filterDoc(value: any): Observable<Doctor[]> {
     let filterValue = value
+    return this.getDoctor(filterValue);
 
-    this.getDoctor(value)
-    if (value.doctorName != null) {
-      filterValue = value.doctorName.toLowerCase()
-    } else {
-      filterValue = value.toLowerCase()
-    }
-    return this.doctors.filter(data => data.doctorName.toLowerCase().includes(filterValue));
   }
 
   changed() {
@@ -192,16 +185,9 @@ export class RegistrationSetupComponent implements OnInit {
   }
 
   //filter data for autocomplete
-  private _filterTown(value: any): any {
+  private _filterTown(value: any): Observable<Township[]> {
     let filterValue = value
-
-    this.getDoctor(value)
-    if (value.townshipName != null) {
-      filterValue = value.townshipName.toLowerCase()
-    } else {
-      filterValue = value.toLowerCase()
-    }
-    return this.towns.filter(data => data.townshipName.toLowerCase().includes(filterValue));
+    return this.getTownship(filterValue)
   }
 
   //save regis
@@ -224,7 +210,7 @@ export class RegistrationSetupComponent implements OnInit {
           this.appintService.bookings.subscribe(data => {
             bookings = data
           })
-          let targetIndex =bookings.findIndex(data => data.bookingId ==this.booking.bookingId)
+          let targetIndex = bookings.findIndex(data => data.bookingId == this.booking.bookingId)
           // this.bookings[targetIndex] = serverData
           // this.appointService.bookings.next(this.bookings)
         }

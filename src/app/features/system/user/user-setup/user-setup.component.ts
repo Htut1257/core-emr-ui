@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, of, map, startWith } from 'rxjs'
+import { Observable, of, map, startWith, filter, switchMap } from 'rxjs'
 import { FormGroup, FormBuilder, Validators, AbstractControl, FormControl } from '@angular/forms';
 import { User } from 'src/app/core/model/user.model';
 import { Role } from 'src/app/core/model/role.model';
@@ -55,7 +55,9 @@ export class UserSetupComponent implements OnInit {
     this.getRole()
     this.filteredDoc = this.docControl.valueChanges.pipe(
       startWith(''),
-      map(name => (name ? this._filterDoc(name) : this.doctors.slice()))
+      switchMap(value => {
+        return value ? this._filterDoc(value) : []
+      })
     );
   }
 
@@ -81,11 +83,11 @@ export class UserSetupComponent implements OnInit {
     this.userForm.get('userShortName').patchValue(data.userShortName)
     this.userForm.get('password').patchValue(data.password)
     this.userForm.get('email').patchValue(data.email)
-    let role=this.roleList.filter(item=>item.roleCode==data.roleCode)
-      
+    let role = this.roleList.filter(item => item.roleCode == data.roleCode)
+
     this.userForm.get('role').patchValue(role[0])
     this.userForm.get('active').patchValue(data.active)
-   
+
   }
 
   //get role data
@@ -105,15 +107,13 @@ export class UserSetupComponent implements OnInit {
     return item ? item.roleName : ''
   }
 
-  getDoctor(id: string) {
-    this.doctorService.getDoctor(id).subscribe({
-      next: doctors => {
-        this.doctors = doctors;
-      },
-      error: err => {
-        console.trace(err)
-      }
-    })
+  getDoctor(name: string) {
+    return this.doctorService.getDoctorActiveByName(name).pipe(
+      filter(data => !!data),
+      map(item => {
+        return item.filter(option => option.doctorName.toLowerCase().includes(name))
+      })
+    )
   }
 
   DocDisplayFn(item: any) {
@@ -121,20 +121,14 @@ export class UserSetupComponent implements OnInit {
   }
 
   //filter data for autocomplete
-  private _filterDoc(value: any): any {
+  private _filterDoc(value: any): Observable<Doctor[]> {
     let filterValue = value
-    this.getDoctor(value)
-    if (value.doctorName != null) {
-      filterValue = value.doctorName.toLowerCase()
-    } else {
-      filterValue = value.toLowerCase()
-    }
-    return this.doctors.filter(data => data.doctorName.toLowerCase().includes(filterValue));
+    return this.getDoctor(filterValue)
   }
 
   //filter as autocomplete
   private roleFilter(value: any) {
-  
+
     let filterValue = ''
     if (value.roleName != null) {
       filterValue = value.roleName.toLowerCase()

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, startWith, map } from 'rxjs'
+import { Observable, startWith, map, filter, switchMap } from 'rxjs'
 import { Grid, ColDef, GridOptions, GridApi, ColumnApi, Column, CellClickedEvent } from "ag-grid-community";
 import { MatDialog } from '@angular/material/dialog';
 import { FormControl } from '@angular/forms';
@@ -68,19 +68,18 @@ export class OpdSetupComponent implements OnInit {
     public dialog: MatDialog
   ) {
     this.frameworkComponentsCheckBox = {
-        checkboxRenderer: CheckboxRenderer,
+      checkboxRenderer: CheckboxRenderer,
     }
   }
 
   ngOnInit(): void {
-    //
     this.autocompleteFilter()
     this.getOpdCategoryData()
     this.getOpdServiceData()
     this.initializeGridTable()
-    this.getOpdGroup()
   }
 
+  //initialize grid table with data
   initializeGridTable() {
     this.opdCategoryGridOption = {
       columnDefs: this.opdCategoryColumnDef,
@@ -120,7 +119,7 @@ export class OpdSetupComponent implements OnInit {
       },
     ]
     this.opdCategoryRow = [
-    this.emptyOpdCategory()
+      this.emptyOpdCategory()
     ]
   }
 
@@ -220,27 +219,27 @@ export class OpdSetupComponent implements OnInit {
       },
     ]
     this.opdServiceRow = [ // fees 1 to 5 percent cfs status doctor serviceCost
-      this.emptyOpdServiceModel() 
-    // {
+      this.emptyOpdServiceModel()
+      // {
       //   serviceName: '', fees: 0, fees1: 0, fees2: 0, fees3: 0, fees4: 0, fees5: 0,
       //   percent: false, cfs: false, status: false, doctor: '', serviceCost: 0,
       // }
     ]
   }
 
-  changedCell(event){
+  changedCell(event) {
     let columnField = event.colDef.field
     let rowData = event.data
     let row = event.rowIndex
     var firstEditCol = event.columnApi.getAllDisplayedColumns()[0];
     let tableParams = {
       rowIndex: row,
-      firstColumn: firstEditCol,  
+      firstColumn: firstEditCol,
       gridApi: this.opdCategoryApi,
       rowObj: null
     }
-    if (this.opdServiceApi.getFocusedCell()){
-      if(columnField=="status" || columnField=="cfs"||columnField=="percent"){
+    if (this.opdServiceApi.getFocusedCell()) {
+      if (columnField == "status" || columnField == "cfs" || columnField == "percent") {
         tableParams = {
           rowIndex: row,
           firstColumn: firstEditCol,
@@ -259,7 +258,7 @@ export class OpdSetupComponent implements OnInit {
     var firstEditCol = event.columnApi.getAllDisplayedColumns()[0];
     let tableParams = {
       rowIndex: row,
-      firstColumn: firstEditCol,  
+      firstColumn: firstEditCol,
       gridApi: this.opdCategoryApi,
       rowObj: null
     }
@@ -271,7 +270,7 @@ export class OpdSetupComponent implements OnInit {
         gridApi: this.opdCategoryApi,
         rowObj: this.emptyOpdCategory()
       }
-       this.opdCategoryApi.setFocusedCell(event.rowIndex, event.colDef.field);
+      this.opdCategoryApi.setFocusedCell(event.rowIndex, event.colDef.field);
       if (columnField = "catName") {
         this.saveOpdCategory(rowData, tableParams)
       }
@@ -343,7 +342,10 @@ export class OpdSetupComponent implements OnInit {
   autocompleteFilter() {
     this.filteredGroup = this.opdGroupControl.valueChanges.pipe(
       startWith(''),
-      map(value => (value ? this._filterOpdGroup(value) : this.opdGroups.slice()))
+      switchMap(name => {
+        return name ? this._filterOpdGroup(name) : []
+      })
+
     )
 
     this.filteredCategory = this.opdCategoryControl.valueChanges.pipe(
@@ -357,15 +359,11 @@ export class OpdSetupComponent implements OnInit {
     )
   }
 
-  getOpdGroup() {
-    this.opdService.getOpdGroup().subscribe({
-      next: opdGroups => {
-        this.opdGroups = opdGroups
-      },
-      error: err => {
-        console.trace(err)
-      }
-    })
+  getOpdGroup(name: string) {
+    return this.opdService.getOpdGroup().pipe(
+      filter(data => !!data),
+      map(item => item.filter(option => option.groupName.toLowerCase().includes(name)))
+    )
   }
 
   opdGroupDisplayFn(item: any) {
@@ -373,14 +371,9 @@ export class OpdSetupComponent implements OnInit {
   }
 
   //filter data for autocomplete
-  private _filterOpdGroup(value: any): any {
+  private _filterOpdGroup(value: any): Observable<OpdGroup[]> {
     let filterValue = value
-    if (value.groupName != null) {
-      filterValue = value.groupName.toLowerCase()
-    } else {
-      filterValue = value.toLowerCase()
-    }
-    return this.opdGroups.filter(data => data.groupName.toLowerCase().includes(filterValue));
+    return this.getOpdGroup(filterValue)
   }
 
   //open dialog of opd group setup

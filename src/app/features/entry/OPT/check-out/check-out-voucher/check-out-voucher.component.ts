@@ -56,6 +56,9 @@ export class CheckOutVoucherComponent implements OnInit {
       columnDefs: this.checkOutColumnDef,
       rowData: this.checkOutRow,
       suppressScrollOnNewData: false,
+      defaultColDef:{
+        resizable:true
+      },
       onGridReady(event) {
         this.checkOutApi = event.api
         this.checkOutColumn = event.columnApi
@@ -67,6 +70,7 @@ export class CheckOutVoucherComponent implements OnInit {
       columnDefs: this.paymentColumnDef,
       rowData: this.paymentRow,
       suppressScrollOnNewData: false,
+      
       onGridReady(event) {
         this.paymentApi = event.api
         this.paymentColumn = event.columnApi

@@ -1,5 +1,6 @@
 import { Component, AfterViewInit, ViewChild, ViewEncapsulation, ElementRef, HostListener } from '@angular/core';
 import { ICellEditorAngularComp } from 'ag-grid-angular';
+import { of } from 'rxjs';
 import { Pattern } from 'src/app/core/model/pattern.model';
 import { AutocompleteService } from 'src/app/core/services/autocomplete-service/autocomplete.service';
 import { PatternService } from 'src/app/core/services/pattern-service/pattern.service';
@@ -46,7 +47,7 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
     public filteredRowData: any;
     public inputValue: string;
     public apiEndpoint: string;
-    public gridHeight: number = 175;
+    public gridHeight: number = 315;
     public gridWidth: number = 500;
     public useApi: boolean;
     public propertyName: string;
@@ -103,6 +104,9 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
         } else {
             this.inputValue = params.charPress;
         }
+        this.getApiData( params.charPress).subscribe(data => {
+            this.rowData = data;
+        });
     }
 
     getValue(): any {
@@ -160,6 +164,7 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
     }
 
     processDataInput(event) {
+        console.log("called")
         if (this.useApi) {
             this.columnFilter = this.gridApi.getFilterInstance(this.propertyName);
             if (event.length == 0) this.gridApi.setRowData();
@@ -168,11 +173,11 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
                     this.rowData = data;
                 });
             };
-            if (event.length > 2) {
-                this.getApiData(event).subscribe(data => {
-                    this.rowData = data;
-                });
-            }
+            // if (event.length > 2) {
+            //     this.getApiData(event).subscribe(data => {
+            //         this.rowData = data;
+            //     });
+            // }
         } else {
             this.updateFilter();
         }

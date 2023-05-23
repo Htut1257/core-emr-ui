@@ -4,11 +4,12 @@
 @import "./assets/styles/button-style.css";
 @import 'ag-grid-community/styles/ag-grid.css';
 
+@import 'ag-grid-community/styles/ag-theme-material.css';
 @import 'ag-grid-community/styles/ag-theme-alpine.css';
 @import 'ag-grid-community/styles/ag-theme-balham.css';
 @import './assets/styles/table-style.css';
 mat-form-field.mat-form-field {
-    font-size: 12px;
+    font-size: 11px;
 }
 
 mat-form-field-outline.mat-form-field-outline{
@@ -16,7 +17,7 @@ mat-form-field-outline.mat-form-field-outline{
 }
 
 .mat-input-element.mat-form-field-autofill-control{
-    height:16px
+    height:12px
 }
 
 
