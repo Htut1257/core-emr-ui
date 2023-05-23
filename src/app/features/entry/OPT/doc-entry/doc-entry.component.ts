@@ -92,6 +92,7 @@ export class DocEntryComponent implements OnInit {
   drNote: DrNote[] = []
 
   cfFees: OpdCfFee[] = []
+  cfFeeobj:OpdCfFee
   opdVisitDate: OpdVisitDate[] = []
 
   medicalHisId: string
@@ -270,6 +271,7 @@ export class DocEntryComponent implements OnInit {
   }
 
   getDoctorFeeData(fees: OpdCfFee) {
+    this.cfFeeobj=fees
     this.cfFee = fees.fees
   }
 
@@ -769,7 +771,7 @@ export class DocEntryComponent implements OnInit {
       patientName: this.booking.patientName,
       drId: this.booking.doctorId,
       drName: this.booking.doctorName,
-      cfType: this.cfFee,//this.cfFees,
+      cfType: this.cfFeeobj,//this.cfFees,
       cfFees: this.cfFee,
       reVisitDate: this.reVisitDate,
       drNotes: this.doctorNote,
