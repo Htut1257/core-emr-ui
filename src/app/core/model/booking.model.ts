@@ -1,5 +1,5 @@
 export interface Booking {
-    bookingId: number
+    bookingId: string
     regNo: string
     patientName: string
     doctorId: string

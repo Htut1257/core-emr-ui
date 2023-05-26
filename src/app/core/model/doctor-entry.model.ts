@@ -13,6 +13,7 @@ export interface DoctorMedicalHistory {
     drNotes: string,
     cfType?:any
     cfFees:number
+    isFoc:boolean
     examinations?: DoctorExamination[]
     treatments?: DoctorTreatment[]
     kvDrNotes: DoctorNote[]
@@ -42,6 +43,10 @@ export interface DoctorTreatment {
     isPercent:boolean
     serviceCost:number
     itemUnit:string
+    expDate?:Date
+    isFOC?:boolean
+    amount?:number
+    uniqueId?:number
 }
 
 export interface DoctorNote {

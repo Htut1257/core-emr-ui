@@ -14,7 +14,6 @@ var appointment_patient_dialog_component_1 = require("../appointment/appointment
 var moment = require("moment");
 var material_moment_adapter_1 = require("@angular/material-moment-adapter");
 var core_2 = require("@angular/material/core");
-var forms_1 = require("@angular/forms");
 var MY_DATE_FORMAT = {
     parse: {
         dateInput: 'DD/MM/YYYY'
@@ -39,26 +38,21 @@ var DocEntryComponent = /** @class */ (function () {
         this.visitDateService = visitDateService;
         this.serverService = serverService;
         this.dialog = dialog;
+        //table grid navigation for cell
         this.loop = false;
         this.drExamination = [];
         this.drTreatment = [];
         this.drNote = [];
-        this.bookingId = new forms_1.FormControl('');
-        this.bookingDate = new forms_1.FormControl('');
-        this.regNo = new forms_1.FormControl('');
-        this.patientName = new forms_1.FormControl('');
-        this.reVisitDate = new forms_1.FormControl('');
-        this.pharmacyDays = new forms_1.FormControl('');
-        this.todayDate = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD');
-        this.cfFeeControl = new forms_1.FormControl(0);
         this.cfFees = [];
-        this.visitDateControl = new forms_1.FormControl(0);
         this.opdVisitDate = [];
+        this.pharmacyDays = 1;
+        this.todayDate = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD');
         this.frameworkComponents = {
             autoComplete: autocomplete_cell_1.AutocompleteCell,
             checkboxRenderer: checkbox_cell_1.CheckboxRenderer
         };
         this.examObj = {};
+        this.vitalSign = {};
         this.user = this.userService.getUserValue();
         if (this.user) {
             this.doctorId = this.user.doctorId;
@@ -66,22 +60,119 @@ var DocEntryComponent = /** @class */ (function () {
         }
     }
     DocEntryComponent.prototype.ngOnInit = function () {
-        this.reVisitDate.patchValue(this.todayDate);
+        this.reVisitDate = this.todayDate;
         this.getExaminationData();
         this.getTreatmentData();
         this.getNoteData();
         this.InitializeGridTable();
         this.getServerSideData();
-        this.getVisitDate();
+        // this.getVisitDate()
+    };
+    DocEntryComponent.prototype.onInitData = function (booking) {
+        this.booking = booking;
+        this.bookingId = booking.bookingId.toString();
+        this.bookingDate = booking.bkDate.toString();
+        this.regNo = booking.regNo;
+        this.patientName = booking.patientName;
+        this.getVitalSign(booking.bookingId.toString());
+    };
+    DocEntryComponent.prototype.getServerSideData = function () {
+        var _this = this;
+        var uri = '/opdBooking/getMessage';
+        this.serverService.getServerSource(uri).subscribe(function (data) {
+            var serverData = JSON.parse(data.data);
+            _this.booking = serverData;
+            if (serverData.bstatus == "Doctor Room") {
+                if (_this.doctorId == serverData.doctorId) { //
+                    console.log(_this.booking);
+                    _this.onInitData(_this.booking);
+                }
+            }
+        });
+    };
+    DocEntryComponent.prototype.getDocMedicalHistory = function (visitId) {
+        var _this = this;
+        this.entryService.getDoctorMedicalByVisitId(visitId).subscribe({
+            next: function (entry) {
+                if (entry) {
+                    var data = entry;
+                    _this.medicalHisId = data.id;
+                    _this.cfFee = data.cfFees;
+                    _this.pharmacyDays = data.treatments[0].days;
+                    _this.reVisitDate = moment(data.reVisitDate, 'YYYY-MM-DD').format('YYYY-MM-DD');
+                    _this.renderExaminationData(data.examinations);
+                    _this.renderTreatmetData(data.treatments);
+                    _this.renderDocNote(data.kvDrNotes);
+                }
+            },
+            error: function (err) {
+                console.trace(err);
+            }
+        });
+    };
+    DocEntryComponent.prototype.renderExaminationData = function (data) {
+        this.examinationRow = data.reduce(function (filtered, option) {
+            var someNewValue = {
+                examinationObj: {
+                    desc: option.desc
+                }
+            };
+            filtered.push(someNewValue);
+            return filtered;
+        }, []);
+        this.examinationRow.push(this.emptyExamination());
+        this.examinationGridOption.api.setRowData(this.examinationRow);
+    };
+    DocEntryComponent.prototype.renderTreatmetData = function (data) {
+        this.treatmentRow = data.reduce(function (filtered, option) {
+            var someValue = {
+                cityObject: {
+                    itemOption: option.group,
+                    itemType: option.subGroup,
+                    itemId: option.code,
+                    itemName: option.desc,
+                    relStr: option.relStr,
+                    fees: option.fees,
+                    fees1: option.fees1,
+                    fees2: option.fees2,
+                    fees3: option.fees3,
+                    fees4: option.fees4,
+                    fees5: option.fees5,
+                    fees6: option.fees6,
+                    isPercent: option.isPercent,
+                    serviceCost: option.serviceCost,
+                    itemUnit: option.itemUnit
+                },
+                patternObj: {
+                    patternCode: option.pattern.patternCode,
+                    despEng: option.pattern.despEng
+                },
+                day: option.days,
+                qty: option.qty,
+                remark: option.remark
+            };
+            filtered.push(someValue);
+            return filtered;
+        }, []);
+        var treatRow = this.emptydrTreat();
+        treatRow.day = this.pharmacyDays;
+        this.treatmentRow.push(treatRow);
+        this.treatmentGridOption.api.setRowData(this.treatmentRow);
+    };
+    DocEntryComponent.prototype.renderDocNote = function (data) {
+        this.noteRow = data;
+        this.noteRow.push(this.emptyNote);
+        this.noteGridOption.api.setRowData(this.noteRow);
     };
     DocEntryComponent.prototype.getVitalSign = function (bookingId) {
         var _this = this;
         this.vitalService.getVitalSignByPatient(bookingId).subscribe({
             next: function (vitalSign) {
-                console.log(vitalSign);
-                _this.vitalSign = vitalSign;
-                _this.temp = _this.vitalSign.temperature;
-                _this.bp = _this.vitalSign.bpUpper + "/" + _this.vitalSign.bpLower;
+                if (vitalSign) {
+                    _this.vitalSign = vitalSign;
+                    _this.temp = _this.vitalSign.temperature;
+                    _this.bp = _this.vitalSign.bpUpper + "/" + _this.vitalSign.bpLower;
+                }
             },
             error: function (err) {
                 console.trace(err);
@@ -92,6 +183,7 @@ var DocEntryComponent = /** @class */ (function () {
         var _this = this;
         this.cfFeeService.getOpdCfFeeByDoctor(id).subscribe({
             next: function (fees) {
+                console.log(fees);
                 _this.cfFees = fees;
             },
             error: function (err) {
@@ -100,14 +192,13 @@ var DocEntryComponent = /** @class */ (function () {
         });
     };
     DocEntryComponent.prototype.getDoctorFeeData = function (fees) {
-        console.log(fees);
-        this.cfFeeControl.patchValue(fees.fees);
+        this.cfFeeobj = fees;
+        this.cfFee = fees.fees;
     };
     DocEntryComponent.prototype.getVisitDate = function () {
         var _this = this;
         this.visitDateService.getReVisitDate().subscribe({
             next: function (visitDate) {
-                console.log(visitDate);
                 _this.opdVisitDate = visitDate;
             },
             error: function (err) {
@@ -116,25 +207,6 @@ var DocEntryComponent = /** @class */ (function () {
         });
     };
     DocEntryComponent.prototype.getReVisitData = function (row) {
-    };
-    DocEntryComponent.prototype.getServerSideData = function () {
-        var _this = this;
-        var uri = '/opdBooking/getMessage';
-        this.serverService.getServerSource(uri).subscribe(function (data) {
-            console.log(data);
-            var serverData = JSON.parse(data.data);
-            _this.bookingData = serverData;
-            if (serverData.bstatus == "Doctor Room") {
-                if (_this.doctorId == serverData.doctorId) {
-                    _this.booking = serverData;
-                    _this.bookingId = serverData.bookingId;
-                    _this.bookingDate = serverData.bkDate;
-                    _this.regNo = serverData.regNo;
-                    _this.patientName = serverData.patientName;
-                    _this.getVitalSign(serverData.bookingId);
-                }
-            }
-        });
     };
     DocEntryComponent.prototype.InitializeGridTable = function () {
         this.examinationGridOption = {
@@ -145,18 +217,19 @@ var DocEntryComponent = /** @class */ (function () {
         this.treatmentGridOption = {
             columnDefs: this.treatmentColumnDef,
             rowData: this.treatmentRow,
-            suppressScrollOnNewData: false
+            suppressScrollOnNewData: false,
+            defaultColDef: {
+                resizable: true
+            }
         };
         this.noteGridOption = {
             columnDefs: this.noteColumnDef,
             rowData: this.noteRow,
             suppressScrollOnNewData: false
         };
-        console.log(this.noteGridOption);
     };
     //table for diagnosis 
     DocEntryComponent.prototype.onGriReadyExamination = function (params) {
-        console.log("on grid called");
         this.examinationApi = params.api;
         this.examinationColumn = params.columnApi;
         this.examinationApi.sizeColumnsToFit();
@@ -167,6 +240,7 @@ var DocEntryComponent = /** @class */ (function () {
         this.treatmentColumn = params.columnApi;
         this.treatmentApi.sizeColumnsToFit();
     };
+    //table for note
     DocEntryComponent.prototype.onGridReadyNote = function (params) {
         this.noteApi = params.api;
         this.noteColumn = params.columnApi;
@@ -194,7 +268,7 @@ var DocEntryComponent = /** @class */ (function () {
             }
         ];
         this.examinationRow = [
-            { 'examinationObj': { 'desc': '' } },
+            this.emptyExamination()
         ];
     };
     DocEntryComponent.prototype.getTreatmentData = function () {
@@ -203,6 +277,7 @@ var DocEntryComponent = /** @class */ (function () {
                 headerName: "Description",
                 field: "cityObject",
                 editable: true,
+                width: 100,
                 cellEditor: 'autoComplete',
                 cellEditorParams: {
                     'propertyRendered': 'itemName',
@@ -223,7 +298,8 @@ var DocEntryComponent = /** @class */ (function () {
             {
                 headerName: "Pattern",
                 field: "patternObj",
-                editable: true,
+                width: 30,
+                editable: function (params) { return params.data.cityObject.itemOption == "Pharmacy"; },
                 cellEditor: 'autoComplete',
                 cellEditorParams: {
                     'propertyRendered': 'patternCode',
@@ -242,32 +318,32 @@ var DocEntryComponent = /** @class */ (function () {
             {
                 headerName: "Days",
                 field: "day",
-                width: 100,
-                editable: true,
+                width: 25,
+                editable: function (params) { return params.data.cityObject.itemOption == "Pharmacy"; },
                 type: 'rightAligned'
             },
             {
                 headerName: "Qty",
                 field: "qty",
-                width: 100,
-                editable: true,
+                width: 30,
+                editable: function (params) { return params.data.cityObject.itemOption == "Pharmacy"; },
                 type: 'rightAligned'
             },
             {
                 headerName: "Remark",
                 field: "remark",
-                width: 300,
+                width: 100,
                 editable: true
+            },
+            {
+                headerName: "Option",
+                field: "cityObject.itemOption",
+                width: 50,
+                editable: false
             },
         ];
         this.treatmentRow = [
-            {
-                'cityObject': { 'itemName': '', 'itemOption': '', 'itemType': '' },
-                'patternObj': { 'patternCode': '', 'despEng': '' },
-                'day': '',
-                'qty': 0,
-                'remark': ''
-            },
+            this.emptydrTreat()
         ];
     };
     DocEntryComponent.prototype.getNoteData = function () {
@@ -284,214 +360,8 @@ var DocEntryComponent = /** @class */ (function () {
             }
         ];
         this.noteRow = [
-            { key: 'key remark1', value: 'value remark1' }
+            this.emptyNote()
         ];
-    };
-    //save list to mappable obj
-    DocEntryComponent.prototype.savetoDrExam = function () {
-        return this.drExamination.reduce(function (filtered, option) {
-            var someNewValue = {
-                desc: option.examinationObj.desc
-            };
-            filtered.push(someNewValue);
-            return filtered;
-        }, []);
-    };
-    //save list to mappable obj
-    DocEntryComponent.prototype.savetoDrTreatment = function () {
-        return this.drTreatment.reduce(function (filtered, option) {
-            var someNewValue = {
-                // group: option.cityObject.itemOption,
-                // subGroup: option.cityObject.itemType,
-                // code: option.cityObject.itemId,
-                // desc: option.cityObject.itemName,
-                // pattern: option.pattern,
-                // days: option.day,
-                // qty: option.aty,
-                group: option.cityObject.itemOption,
-                subGroup: option.cityObject.itemType,
-                code: option.cityObject.itemId,
-                desc: option.cityObject.itemName,
-                pattern: option.patternObj,
-                days: option.day,
-                qty: option.qty,
-                remark: option.remark,
-                relStr: option.cityObject.relStr,
-                fees: option.cityObject.fees,
-                fees1: option.cityObject.fees1,
-                fees2: option.cityObject.fees2,
-                fees3: option.cityObject.fees3,
-                fees4: option.cityObject.fees4,
-                fees5: option.cityObject.fees5,
-                fees6: option.cityObject.fees6,
-                isPercent: option.cityObject.isPercent,
-                serviceCost: option.cityObject.serviceCost,
-                itemUnit: option.cityObject.itemUnit
-            };
-            filtered.push(someNewValue);
-            return filtered;
-        }, []);
-    };
-    //save list to mappable obj
-    DocEntryComponent.prototype.savetoDrNote = function () {
-    };
-    DocEntryComponent.prototype.saveMedHistory = function () {
-        var docMedic = {
-            visitId: this.bookingData.bookingId,
-            visitDate: this.bookingData.bkDate,
-            regNo: this.bookingData.regNo,
-            admissionNo: ' ',
-            patientName: this.bookingData.patientName,
-            drId: this.bookingData.doctorId,
-            drName: this.bookingData.doctorName,
-            reVisitDate: '2023-04-27',
-            drNotes: 'testing',
-            examinations: this.savetoDrExam(),
-            treatments: this.savetoDrTreatment(),
-            kvDrNotes: this.drNote
-        };
-        console.log(docMedic);
-        var booking = this.booking;
-        booking.bStatus = booking.bstatus;
-        // this.entryService.saveDoctorMedical(docMedic).subscribe({
-        //   next: data => {
-        //     this.appointService.updateAppointmentStatus(booking).subscribe({
-        //       next: booking => {
-        //         console.log("status changed")
-        //         console.log(booking)
-        //       }, error: err => {
-        //         console.trace(err)
-        //       }
-        //     })
-        //   },
-        //   error: err => {
-        //     console.trace(err)
-        //   }
-        // })
-    };
-    DocEntryComponent.prototype.treatCellEditingStopped = function (event) {
-        this.treatmentApi.setFocusedCell(event.rowIndex, event.colDef.field);
-        var columnField = event.colDef.field;
-    };
-    DocEntryComponent.prototype.onKeydown = function (event) {
-        event.stopPropagation();
-        if (event.key == "Escape") {
-            // this.params.api.stopEditing();
-            return false;
-        }
-        if (event.key == "Enter" || event.key == "Tab") {
-            // this.rowConfirmed();
-            return false;
-        }
-        if (event.key == "ArrowUp" || event.key == "ArrowDown") {
-            //this.navigateGrid();
-            return false;
-        }
-        if (event.key == "ArrowLeft") {
-            this.navigateTreatmentGrid();
-            this.navigateNoteGrid();
-            return false;
-        }
-        if (event.key == "ArrowRight") {
-            this.navigateExaminationGrid();
-            this.navigateTreatmentGrid();
-            return false;
-        }
-        return true;
-    };
-    DocEntryComponent.prototype.navigateExaminationGrid = function () {
-        var cell = this.examinationApi.getFocusedCell();
-        if (cell != undefined) {
-            if (cell.column.colId == "examinationObj") {
-                document.querySelector("#treatmentGrid").focus();
-                this.treatmentApi.setFocusedCell(0, 'cityObject');
-                this.examinationApi.clearFocusedCell();
-            }
-        }
-    };
-    DocEntryComponent.prototype.navigateTreatmentGrid = function () {
-        var cell = this.treatmentApi.getFocusedCell();
-        if (cell != undefined) {
-            var colName = cell.column.colId;
-            switch (colName) {
-                case "cityObject": {
-                    this.cellNavigation("#examinationGrid", 'examinationObj', this.examinationApi, this.treatmentApi);
-                    break;
-                }
-                case "remark": {
-                    this.cellNavigation("#noteGrid", 'key', this.noteApi, this.treatmentApi);
-                    break;
-                }
-                default: {
-                    this.loop = false;
-                    break;
-                }
-            }
-        }
-    };
-    DocEntryComponent.prototype.navigateNoteGrid = function () {
-        var cell = this.noteApi.getFocusedCell();
-        if (cell != undefined) {
-            var colName = cell.column.colId;
-            if (colName == "key") {
-                this.cellNavigation("#treatmentGrid", 'cityObject', this.treatmentApi, this.noteApi);
-            }
-        }
-    };
-    //cell navigaton for jumping to another cell
-    DocEntryComponent.prototype.cellNavigation = function (tableId, tableCell, currGridApi, nextGridApi) {
-        if (this.loop == false) {
-            this.loop = true;
-        }
-        else {
-            document.querySelector(tableId).focus();
-            currGridApi.setFocusedCell(0, tableCell);
-            nextGridApi.clearFocusedCell();
-            this.loop = false;
-        }
-    };
-    //table cell editing
-    DocEntryComponent.prototype.cellEditingStopped = function (event) {
-        var columnField = event.colDef.field;
-        var rowData = event.data;
-        var row = event.rowIndex;
-        var firstEditCol = event.columnApi.getAllDisplayedColumns()[0];
-        if (this.examinationApi.getFocusedCell()) {
-            this.examinationApi.setFocusedCell(event.rowIndex, event.colDef.field);
-            this.addNewRowtoTable(row, firstEditCol, this.examinationApi, rowData, this.drExamination, this.emptyExamination());
-        }
-        if (this.treatmentApi.getFocusedCell()) {
-            if (columnField == "cityObject") {
-                this.treatmentApi.setFocusedCell(event.rowIndex, event.colDef.field);
-            }
-            if (columnField == "patternObj") {
-                this.treatmentApi.setFocusedCell(event.rowIndex, event.colDef.field);
-                var rowData_1 = event.data;
-                rowData_1.qty = rowData_1.patternObj.factor * rowData_1.day;
-                var rowIndex = this.treatmentGridOption.api.getRowNode(event.node.id).rowIndex;
-                this.treatmentRow[rowIndex] = rowData_1;
-                this.treatmentGridOption.api.setRowData(this.treatmentRow);
-            }
-            if (columnField == "day") {
-                this.treatmentApi.setFocusedCell(event.rowIndex, event.colDef.field);
-                var rowData_2 = event.data;
-                rowData_2.qty = rowData_2.patternObj.factor * rowData_2.day;
-                var rowIndex = this.treatmentGridOption.api.getRowNode(event.node.id).rowIndex;
-                this.treatmentRow[rowIndex] = rowData_2;
-                this.treatmentGridOption.api.setRowData(this.treatmentRow);
-                this.reVisitDate.patchValue(moment(this.reVisitDate.value, "YYYY-MM-DD").add(rowData_2.day, 'day').format('YYYY-MM-DD'));
-            }
-            if (columnField == "remark") {
-                var treatRow = this.emptydrTreat();
-                treatRow.day = rowData.day;
-                this.addNewRowtoTable(row, firstEditCol, this.treatmentApi, rowData, this.drTreatment, treatRow);
-            }
-        }
-        if (this.noteApi.getFocusedCell()) {
-            if (columnField == "value") {
-                this.addNewRowtoTable(row, firstEditCol, this.noteApi, rowData, this.drNote, this.emptyNote());
-            }
-        }
     };
     DocEntryComponent.prototype.emptyExamination = function () {
         return {
@@ -523,7 +393,7 @@ var DocEntryComponent = /** @class */ (function () {
                 patternCode: '',
                 despEng: ''
             },
-            day: '',
+            day: '1',
             qty: 0,
             remark: ''
         };
@@ -534,6 +404,161 @@ var DocEntryComponent = /** @class */ (function () {
             value: ''
         };
     };
+    //grid navigation
+    DocEntryComponent.prototype.onKeydown = function (event) {
+        event.stopPropagation();
+        if (event.key == "Escape") {
+            // this.params.api.stopEditing();
+            return false;
+        }
+        if (event.key == "Enter" || event.key == "Tab") {
+            // this.rowConfirmed();
+            return false;
+        }
+        if (event.key == "ArrowUp" || event.key == "ArrowDown") {
+            //this.navigateGrid();
+            return false;
+        }
+        if (event.key == "ArrowLeft") {
+            this.navigateTreatmentGrid();
+            this.navigateNoteGrid();
+            return false;
+        }
+        if (event.key == "ArrowRight") {
+            this.navigateExaminationGrid();
+            this.navigateTreatmentGrid();
+            return false;
+        }
+        return true;
+    };
+    //navigate grid func
+    DocEntryComponent.prototype.navigateExaminationGrid = function () {
+        var cell = this.examinationApi.getFocusedCell();
+        if (cell != undefined) {
+            if (cell.column.colId == "examinationObj") {
+                document.querySelector("#treatmentGrid").focus();
+                this.treatmentApi.setFocusedCell(0, 'cityObject');
+                this.examinationApi.clearFocusedCell();
+            }
+        }
+    };
+    //navigate each cell in table
+    DocEntryComponent.prototype.navigateTreatmentGrid = function () {
+        var cell = this.treatmentApi.getFocusedCell();
+        if (cell != undefined) {
+            var colName = cell.column.colId;
+            switch (colName) {
+                case "cityObject": {
+                    this.cellNavigation("#examinationGrid", 'examinationObj', this.examinationApi, this.treatmentApi);
+                    break;
+                }
+                case "cityObject.itemOption": {
+                    this.cellNavigation("#noteGrid", 'key', this.noteApi, this.treatmentApi);
+                    break;
+                }
+                default: {
+                    this.loop = false;
+                    break;
+                }
+            }
+        }
+    };
+    //navigate each cell in table
+    DocEntryComponent.prototype.navigateNoteGrid = function () {
+        var cell = this.noteApi.getFocusedCell();
+        if (cell != undefined) {
+            var colName = cell.column.colId;
+            if (colName == "key") {
+                this.cellNavigation("#treatmentGrid", 'cityObject', this.treatmentApi, this.noteApi);
+            }
+        }
+    };
+    //cell navigaton for jumping to another cell
+    DocEntryComponent.prototype.cellNavigation = function (tableId, tableCell, currGridApi, nextGridApi) {
+        if (this.loop == false) {
+            this.loop = true;
+        }
+        else {
+            document.querySelector(tableId).focus();
+            currGridApi.setFocusedCell(0, tableCell);
+            nextGridApi.clearFocusedCell();
+            this.loop = false;
+        }
+    };
+    //table cell editing
+    DocEntryComponent.prototype.cellEditingStopped = function (event) {
+        var columnField = event.colDef.field;
+        var rowData = event.data;
+        var row = event.rowIndex;
+        var firstEditCol = event.columnApi.getAllDisplayedColumns()[0];
+        if (this.examinationApi.getFocusedCell()) {
+            if (rowData.examinationObj.desc == "") {
+                this.examinationApi.setFocusedCell(row, columnField);
+                return;
+            }
+            this.addNewRowtoTable(row, firstEditCol, this.examinationApi, rowData, this.drExamination, this.emptyExamination());
+            this.focusTableCell(row + 1, firstEditCol, this.examinationApi);
+        }
+        if (this.treatmentApi.getFocusedCell()) {
+            if (columnField == "cityObject") {
+                var itemType = rowData.cityObject.itemOption;
+                if (rowData.cityObject.itemId == '') {
+                    this.treatmentApi.setFocusedCell(row, columnField);
+                    return;
+                }
+                if (itemType == "Pharmacy") {
+                    var treatRow_1 = this.emptydrTreat();
+                    treatRow_1.day = this.pharmacyDays;
+                    this.addNewRowtoTable(row, firstEditCol, this.treatmentApi, rowData, this.drTreatment, treatRow_1);
+                    this.treatmentApi.setFocusedCell(row, "patternObj");
+                    return;
+                }
+                rowData.qty = 1;
+                rowData.day = '';
+                this.treatmentRow[row] = rowData;
+                this.treatmentGridOption.api.setRowData(this.treatmentRow);
+                var treatRow = this.emptydrTreat();
+                treatRow.day = this.pharmacyDays;
+                this.addNewRowtoTable(row, firstEditCol, this.treatmentApi, rowData, this.drTreatment, treatRow);
+                this.focusTableCell(row + 1, firstEditCol, this.treatmentApi);
+            }
+            if (columnField == "patternObj") {
+                this.treatmentApi.setFocusedCell(row, columnField);
+                rowData.qty = rowData.patternObj.factor * rowData.day;
+                this.treatmentRow[row] = rowData;
+                this.treatmentGridOption.api.setRowData(this.treatmentRow);
+                var treatRow = this.emptydrTreat();
+                treatRow.day = this.pharmacyDays;
+                this.treatmentApi.applyTransaction({
+                    add: [treatRow]
+                });
+                this.focusTableCell(row + 1, firstEditCol, this.treatmentApi);
+            }
+            if (columnField == "day") {
+                this.treatmentApi.setFocusedCell(row, columnField);
+                rowData.qty = rowData.patternObj.factor * rowData.day;
+                var rowIndex = this.treatmentGridOption.api.getRowNode(event.node.id).rowIndex;
+                this.treatmentRow[rowIndex] = rowData;
+                this.treatmentGridOption.api.setRowData(this.treatmentRow);
+                this.reVisitDate = moment(this.reVisitDate, "YYYY-MM-DD").add(rowData.day, 'day').format('YYYY-MM-DD');
+            }
+            if (columnField == "remark") {
+                // let treatRow: any = this.emptydrTreat()
+                // treatRow.day = rowData.day
+                // this.addNewRowtoTable(row, firstEditCol, this.treatmentApi, rowData, this.drTreatment, treatRow)
+            }
+        }
+        if (this.noteApi.getFocusedCell()) {
+            if (columnField == "key") {
+                this.noteApi.setFocusedCell(row, "value");
+            }
+            if (columnField == "value") {
+                this.addNewRowtoTable(row, firstEditCol, this.noteApi, rowData, this.drNote, this.emptyNote());
+                this.focusTableCell(row + 1, firstEditCol, this.noteApi);
+            }
+        }
+    };
+    //add new row to table
     DocEntryComponent.prototype.addNewRowtoTable = function (rowIndex, firstColumn, gridApi, rowData, lstRow, rowObj) {
         var currentRow = lstRow[rowIndex];
         if (currentRow != undefined) {
@@ -546,16 +571,26 @@ var DocEntryComponent = /** @class */ (function () {
             gridApi.applyTransaction({
                 add: [rowObj]
             });
-            gridApi.ensureIndexVisible(0);
-            gridApi.ensureColumnVisible(firstColumn);
-            gridApi.setFocusedCell(rowIndex + 1, firstColumn);
+            // gridApi.ensureIndexVisible(0)
+            // gridApi.ensureColumnVisible(firstColumn);
+            // gridApi.setFocusedCell(rowIndex + 1, firstColumn);
         }
     };
+    //focusing table cell
+    DocEntryComponent.prototype.focusTableCell = function (rowIndex, column, gridApi) {
+        gridApi.ensureIndexVisible(0);
+        gridApi.ensureColumnVisible(column);
+        gridApi.setFocusedCell(rowIndex, column);
+    };
+    //set date and pharmancy day
     DocEntryComponent.prototype.confirmPharmacyDate = function () {
-        this.reVisitDate.patchValue(this.todayDate);
+        this.reVisitDate = this.todayDate;
         for (var _i = 0, _a = this.treatmentRow; _i < _a.length; _i++) {
             var item = _a[_i];
-            item.day = this.pharmacyDays;
+            if (item.cityObject.itemOption == "Pharmacy") {
+                item.day = this.pharmacyDays;
+                item.qty = this.pharmacyDays * item.patternObj.factor;
+            }
         }
         this.treatmentGridOption.api.setRowData(this.treatmentRow);
         var treatRow = this.emptydrTreat();
@@ -563,8 +598,9 @@ var DocEntryComponent = /** @class */ (function () {
         this.treatmentApi.applyTransaction({
             add: [treatRow]
         });
-        //this.reVisitDate.patchValue(moment(this.reVisitDate.value, "YYYY-MM-DD").add(this.pharmacyDays, 'day').format('YYYY-MM-DD'))
+        this.reVisitDate = moment(this.reVisitDate, "YYYY-MM-DD").add(this.pharmacyDays, 'day').format('YYYY-MM-DD');
     };
+    //search the patient of current doctor session 
     DocEntryComponent.prototype.searchPatient = function () {
         var _this = this;
         this.dialog.open(appointment_patient_dialog_component_1.AppointmentPatientDialogComponent, {
@@ -574,13 +610,9 @@ var DocEntryComponent = /** @class */ (function () {
         }).afterClosed().subscribe({
             next: function (booking) {
                 if (booking) {
-                    _this.bookingData = booking;
                     _this.booking = booking;
-                    _this.bookingId = booking.bookingId;
-                    _this.bookingDate = booking.bkDate;
-                    _this.regNo = booking.regNo;
-                    _this.patientName = booking.patientName;
-                    _this.getVitalSign(booking.bookingId);
+                    _this.onInitData(_this.booking);
+                    _this.getDocMedicalHistory(_this.booking.bookingId);
                 }
             },
             error: function (err) {
@@ -588,10 +620,105 @@ var DocEntryComponent = /** @class */ (function () {
             }
         });
     };
+    //save list to mappable obj
+    DocEntryComponent.prototype.savetoDrExam = function () {
+        return this.drExamination.reduce(function (filtered, option) {
+            var someNewValue = {
+                desc: option.examinationObj.desc
+            };
+            filtered.push(someNewValue);
+            return filtered;
+        }, []);
+    };
+    //save list to mappable obj
+    DocEntryComponent.prototype.savetoDrTreatment = function () {
+        return this.drTreatment.reduce(function (filtered, option) {
+            var someNewValue = {
+                group: option.cityObject.itemOption,
+                subGroup: option.cityObject.itemType,
+                code: option.cityObject.itemId,
+                desc: option.cityObject.itemName,
+                pattern: option.patternObj,
+                days: option.day,
+                qty: option.qty,
+                remark: option.remark,
+                relStr: option.cityObject.relStr,
+                fees: option.cityObject.fees,
+                fees1: option.cityObject.fees1,
+                fees2: option.cityObject.fees2,
+                fees3: option.cityObject.fees3,
+                fees4: option.cityObject.fees4,
+                fees5: option.cityObject.fees5,
+                fees6: option.cityObject.fees6,
+                isPercent: option.cityObject.isPercent,
+                serviceCost: option.cityObject.serviceCost,
+                itemUnit: option.cityObject.itemUnit
+            };
+            filtered.push(someNewValue);
+            return filtered;
+        }, []);
+    };
+    //save list to mappable obj
+    DocEntryComponent.prototype.savetoDrNote = function () {
+    };
+    //save all data
+    DocEntryComponent.prototype.saveMedHistory = function () {
+        var _this = this;
+        var docMedic = {
+            id: this.medicalHisId,
+            visitId: this.booking.bookingId,
+            visitDate: this.booking.bkDate,
+            regNo: this.booking.regNo,
+            admissionNo: '',
+            patientName: this.booking.patientName,
+            drId: this.booking.doctorId,
+            drName: this.booking.doctorName,
+            cfType: this.cfFeeobj,
+            cfFees: this.cfFee,
+            reVisitDate: this.reVisitDate,
+            drNotes: this.doctorNote,
+            isFoc: this.foc,
+            examinations: this.savetoDrExam(),
+            treatments: this.savetoDrTreatment(),
+            kvDrNotes: this.drNote
+        };
+        console.log(docMedic);
+        var booking = this.booking;
+        booking.bStatus = booking.bstatus;
+        this.entryService.saveDoctorMedical(docMedic).subscribe({
+            next: function (data) {
+                _this.appointService.updateAppointmentStatus(booking).subscribe({
+                    next: function (booking) {
+                        console.log("status changed");
+                        console.log(booking);
+                        _this.onClear();
+                    }, error: function (err) {
+                        console.trace(err);
+                    }
+                });
+            },
+            error: function (err) {
+                console.trace(err);
+            }
+        });
+    };
     DocEntryComponent.prototype.onClear = function () {
-        //this.examinationRow=this.emptyExamination()
+        this.examinationRow = [this.emptyExamination()];
         this.treatmentRow = [this.emptydrTreat()];
+        this.noteRow = [this.emptyNote()];
+        this.examinationGridOption.api.setRowData(this.examinationRow);
         this.treatmentGridOption.api.setRowData(this.treatmentRow);
+        this.noteGridOption.api.setRowData(this.noteRow);
+        this.bookingId = '';
+        this.bookingDate = '';
+        this.regNo = '';
+        this.patientName = '';
+        this.cfFee = 0;
+        this.pharmacyDays = 0;
+        this.reVisitDate = this.todayDate;
+        this.doctorNote = '';
+        this.temp = 0;
+        this.bp = '';
     };
     __decorate([
         core_1.HostListener('keydown', ['$event'])

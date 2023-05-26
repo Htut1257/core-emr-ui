@@ -1,3 +1,5 @@
+@import '../../../../../../assets/styles/tableStyles.scss';
+
 .register-btn {
     margin-left: 5%;
     padding: 0 5px 0 5px;

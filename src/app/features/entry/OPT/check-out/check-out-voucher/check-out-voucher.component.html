@@ -2,15 +2,15 @@
     <div class="col-12 row">
         <mat-form-field class="col-lg-3 col-md-3 col-sm-12 pt-2" appearance="outline" disabled>
             <mat-label>Visit No</mat-label>
-            <input matInput type="text" name="bookingId" disabled>
+            <input matInput type="text" name="visitId" [(ngModel)]="visitNo" disabled>
         </mat-form-field>
-        <mat-form-field class="col-lg-3 col-md-3 col-sm-12 pt-2" appearance="outline">
+        <!-- <mat-form-field class="col-lg-3 col-md-3 col-sm-12 pt-2" appearance="outline">
             <mat-label>Date</mat-label>
             <input matInput [matDatepicker]="picker1" name="fromDate" [formControl]="voucherDate"
                 onfocus="this.select()">
             <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
             <mat-datepicker #picker1></mat-datepicker>
-        </mat-form-field>
+        </mat-form-field> -->
         <mat-form-field class="col-lg-3 col-md-3 col-sm-12 pt-2" appearance="outline">
             <mat-label>Payment</mat-label>
             <input matInput type="text" name="bookingId">
@@ -21,72 +21,73 @@
         </mat-form-field>
         <mat-form-field class="col-lg-3 col-md-3 col-sm-12 pt-2" appearance="outline" disabled>
             <mat-label>Reg No</mat-label>
-            <input matInput type="text" name="bookingId"  disabled>
+            <input matInput type="text" name="regNo" [(ngModel)]="regNo" disabled>
         </mat-form-field>
         <mat-form-field class="col-lg-3 col-md-3 col-sm-12 pt-2" appearance="outline" disabled>
             <mat-label>Admission No</mat-label>
-            <input matInput type="text" name="bookingId" disabled>
+            <input matInput type="text" name="admNo" [(ngModel)]="admNo" disabled>
         </mat-form-field>
         <mat-form-field class="col-lg-3 col-md-3 col-sm-12 pt-2" appearance="outline" disabled>
             <mat-label>Name</mat-label>
-            <input matInput type="text" name="bookingId" disabled>
+            <input matInput type="text" name="patientName" [(ngModel)]="patientName" disabled>
         </mat-form-field>
         <mat-form-field class="col-lg-3 col-md-3 col-sm-12 pt-2" appearance="outline">
             <mat-label>Doctor</mat-label>
-            <input matInput type="text" name="bookingId" >
+            <input matInput type="text" name="doctotrName" [(ngModel)]="doctorName" disabled>
+        </mat-form-field>
+        <mat-form-field class="col-lg-3 col-md-3 col-sm-12 pt-2" appearance="outline">
+            <mat-label>Day</mat-label>
+            <input matInput type="text" name="pharmacyDay" [formControl]="pharmacyDay" (keypress)="numberLimit($event)">
         </mat-form-field>
     </div>
 
-    <div class="col-12">
+    <div class="col-12 mt-2">
         <ag-grid-angular #checkOutGrid class="ag-theme-balham" style="width:100%;height:315px"
-        [gridOptions]="checkOutGridOption"> </ag-grid-angular>
-        <!-- <ag-grid-angular #agGrid style="width: 100%; height: 200px;" class="ag-theme-balham"
-            [gridOptions]="gridOptionsCheckOut" (gridReady)="onGridReady($event)" rowSelection="multiple"
-            (selectionChanged)="onSelectionChanged($event)" (cellEditingStarted)="cellEditingStarted($event)"
-            (cellEditingStopped)="cellEditingStopped($event)">
-        </ag-grid-angular> -->
-    </div>  
-    <div class="row mt-3">
-        <div class="col-4">
-            <div class="col-12">
-                <!-- <ag-grid-angular #agGrid style="width: 100%; height: 200px;" class="ag-theme-balham"
-                    [gridOptions]="gridOptionsPayment" (gridReady)="onGridReadyPay($event)" rowSelection="multiple"
-                    (selectionChanged)="onSelectionChanged($event)" (cellEditingStarted)="cellEditingStarted($event)"
-                    (cellEditingStopped)="cellEditingStopped($event)">
-                </ag-grid-angular> -->
-            </div>
-            <div class="col-12">
-                <mat-form-field>
-                    <mat-label>Total Pay</mat-label>
-                    <input matInput>
-                </mat-form-field>
-            </div>
+            [gridOptions]="checkOutGridOption" [frameworkComponents]="frameworkComponents"
+            (gridReady)="onGridReadyCheckOut($event)" (cellValueChanged)="cellValueChanged($event)"
+            (cellEditingStopped)="cellEditingStopped($event)"> </ag-grid-angular>
+
+    </div>
+    <div class="col-12  mt-3 ">
+        
+        <div class="col-2 float-right">
+            <mat-form-field class="col-10 " appearance="outline">
+                <mat-label>Total Amount</mat-label>
+                <input matInput class="td-number" type="text" [(ngModel)]="totalAmount" disabled>
+            </mat-form-field>
         </div>
-        <div class="row col-8">
-            <div class="col-12">
-                <mat-form-field class="float-right">
-                    <mat-label>Vou Total</mat-label>
-                    <input matInput>
-                </mat-form-field>
-            </div>
-            <div class="col-12">
-                <mat-form-field class="float-right">
-                    <mat-label>Tax</mat-label>
-                    <input matInput>
-                </mat-form-field>
-            </div>
-            <div class="col-12">
-                <mat-form-field class="float-right">
-                    <mat-label>Balance</mat-label>
-                    <input matInput>
-                </mat-form-field>
-            </div>
+        <div class="col-2 float-right">
+            <mat-form-field class="col-10 " appearance="outline">
+                <mat-label>Discount Opd</mat-label>
+                <input matInput>
+            </mat-form-field>
+        </div>
+        <div class="col-2 float-right">
+            <mat-form-field class="col-10 " appearance="outline">
+                <mat-label>Discount Pharmacy</mat-label>
+                <input matInput>
+            </mat-form-field>
+        </div>
+        <div class="col-2 float-right">
+            <mat-form-field class="col-10 " appearance="outline">
+                <mat-label>Tax</mat-label>
+                <input matInput>
+            </mat-form-field>
+        </div>
+        <div class="col-2 example-spacer ">
+          
+        </div>
+        <div class="col-2 ">
+            <mat-form-field class="col-10 " appearance="outline">
+                <mat-label>Vou Total</mat-label>
+                <input matInput>
+            </mat-form-field>
         </div>
     </div>
     <div>
         <div class="example-button-row float-right">
             <button [id]="'btnSave'" mat-raised-button type="submit" color="primary"
-                (click)="getRowData()">Save</button>
+                (click)="saveCheckOut()">Save</button>
             <button mat-raised-button type="button" color="primary">Print</button>
         </div>
 

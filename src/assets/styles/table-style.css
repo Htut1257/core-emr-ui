@@ -48,7 +48,7 @@ th.mat-header-cell.cdk-header-cell {
     font-size: large;
     color: rgb(0, 0, 0);
     vertical-align: center;
-    background-color: white;
+    background-color: white;    
 }
 
 tr.mat-row,

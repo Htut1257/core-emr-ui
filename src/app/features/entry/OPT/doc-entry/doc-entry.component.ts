@@ -92,7 +92,7 @@ export class DocEntryComponent implements OnInit {
   drNote: DrNote[] = []
 
   cfFees: OpdCfFee[] = []
-  cfFeeobj:OpdCfFee
+  cfFeeobj: OpdCfFee
   opdVisitDate: OpdVisitDate[] = []
 
   medicalHisId: string
@@ -102,7 +102,7 @@ export class DocEntryComponent implements OnInit {
   regNo: string
   patientName: string
   cfFee: number
-  foc:boolean
+  foc: boolean
   pharmacyDays: number = 1
   reVisitDate: string
   doctorNote: string
@@ -232,7 +232,10 @@ export class DocEntryComponent implements OnInit {
       filtered.push(someValue)
       return filtered
     }, [])
-    this.treatmentRow.push(this.emptydrTreat())
+
+    let treatRow: any = this.emptydrTreat()
+    treatRow.day = this.pharmacyDays
+    this.treatmentRow.push(treatRow)
     this.treatmentGridOption.api.setRowData(this.treatmentRow)
   }
 
@@ -271,7 +274,7 @@ export class DocEntryComponent implements OnInit {
   }
 
   getDoctorFeeData(fees: OpdCfFee) {
-    this.cfFeeobj=fees
+    this.cfFeeobj = fees
     this.cfFee = fees.fees
   }
 
@@ -301,8 +304,8 @@ export class DocEntryComponent implements OnInit {
       columnDefs: this.treatmentColumnDef,
       rowData: this.treatmentRow,
       suppressScrollOnNewData: false,
-      defaultColDef:{
-        resizable:true
+      defaultColDef: {
+        resizable: true
       }
     }
 
@@ -318,7 +321,7 @@ export class DocEntryComponent implements OnInit {
     this.examinationApi = params.api
     this.examinationColumn = params.columnApi
     this.examinationApi.sizeColumnsToFit()
-  
+
   }
 
   //table for treatment
@@ -326,7 +329,7 @@ export class DocEntryComponent implements OnInit {
     this.treatmentApi = params.api
     this.treatmentColumn = params.columnApi
     this.treatmentApi.sizeColumnsToFit()
-    
+
   }
 
   //table for note
@@ -368,7 +371,7 @@ export class DocEntryComponent implements OnInit {
         headerName: "Description",
         field: "cityObject",
         editable: true,
-
+        width: 100,
         cellEditor: 'autoComplete',
         cellEditorParams: {
           'propertyRendered': 'itemName',
@@ -389,6 +392,7 @@ export class DocEntryComponent implements OnInit {
       {
         headerName: "Pattern",
         field: "patternObj",
+        width: 30,
         editable: params => params.data.cityObject.itemOption == "Pharmacy",
         cellEditor: 'autoComplete',
         cellEditorParams: {
@@ -407,22 +411,29 @@ export class DocEntryComponent implements OnInit {
       {
         headerName: "Days",
         field: "day",
-        width: 100,
+        width: 25,
         editable: params => params.data.cityObject.itemOption == "Pharmacy",
         type: 'rightAligned'
       },
       {
         headerName: "Qty",
         field: "qty",
-        width: 100,
+        width: 30,
         editable: params => params.data.cityObject.itemOption == "Pharmacy",
         type: 'rightAligned'
       },
       {
         headerName: "Remark",
         field: "remark",
-        width: 300,
-        editable: true
+        width: 100,
+        editable: true,
+      },
+      {
+        headerName: "Option",
+        field: "cityObject.itemOption",
+        width: 50,
+        editable: false,
+
       },
     ]
     this.treatmentRow = [
@@ -479,7 +490,7 @@ export class DocEntryComponent implements OnInit {
         patternCode: '',
         despEng: ''
       },
-      day: '1',
+      day: 1,
       qty: 0,
       remark: '',
     }
@@ -543,7 +554,7 @@ export class DocEntryComponent implements OnInit {
           this.cellNavigation(`#examinationGrid`, 'examinationObj', this.examinationApi, this.treatmentApi)
           break;
         }
-        case "remark": {
+        case "cityObject.itemOption": {
           this.cellNavigation(`#noteGrid`, 'key', this.noteApi, this.treatmentApi)
           break;
         }
@@ -584,12 +595,12 @@ export class DocEntryComponent implements OnInit {
     let rowData = event.data
     let row = event.rowIndex
     var firstEditCol = event.columnApi.getAllDisplayedColumns()[0];
-    if (this.examinationApi.getFocusedCell()) { 
-      if(rowData.examinationObj.desc==""){
+    if (this.examinationApi.getFocusedCell()) {
+      if (rowData.examinationObj.desc == "") {
         this.examinationApi.setFocusedCell(row, columnField);
-        return 
+        return
       }
-     
+
       this.addNewRowtoTable(row, firstEditCol, this.examinationApi, rowData, this.drExamination, this.emptyExamination())
       this.focusTableCell(row + 1, firstEditCol, this.examinationApi)
     }
@@ -597,9 +608,9 @@ export class DocEntryComponent implements OnInit {
     if (this.treatmentApi.getFocusedCell()) {
       if (columnField == "cityObject") {
         let itemType = rowData.cityObject.itemOption
-        if(rowData.cityObject.itemId==''){
+        if (rowData.cityObject.itemId == '') {
           this.treatmentApi.setFocusedCell(row, columnField);
-          return 
+          return
         }
         if (itemType == "Pharmacy") {
           let treatRow: any = this.emptydrTreat()
@@ -638,15 +649,19 @@ export class DocEntryComponent implements OnInit {
         this.reVisitDate = moment(this.reVisitDate, "YYYY-MM-DD").add(rowData.day, 'day').format('YYYY-MM-DD')
       }
       if (columnField == "remark") {
-        let treatRow: any = this.emptydrTreat()
-        treatRow.day = rowData.day
-        this.addNewRowtoTable(row, firstEditCol, this.treatmentApi, rowData, this.drTreatment, treatRow)
+        // let treatRow: any = this.emptydrTreat()
+        // treatRow.day = rowData.day
+        // this.addNewRowtoTable(row, firstEditCol, this.treatmentApi, rowData, this.drTreatment, treatRow)
       }
     }
 
     if (this.noteApi.getFocusedCell()) {
+      if (columnField == "key") {
+        this.noteApi.setFocusedCell(row, "value");
+      }
       if (columnField == "value") {
         this.addNewRowtoTable(row, firstEditCol, this.noteApi, rowData, this.drNote, this.emptyNote())
+        this.focusTableCell(row + 1, firstEditCol, this.noteApi)
       }
     }
   }
@@ -775,6 +790,7 @@ export class DocEntryComponent implements OnInit {
       cfFees: this.cfFee,
       reVisitDate: this.reVisitDate,
       drNotes: this.doctorNote,
+      isFoc: this.foc,
       examinations: this.savetoDrExam(),
       treatments: this.savetoDrTreatment(),
       kvDrNotes: this.drNote

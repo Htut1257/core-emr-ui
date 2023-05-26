@@ -1,5 +1,21 @@
+::ng-deep.mat-form-field {
+    font-size: 11px;
+    margin: 0;
+  
+}
 
-.hr{
-    border-left: ;
-    border: groove black 1px 0 0 0 0;
+::ng-deep.mat-form-field-wrapper {
+    padding-bottom: 0px;
+    /* padding-bottom: 1.34375em; */
+}
+
+::ng-deep.mat-form-field-appearance-outline .mat-form-field-wrapper {
+    margin: 0  ;
+    /* margin: 0.25em 0; */
+}
+
+.float-right_{
+   
+    justify-content: flex-end;
+    margin: 8px 8px 8px 0;
 }

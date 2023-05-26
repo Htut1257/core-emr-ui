@@ -8,14 +8,18 @@ export interface DrExamination {
 export interface DrTreatment {
     cityObject: Item
     patternObj: Pattern
-    day: string
+    day: number
     qty: number
+    price?: number
+    foc?: boolean
+    discount?: number,
+    amount?: number,
     remark: string
 }
 
-export interface Pattern{
-    patternCode:string
-    despEng:string
+export interface Pattern {
+    patternCode: string
+    despEng: string
 }
 
 export interface Item {
@@ -34,6 +38,9 @@ export interface Item {
     isPercent: string
     serviceCost: number
     itemUnit: string
+    expDate?: Date
+    isFOC?: boolean
+    uniqueId?: string
 }
 
 export interface PatternItem {

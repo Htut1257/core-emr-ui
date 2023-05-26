@@ -8,13 +8,24 @@
 @import 'ag-grid-community/styles/ag-theme-alpine.css';
 @import 'ag-grid-community/styles/ag-theme-balham.css';
 @import './assets/styles/table-style.css';
+
+@import '~material-icons/iconfont/material-icons.scss';
 mat-form-field.mat-form-field {
+    font-size: 11px;
+}
+
+mat-checkbox.mat-checkbox{
     font-size: 11px;
 }
 
 mat-form-field-outline.mat-form-field-outline{
     background-color: aqua;
 }
+
+.ag-theme-balham .ag-ltr .ag-cell {
+    border-right: 1px solid #aaa ;
+  }
+  
 
 .mat-input-element.mat-form-field-autofill-control{
     height:12px

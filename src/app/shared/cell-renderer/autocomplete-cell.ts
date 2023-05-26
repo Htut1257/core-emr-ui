@@ -164,7 +164,7 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
     }
 
     processDataInput(event) {
-        console.log("called")
+     
         if (this.useApi) {
             this.columnFilter = this.gridApi.getFilterInstance(this.propertyName);
             if (event.length == 0) this.gridApi.setRowData();

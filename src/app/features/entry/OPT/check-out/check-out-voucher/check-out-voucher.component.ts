@@ -1,9 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Subscription, map } from 'rxjs'
 import { GridOptions, SelectionChangedEvent, ColDef, ColumnApi, GridApi } from 'ag-grid-community';
-import * as moment from 'moment';
+import { Cashier } from 'src/app/core/model/checkout.model';
+import { DrTreatment } from 'src/app/core/model/autocomplete-item.model';
 import { CheckOutService } from 'src/app/core/services/check-out-service/check-out.service';
+import { CommonServiceService } from 'src/app/core/services/common-service/common-service.service';
+import { AutocompleteCell } from 'src/app/shared/cell-renderer/autocomplete-cell';
+import { CheckboxRenderer } from 'src/app/shared/cell-renderer/checkbox-cell';
+import * as moment from 'moment';
+import { DoctorTreatment } from 'src/app/core/model/doctor-entry.model';
+
 @Component({
   selector: 'app-check-out-voucher',
   templateUrl: './check-out-voucher.component.html',
@@ -13,7 +21,7 @@ import { CheckOutService } from 'src/app/core/services/check-out-service/check-o
 export class CheckOutVoucherComponent implements OnInit {
   //#region grid variable
 
-  checkOut: any[] = []
+  checkOut: Cashier
 
   checkOutGridOption: GridOptions
   paymentGridOption: GridOptions
@@ -30,18 +38,42 @@ export class CheckOutVoucherComponent implements OnInit {
   checkOutRow: any
   paymentRow: any
 
+  public frameworkComponents
+  drTreatment: DoctorTreatment[] = []
 
   //#endregion grid variable
 
+  visitNo: string
+  admNo: string
+  regNo: string
+  patientName: string
+  doctorId: string
+  doctorName: string
+  payment: any
+  location: any
+  pharmacyDay: any = new FormControl(1)
+
+  totalTax: number
+  totalDiscount: number
+  totalAmount: number = 0
   voucherDate: FormControl = new FormControl('')
+
   todayDate: string = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD')
+  subscription: Subscription
+  constructor(
+    private route: Router, private checkService: CheckOutService,
+    private commonService: CommonServiceService,
+  ) {
+    this.commonService.isMobileObj$.subscribe(data => {
+      if (data == false) {
+        this.initCheckOutData()
+      }
+    })
 
-  constructor(private route: Router, private checkService: CheckOutService) {
-    if (this.checkService.checkOut != undefined) {
-      this.checkOut = this.checkService.checkOut
+    this.frameworkComponents = {
+      autoComplete: AutocompleteCell,
+      checkbox: CheckboxRenderer
     }
-
-
   }
 
   ngOnInit(): void {
@@ -49,6 +81,74 @@ export class CheckOutVoucherComponent implements OnInit {
     this.getPaymentData()
     this.initializeGridTable()
     this.voucherDate.patchValue(this.todayDate)
+
+    this.pharmacyDay.valueChanges.pipe(
+      map(name => name ? name : '1')
+    ).subscribe(data => {
+      this.setPharmacyDay(data)
+    })
+
+
+  }
+
+  //initialize data from the selected list
+  initCheckOutData() {
+    if (this.checkService._checkOut != undefined) {
+      this.checkOut = this.checkService._checkOut
+      this.visitNo = this.checkOut.visitId
+      this.admNo = ''
+      this.regNo = this.checkOut.regNo
+      this.patientName = this.checkOut.patientName
+      this.doctorId = this.checkOut.drId
+      this.doctorName = this.checkOut.drName
+      // this.pharmacyDay.setValue(1)
+      let treat: any = this.checkOut.treatments
+
+      this.renderTreatmentData(treat)
+    }
+  }
+
+  //render data to grid table 
+  renderTreatmentData(data: DrTreatment[]) {
+    this.checkOutRow = data.reduce(function (filtered: any, option: any) {
+      var someValue = {
+        cityObject: {
+          itemOption: option.group,
+          itemType: option.subGroup,
+          itemId: option.code,
+          itemName: option.desc,
+          relStr: option.relStr,
+          fees: option.fees,
+          fees1: option.fees1,
+          fees2: option.fees2,
+          fees3: option.fees3,
+          fees4: option.fees4,
+          fees5: option.fees5,
+          fees6: option.fees6,
+          isPercent: option.isPercent,
+          serviceCost: option.serviceCost,
+          itemUnit: option.itemUnit,
+          expDate: option.expDate,
+          isFOC: option.isFOC,
+          uniqueId: option.uniqueId,
+        },
+        patternObj: option.pattern,
+        day: option.days,
+        qty: option.qty,
+        price: option.remark,
+        foc: option.isFOC,
+        discount: 0,
+        amount: option.fees * option.qty,
+        remark: option.remark
+      }
+      filtered.push(someValue)
+      return filtered
+    }, [])
+    for (let item of this.checkOutRow) {
+      this.drTreatment.push(item)
+    }
+    this.checkOutRow.push(this.emptydrTreat())
+    this.checkOutGridOption.api.setRowData(this.checkOutRow)
   }
 
   initializeGridTable() {
@@ -56,21 +156,17 @@ export class CheckOutVoucherComponent implements OnInit {
       columnDefs: this.checkOutColumnDef,
       rowData: this.checkOutRow,
       suppressScrollOnNewData: false,
-      defaultColDef:{
-        resizable:true
+      defaultColDef: {
+        resizable: true
       },
-      onGridReady(event) {
-        this.checkOutApi = event.api
-        this.checkOutColumn = event.columnApi
-        this.checkOutApi.sizeColumnsToFit()
-      },
+
     }
 
     this.paymentGridOption = {
       columnDefs: this.paymentColumnDef,
       rowData: this.paymentRow,
       suppressScrollOnNewData: false,
-      
+
       onGridReady(event) {
         this.paymentApi = event.api
         this.paymentColumn = event.columnApi
@@ -80,39 +176,82 @@ export class CheckOutVoucherComponent implements OnInit {
 
   }
 
+  onGridReadyCheckOut(params) {
+    this.checkOutApi = params.api
+    this.checkOutColumn = params.columnApi
+    this.checkOutApi.sizeColumnsToFit()
+  }
+
+  //column and row defination for check out
   getCheckOutData() {
     this.checkOutColumnDef = [
       {
         headerName: 'Code',
-        field: 'itemId',
+        field: 'cityObject',
         width: 50,
         editable: true,
+        cellEditor: 'autoComplete',
+        cellEditorParams: {
+          'propertyRendered': 'itemId',
+          'returnObject': true,
+          'columnDefs': [
+            { headerName: 'Code', field: 'itemId' },
+            { headerName: 'Name', field: 'itemName' },
+            { headerName: 'Option', field: 'itemOption' },
+            { headerName: 'Type', field: 'itemType' }
+          ]
+        },
+        valueFormatter: params => {
+          if (params.value) {
+            return params.value.itemId;
+          }
+          return "";
+        },
       },
       {
         headerName: 'Description',
-        field: 'itemObject',
+        field: 'cityObject.itemName',
         width: 100,
         editable: true,
       },
       {
         headerName: 'Pattern',
-        field: 'pattern',
-        width: 50,
-        editable: true,
+        field: 'patternObj',
+        width: 45,
+        editable: params => params.data.cityObject.itemOption == "Pharmacy",
+        cellEditor: 'autoComplete',
+        cellEditorParams: {
+          'propertyRendered': 'patternCode',
+          'returnObject': true,
+          'columnDefs': [
+            { headerName: 'Code', field: 'patternCode' },
+            { headerName: 'Description', field: 'despEng' },
+          ]
+        },
+        valueFormatter: params => {
+          if (params.value) return params.value.patternCode;
+          return "";
+        },
       },
       {
         headerName: 'Day',
         field: 'day',
-        width: 30,
-        editable: true,
+        width: 35,
+        editable: params => params.data.cityObject.itemOption == "Pharmacy",
         type: 'rightAligned'
       },
       {
         headerName: 'Qty',
         field: 'qty',
         width: 30,
-        editable: true,
+        editable: params => params.data.cityObject.itemOption == "Pharmacy",
         type: 'rightAligned'
+      },
+      {
+        headerName: 'Unit',
+        field: 'cityObject.itemUnit',
+        width: 35,
+        editable: false,
       },
       {
         headerName: 'Price',
@@ -120,6 +259,21 @@ export class CheckOutVoucherComponent implements OnInit {
         width: 50,
         editable: true,
         type: 'rightAligned'
+      },
+      {
+        headerName: 'Foc',
+        field: 'isFOC',
+        width: 30,
+        cellRendererSelector: (params)=>{
+          if(params.data.cityObject.itemOption != "Pharmacy"){
+            return{
+              component:CheckboxRenderer
+            } 
+          }else{
+            return undefined
+          }
+        },
+        editable: false,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
       },
       {
         headerName: 'Discount',
@@ -141,40 +295,13 @@ export class CheckOutVoucherComponent implements OnInit {
         width: 100,
         editable: true,
       },
-
     ]
     this.checkOutRow = [
-      {
-        itemId: '', itemObject: '', pattern: '', day: 0, qty: 0, price: 0, discount: 0, amount: 0, remark: ''
-      }, {
-        itemId: '', itemObject: '', pattern: '', day: 0, qty: 0, price: 0, discount: 0, amount: 0, remark: ''
-      },
-      {
-        itemId: '', itemObject: '', pattern: '', day: 0, qty: 0, price: 0, discount: 0, amount: 0, remark: ''
-      },
-      {
-        itemId: '', itemObject: '', pattern: '', day: 0, qty: 0, price: 0, discount: 0, amount: 0, remark: ''
-      },
-      {
-        itemId: '', itemObject: '', pattern: '', day: 0, qty: 0, price: 0, discount: 0, amount: 0, remark: ''
-      }, {
-        itemId: '', itemObject: '', pattern: '', day: 0, qty: 0, price: 0, discount: 0, amount: 0, remark: ''
-      },
-      {
-        itemId: '', itemObject: '', pattern: '', day: 0, qty: 0, price: 0, discount: 0, amount: 0, remark: ''
-      }, {
-        itemId: '', itemObject: '', pattern: '', day: 0, qty: 0, price: 0, discount: 0, amount: 0, remark: ''
-      }
-      , {
-        itemId: '', itemObject: '', pattern: '', day: 0, qty: 0, price: 0, discount: 0, amount: 0, remark: ''
-      }
-      , {
-        itemId: '', itemObject: '', pattern: '', day: 0, qty: 0, price: 0, discount: 0, amount: 0, remark: ''
-      }
-
+      this.emptydrTreat()
     ]
   }
 
+  //column and row defination for payment
   getPaymentData() {
     this.paymentColumnDef = [
 
@@ -184,18 +311,261 @@ export class CheckOutVoucherComponent implements OnInit {
     ]
   }
 
-  //get single row data
-  getRowData() {
-    // var rowNode = this.gridApiCheckOut.getRenderedNodes()//.rowData
-    // console.log(rowNode)
+  emptydrTreat(): DrTreatment {
+    return {
+      cityObject: {
+        itemOption: '',
+        itemType: '',
+        itemId: '',
+        itemName: '',
+        relStr: '',
+        fees: 0,
+        fees1: 0,
+        fees2: 0,
+        fees3: 0,
+        fees4: 0,
+        fees5: 0,
+        fees6: 0,
+        isPercent: '',
+        serviceCost: 0,
+        itemUnit: '',
+        isFOC: false,
+        uniqueId: '',
+      },
+      patternObj: {
+        patternCode: '',
+        despEng: ''
+      },
+      day: this.pharmacyDay.value,
+      qty: 0,
+      price: 0,
+      foc: false,
+      discount: 0,
+      amount: 0,
+      remark: '',
+    }
   }
 
-  //get the current changed data
-  onSelectionChanged(event: SelectionChangedEvent) {
-    //const selectedData = this.gridApiCheckOut.getSelectedRows();
-    console.log('Selection Changed', event);
+  cellValueChanged(event) {
+    let columnField = event.colDef.field
+    let rowData = event.data
+    let rowIndex = event.rowIndex
+    var firstEditCol = event.columnApi.getAllDisplayedColumns()[0];
+    if (columnField == "isFOC") {
+      rowData.amount = rowData.price * rowData.qty
+      if (rowData.isFOC == true) {
+        rowData.amount = 0
+      }
+      this.setRowDatatoTable(rowIndex, this.checkOutRow, rowData, this.checkOutApi, this.checkOutGridOption)
+    }
+    this.setTotalAmount(this.checkOutRow)
   }
 
+  cellEditingStopped(event) {
+    let columnField = event.colDef.field
+    let rowData = event.data
+    let row = event.rowIndex
+    var firstEditCol = event.columnApi.getAllDisplayedColumns()[0];
+    if (this.checkOutApi.getFocusedCell()) {
+      this.checkOutCellEvent(row, firstEditCol, columnField, this.checkOutApi, rowData, this.drTreatment)
+    }
+    this.setTotalAmount(this.checkOutRow)
+  }
 
+  //cell Editing event for Check Out Table
+  checkOutCellEvent(rowIndex: any, firstColumn: any, columnField: string, gridApi: GridApi, rowData: Object, lstRow: any[]) {
+    let data: any = rowData
+    let itemType = data.cityObject.itemOption
+    if (columnField == "cityObject") {
+      if (data.cityObject.itemId == '') {
+        gridApi.setFocusedCell(rowIndex, columnField);
+        return
+      }
+
+      data.qty = 1
+      data.price = data.cityObject.fees
+      data.amount = data.price * data.qty
+
+      if (itemType == "Pharmacy") {
+        this.checkOutRow[rowIndex] = rowData;
+        this.checkOutGridOption.api.setRowData(this.checkOutRow);
+        this.addNewRowtoTable(rowIndex, firstColumn, gridApi, rowData, lstRow, this.emptydrTreat())
+        this.focusTableCell(rowIndex, "patternObj", gridApi)
+        return
+      }
+
+      data.day = ''
+      this.checkOutRow[rowIndex] = rowData;
+      this.checkOutGridOption.api.setRowData(this.checkOutRow);
+      this.addNewRowtoTable(rowIndex, firstColumn, gridApi, rowData, lstRow, this.emptydrTreat())
+      this.focusTableCell(rowIndex, "price", gridApi)
+    }
+
+    if (columnField == "patternObj") {
+      if (data.patternObj.patternCode == '') {
+        gridApi.setFocusedCell(rowIndex, columnField);
+        return
+      }
+      data.qty = data.patternObj.factor * this.pharmacyDay.value
+      data.amount = data.price * data.qty
+      this.setRowDatatoTable(rowIndex, this.checkOutRow, rowData, this.checkOutApi, this.checkOutGridOption)
+      this.focusTableCell(rowIndex + 1, firstColumn, gridApi)
+    }
+
+    if (columnField == "day") {
+      data.qty = data.patternObj.factor * data.day
+      data.amount = data.price * data.qty
+      this.setRowDatatoTable(rowIndex, this.checkOutRow, rowData, this.checkOutApi, this.checkOutGridOption)
+    }
+
+    if (columnField == "qty") {
+      data.amount = data.price * data.qty
+      this.setRowDatatoTable(rowIndex, this.checkOutRow, rowData, this.checkOutApi, this.checkOutGridOption)
+    }
+
+    if (columnField == "price") {
+
+      data.amount = data.price * data.qty
+      this.setRowDatatoTable(rowIndex, this.checkOutRow, rowData, this.checkOutApi, this.checkOutGridOption)
+      if (itemType != "Pharmacy" && itemType != '') {
+        this.focusTableCell(rowIndex + 1, firstColumn, gridApi)
+      }
+    }
+
+    if (columnField == "discount") {
+      this.setRowDatatoTable(rowIndex, this.checkOutRow, rowData, this.checkOutApi, this.checkOutGridOption)
+    }
+  }
+
+  //add new row to table
+  addNewRowtoTable(rowIndex: any, firstColumn: any, gridApi: GridApi, rowData: Object, lstRow: any[], rowObj: Object) {
+    let currentRow = lstRow[rowIndex]
+    if (currentRow != undefined) {
+      currentRow = rowData
+    }
+    console.log("grid data" + this.checkOutRow.length)
+    console.log("actual data" + this.drTreatment.length)
+    let totalRow = gridApi.getDisplayedRowCount() - 1
+    if (totalRow == rowIndex) {
+      let curentData = rowData
+      lstRow.push(curentData)
+      gridApi.applyTransaction({
+        add: [rowObj]
+      })
+    }
+  }
+
+  //set Data to Table
+  setRowDatatoTable(rowIndex: any, tableRow: any, rowData: Object, gridApi: GridApi, gridOption: GridOptions) {
+    tableRow[rowIndex] = rowData;
+    gridOption.api.setRowData(tableRow);
+    gridApi.applyTransaction({
+      add: [this.emptydrTreat()]
+    })
+  }
+
+  //focusing table cell
+  focusTableCell(rowIndex: any, column: any, gridApi: GridApi) {
+    gridApi.ensureIndexVisible(0)
+    gridApi.ensureColumnVisible(column);
+    gridApi.setFocusedCell(rowIndex, column);
+  }
+
+  //set nummber of days pharmacy Item
+  setPharmacyDay(day: number) {
+    for (let item of this.checkOutRow) {
+      if (item.cityObject.itemOption == "Pharmacy") {
+        item.day = day
+        item.qty = day * item.patternObj.factor
+        item.amount = item.price * item.qty
+      }
+    }
+    this.checkOutGridOption.api.setRowData(this.checkOutRow);
+    this.checkOutApi.applyTransaction({
+      add: [this.emptydrTreat()]
+    })
+    this.setTotalAmount(this.checkOutRow)
+  }
+
+  //calculate amount total from table
+  setTotalAmount(rowData: any[]) {
+    let sumAmount = 0
+    rowData.forEach(element => {
+      sumAmount += element.amount
+    });
+    this.totalAmount = sumAmount
+  }
+
+  //save list to mappable obj
+  savetoDrTreatment(): DoctorTreatment[] {
+    return this.drTreatment.reduce(function (filtered: any, option: any) {
+      var someNewValue = {
+        group: option.cityObject.itemOption,
+        subGroup: option.cityObject.itemType,
+        code: option.cityObject.itemId,
+        desc: option.cityObject.itemName,
+        pattern: option.patternObj,
+        days: option.day,
+        qty: option.qty,
+        remark: option.remark,
+        relStr: option.cityObject.relStr,
+        fees: option.cityObject.fees,
+        fees1: option.cityObject.fees1,
+        fees2: option.cityObject.fees2,
+        fees3: option.cityObject.fees3,
+        fees4: option.cityObject.fees4,
+        fees5: option.cityObject.fees5,
+        fees6: option.cityObject.fees6,
+        isPercent: option.cityObject.isPercent,
+        serviceCost: option.cityObject.serviceCost,
+        itemUnit: option.cityObject.itemUnit,
+        expDate: '',
+        isFOC: option.foc,
+        amount: option.amount,
+        uniqueId: 1,
+      }
+      filtered.push(someNewValue);
+      return filtered
+    }, [])
+  }
+
+  saveCheckOut() {
+    this.savetoDrTreatment()
+    this.checkOut.visitDate = this.todayDate
+
+    this.checkOut.treatments = this.savetoDrTreatment()
+    this.checkOut.vouTotal = this.totalAmount
+    this.checkOut.discP = 0
+    this.checkOut.discAmt = 0
+    this.checkOut.taxP = 0
+    this.checkOut.taxAmt = 0
+    this.checkOut.paid = 0
+    this.checkOut.balance = this.totalAmount
+    this.checkOut.maxUniqueId = 0
+
+    let data: any = this.checkOut
+    data.reVisitDate = this.todayDate
+    console.log(this.checkOutRow.map((item:any)=>item.cityObject.itemName))
+    console.log(this.drTreatment.map((item:any)=>item.cityObject.itemName))
+    console.log(data)
+    return
+    this.checkService.saveCheckOut(data).subscribe({
+      next: checkOut => {
+        console.log(checkOut)
+      },
+      error: err => {
+        console.trace(err)
+      }
+    })
+  }
+
+  //limit input to number
+  numberLimit(e: any) {
+    var txt = String.fromCharCode(e.which);
+    if (!txt.match(/^[0-9-@&#%()]*$/)) { //
+      return false;
+    }
+    return txt
+  }
 
 }

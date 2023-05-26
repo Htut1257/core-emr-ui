@@ -13,7 +13,7 @@ var AutocompleteCell = /** @class */ (function () {
         this.autoService = autoService;
         this.patternService = patternService;
         this.rowSelection = 'single';
-        this.gridHeight = 175;
+        this.gridHeight = 315;
         this.gridWidth = 500;
         this.isCanceled = true;
         this.selectedObject = {};
@@ -33,6 +33,7 @@ var AutocompleteCell = /** @class */ (function () {
     };
     // ICellEditorAngularComp functions
     AutocompleteCell.prototype.agInit = function (params) {
+        var _this = this;
         this.params = params;
         //to get witch field to use
         //   console.log(params)
@@ -66,6 +67,9 @@ var AutocompleteCell = /** @class */ (function () {
         else {
             this.inputValue = params.charPress;
         }
+        this.getApiData(params.charPress).subscribe(function (data) {
+            _this.rowData = data;
+        });
     };
     AutocompleteCell.prototype.getValue = function () {
         if (!this.returnObject)
@@ -119,6 +123,7 @@ var AutocompleteCell = /** @class */ (function () {
     };
     AutocompleteCell.prototype.processDataInput = function (event) {
         var _this = this;
+        console.log("called");
         if (this.useApi) {
             this.columnFilter = this.gridApi.getFilterInstance(this.propertyName);
             if (event.length == 0)
@@ -129,11 +134,11 @@ var AutocompleteCell = /** @class */ (function () {
                 });
             }
             ;
-            if (event.length > 2) {
-                this.getApiData(event).subscribe(function (data) {
-                    _this.rowData = data;
-                });
-            }
+            // if (event.length > 2) {
+            //     this.getApiData(event).subscribe(data => {
+            //         this.rowData = data;
+            //     });
+            // }
         }
         else {
             this.updateFilter();
