@@ -14,6 +14,10 @@ const routes: Routes = [
   {
     path: 'pattern',
     loadChildren: () => import('./pattern/pattern.module').then(module => module.PatternModule)
+  },
+  {
+    path: 'payment',
+    loadChildren: () => import('./payment/payment.module').then(module => module.PaymentModule)
   }
 ];
 
