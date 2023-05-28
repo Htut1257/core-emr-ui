@@ -6,7 +6,6 @@ const routes: Routes = [
     path: 'opd',
     loadChildren: () => import('./opd-setup/opd-setup.module').then(module => module.OpdSetupModule)
   },
-
   {
     path: 'opd-group',
     loadChildren: () => import('./opd-group/opd-group.module').then(module => module.OpdGroupModule)
@@ -18,6 +17,10 @@ const routes: Routes = [
   {
     path: 'payment',
     loadChildren: () => import('./payment/payment.module').then(module => module.PaymentModule)
+  },
+  {
+    path: 'location',
+    loadChildren: () => import('./location/location.module').then(module => module.LocationModule)
   }
 ];
 

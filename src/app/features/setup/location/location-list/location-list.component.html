@@ -1,1 +1,16 @@
-<p>location-list works!</p>
+<div class="row">
+    <div class="table-container table">
+        <table mat-table [dataSource]="dataSource">
+            <ng-container matColumnDef="position">
+                <th mat-header-cell class="td-number" *matHeaderCellDef>No</th>
+                <td mat-cell class="td-number" *matCellDef="let element;let i=index">{{i+1}}</td>
+            </ng-container>
+            <ng-container matColumnDef="name">
+                <th mat-header-cell class="td-text" *matHeaderCellDef>Name</th>
+                <td mat-cell class="td-text" *matCellDef="let element;let i=index">{{element.locationName}}</td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumn;sticky:true"></tr>
+            <tr mat-row *matRowDef="let row;columns:displayedColumn"></tr>
+        </table>
+    </div>
+</div>

@@ -1,10 +1,14 @@
 <div class="table-container table">
-    <table mat-table>
-        <ng-container>
-            <th></th>
-            <td></td>
+    <table mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="position">
+            <th mat-header-cell class="td-number" *matHeaderCellDef>No</th>
+            <td mat-cell class="td-number" *matCellDef="let element;let i=index">{{i+1}}</td>
         </ng-container>
-        <tr mat-header-row></tr>
-        <tr mat-row></tr>
+        <ng-container matColumnDef="description">
+            <th mat-header-cell class="td-text" *matHeaderCellDef>Payment</th>
+            <td mat-cell class="td-text" *matCellDef="let element">{{element.paymentTypeName}}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumn;sticky:true"></tr>
+        <tr mat-row *matRowDef="let row;columns:displayedColumn" (dblclick)="getRowData(row)"></tr>
     </table>
 </div>

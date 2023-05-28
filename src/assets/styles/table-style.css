@@ -2,6 +2,7 @@
     margin-top: 25px;
     height: 74vh;
     overflow: auto;
+    padding-right: 0%;
 }
 
 table {

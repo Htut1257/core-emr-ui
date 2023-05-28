@@ -14,30 +14,39 @@ export class PaymentListComponent implements OnInit {
   payment: PaymentType
   isMobile: boolean = false
 
+  dataSource: MatTableDataSource<PaymentType>
+  displayedColumn: string[] = ['position', 'description']
 
-  dataSource:MatTableDataSource<PaymentType>
-  displayedColumn:string[]=['position','description']
-  
   constructor(
     private payService: PaymentService,
     private commonService: CommonServiceService, private toastService: ToastService,
   ) {
-
+    this.dataSource=new MatTableDataSource<PaymentType>(this.payments)
+    this.payService.payments.subscribe(data => {
+      this.dataSource.data = data
+    })
   }
 
   ngOnInit(): void {
-
+    this.getPayment();
   }
 
   getPayment() {
     this.payService.getPayment().subscribe({
       next: payments => {
         this.payments = payments
+        this.dataSource.data=this.payments
       },
       error: err => {
         console.trace(err)
       }
     })
+  }
+
+  getRowData(data:PaymentType){
+    console.log(data)
+    this.payService._payment=data
+    this.commonService.getCurrentObject(false);
   }
 
 }

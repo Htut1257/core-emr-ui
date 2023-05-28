@@ -66,6 +66,7 @@ export class VitalSignSetupComponent implements OnInit {
   }
 
   initializeFormData(data) {
+    console.log(data)
     this.vitalForm.get('bookingId').patchValue(data.bookingId)
     this.vitalForm.get('regNo').patchValue(data.regNo)
   }
