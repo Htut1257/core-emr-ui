@@ -5,6 +5,7 @@ import { VitalSign } from 'src/app/core/model/vital-sign.model';
 import { VitalSignService } from 'src/app/core/services/vital-sign-service/vital-sign.service';
 import { AppointmentService } from 'src/app/core/services/appointment-service/appointment.service';
 import { CommonServiceService } from 'src/app/core/services/common-service/common-service.service';
+import { ToastService } from 'src/app/core/services/toast-service/toast-service.service';
 import { Booking } from 'src/app/core/model/booking.model';
 @Component({
   selector: 'app-vital-sign-setup',
@@ -21,13 +22,12 @@ export class VitalSignSetupComponent implements OnInit {
   constructor(
     private route: Router, private vitalService: VitalSignService,
     private appointService: AppointmentService,
-    private commonService: CommonServiceService,
+    private commonService: CommonServiceService,private toastService:ToastService,
     public formBuilder: FormBuilder
   ) {
     this.commonService.isMobileObj$.subscribe(data => {
       if (data == false) {
         console.log(data)
-        console.log(this.appointService._booking)
         if (this.appointService._booking != undefined) {
           this.booking = this.appointService._booking
           this.initializeFormData(this.booking)
@@ -66,7 +66,6 @@ export class VitalSignSetupComponent implements OnInit {
   }
 
   initializeFormData(data) {
-    console.log(data)
     this.vitalForm.get('bookingId').patchValue(data.bookingId)
     this.vitalForm.get('regNo').patchValue(data.regNo)
   }
@@ -81,6 +80,7 @@ export class VitalSignSetupComponent implements OnInit {
       next: vital => {
         this.appointService.updateAppointmentStatus(booking).subscribe({
           next: booking => {
+            this.toastService.showSuccessToast("","Success saving Vital Sign :"+booking.patientName)
             this.onClear();
           }, error: err => {
             console.trace(err)

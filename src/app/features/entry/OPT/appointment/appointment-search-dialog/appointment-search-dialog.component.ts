@@ -32,7 +32,7 @@ const MY_DATE_FORMAT = {
     ]
 })
 export class AppointmentSearchDialogComponent implements OnInit {
-
+  title:string
   doctors: Doctor[]
   bookingStatus:string='-'
   filteredDoc: Observable<any[]>;
@@ -53,6 +53,7 @@ export class AppointmentSearchDialogComponent implements OnInit {
   ngOnInit(): void {
     this.initializeForm();
     this.bookingStatus=this.data.status
+    this.title=this.data.title
     console.log(this.data.status)
     this.filteredDoc = this.appointForm.controls['doctor'].valueChanges.pipe(
       startWith(''),

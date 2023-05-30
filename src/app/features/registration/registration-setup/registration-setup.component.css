@@ -1,4 +1,4 @@
-a.form-btn,
+/* a.form-btn,
 button.form-btn {
     display: inline-block;
     padding: 0.35em 1.2em;
@@ -20,7 +20,7 @@ button.form-btn {
         display: block;
         margin: 0.4em auto;
     }
-}
+} */
 
 /* ::ng-deep .mat-mdc-text-field-wrapper {
     font-size: 12px !important;
@@ -39,7 +39,7 @@ button.form-btn {
     padding-bottom: 5px !important;
 } */
 
-.example-full-width {
+/* .example-full-width {
     width: 100%;
     height: fit-content;
 }
@@ -67,4 +67,13 @@ mat-form-field.mat-form-field {
 .group-text-field-left {
     margin-right: 0px;
     padding: 0px 0px 0px 2px;
-}
+} */
+
+.card.card-border{
+    padding:2%
+  }
+
+.group-text-field-left {
+    margin-right:2px 0 2px 20;
+
+} 

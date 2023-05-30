@@ -1,34 +1,19 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~bootstrap/dist/css/bootstrap.css";
 /* @import '~material-icons/iconfont/material-icons.scss'; */
-@import "./assets/styles/button-style.css";
-@import 'ag-grid-community/styles/ag-grid.css';
 
+@import 'ag-grid-community/styles/ag-grid.css';
 @import 'ag-grid-community/styles/ag-theme-material.css';
 @import 'ag-grid-community/styles/ag-theme-alpine.css';
 @import 'ag-grid-community/styles/ag-theme-balham.css';
+@import '~material-icons/iconfont/material-icons.scss';
+
+@import'./assets/styles/form-style.css';
+@import "./assets/styles/button-style.css";
 @import './assets/styles/table-style.css';
 
-@import '~material-icons/iconfont/material-icons.scss';
-mat-form-field.mat-form-field {
-    font-size: 11px;
-}
-
-mat-checkbox.mat-checkbox{
-    font-size: 11px;
-}
-
-mat-form-field-outline.mat-form-field-outline{
-    background-color: aqua;
-}
-
 .ag-theme-balham .ag-ltr .ag-cell {
-    border-right: 1px solid #aaa ;
-  }
-  
-
-.mat-input-element.mat-form-field-autofill-control{
-    height:12px
+    border-right: 1px solid #aaa;
 }
 
 
@@ -40,7 +25,7 @@ body {
 body {
     margin: 0;
     font-size: 14px !important;
-    font-family:Pyidaungsu !important;
+    font-family: Pyidaungsu !important;
 }
 
 /* scroll bar css */
@@ -61,16 +46,7 @@ body {
     float: right;
 }
 
-.button-row {
-    display: table-cell;
-    max-width: 600px;
-}
 
-.button-row .mat-raised-button {
-    margin: 8px 8px 8px 0 !important;
-    height: 30px;
-    line-height: 25px;
-}
 
 #outer {
     display: flex;
@@ -86,40 +62,17 @@ body {
     min-height: 40px;
 }
 
-.example-button-row {
-    display: table-cell;
-    max-width: 600px;
-}
-
-.example-button-row .mat-flat-button,
-.example-button-row .mat-raised-button {
-    margin: 8px 8px 8px 0;
-    height: 30px;
-    line-height: 25px;
-}
 
 .example-spacer {
     flex: 1 1 auto;
 }
 
-.td-number {
-    text-align: right !important;
-    padding-right: 10px !important;
+
+.small-btn {
+    margin-left: 5%;
+    padding: 0 5px 0 5px;
+    width: min-content;
+    min-width: 25px;
+    height: 26px;
+    line-height: 30px;
 }
-
-.td-text {
-    text-align: left !important;
-    padding-left: 10px !important;
-}
-
-.td-object {
-    text-align: center !important;
-    align-items: center !important;
-
-}
-
-.form-height{
-    height: 80vh;
-    overflow-y: auto;
-}
-

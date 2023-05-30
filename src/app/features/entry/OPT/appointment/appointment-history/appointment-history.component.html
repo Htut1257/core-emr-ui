@@ -1,70 +1,66 @@
-<div class="row ">
+<div class="row">
     <div class="row col-12">
-        <div class="col-9">
-            <mat-form-field class="col-12" apperarance="outline">
-                <mat-label>Search</mat-label>
-                <input matInput type="text"  name="fromDate" (keyup)="applyFilter($event)">
-            </mat-form-field>
-        </div>
-        <div class="col-3">
-            <div class="example-button-row">
-                <button mat-flat-button class="" color="primary" (click)="searchBooking()"> Filter</button>
-                <button mat-flat-button class="" color="primary"> Print</button>
-            </div>
+        <mat-form-field class="col-12 col-lg-9" apperarance="outline">
+            <mat-label>Search</mat-label>
+            <input matInput type="text" name="fromDate" (keyup)="applyFilter($event)">
+        </mat-form-field>
+        <div class="col-12 col-lg-3 example-button-row">
+            <button mat-raised-button class="small-btn float-right col-12 col-lg-4" color="primary"> Print</button>
+            <button mat-raised-button class="float-right small-btn col-12 col-lg-4" color="primary" (click)="searchBooking()"> Filter</button>
         </div>
     </div>
-    <div class="row col-12">
-        <div class="table-container table">
-            <table   mat-table [dataSource]="dataSource">
-                <ng-container matColumnDef="no">
-                    <th mat-header-cell class="td-number column-no" *matHeaderCellDef>No</th>
-                    <td mat-cell class="td-number" *matCellDef="let i=index">{{i+1}}</td>
-                </ng-container>
-                <ng-container matColumnDef="date">
-                    <th mat-header-cell class="td-text" *matHeaderCellDef>Date</th>
-                    <td mat-cell class="td-text" *matCellDef="let element">{{element.bkDate|date:'dd/MM/yyyy '}}</td>
-                </ng-container>
-                <!-- <ng-container matColumnDef="visitno">
-                    <th mat-header-cell class="td-text  column-no" *matHeaderCellDef="">Visit No</th>
-                    <td mat-cell class="td-text" *matCellDef="let element">{{element.bookingId}}</td>
-                </ng-container> -->
-                <ng-container matColumnDef="regno">
-                    <th mat-header-cell class="td-text" *matHeaderCellDef>Reg No</th>
-                    <td mat-cell class="td-text" *matCellDef="let element">{{element.regNo}}</td>
-                </ng-container>
-                <ng-container matColumnDef="patient">
-                    <th mat-header-cell class="td-text" *matHeaderCellDef>Patient</th>
-                    <td mat-cell class="td-text" *matCellDef="let element">{{element.patientName}}</td>
-                </ng-container>
-                <ng-container matColumnDef="doctor">
-                    <th mat-header-cell class="td-text column-doc" *matHeaderCellDef>Doctor</th>
-                    <td mat-cell class="td-text" *matCellDef="let element">{{element.doctorName}}</td>
-                </ng-container>
-                <ng-container matColumnDef="phone">
-                    <th mat-header-cell class="td-text" *matHeaderCellDef>Phone No</th>
-                    <td mat-cell class="td-text" *matCellDef="let element">{{element.bkPhone}}</td>
-                </ng-container>
-                <ng-container matColumnDef="serialno">
-                    <th mat-header-cell class="td-number" *matHeaderCellDef="">Serial</th>
-                    <td mat-cell class="td-number" *matCellDef="let element">{{element.bkSerialNo}}</td>
-                </ng-container>
-                <ng-container matColumnDef="wl">
-                    <th mat-header-cell class="td-text" *matHeaderCellDef="">Status</th>
-                    <td mat-cell class="td-text" *matCellDef="let element">{{element.bstatus}}</td>
-                </ng-container>
-                <ng-container matColumnDef="reg">
-                    <th mat-header-cell class="td-object" *matHeaderCellDef="">Action</th>
-                    <td mat-cell class="td-object" *matCellDef="let element">
-                        <div class="example-button-row">
-                            <button mat-flat-button  color="main" class="register-btn" *ngIf="!element.regNo" (click)="registerBooking(element)">Register</button>
-                            <button mat-flat-button  color="main" class="register-btn" *ngIf="element.regNo" (click)="confirmBooking(element)">Confirm</button>
-                        </div>
-                    </td>
-                </ng-container>
-                <tr mat-header-row *matHeaderRowDef="displayedColumn;sticky:true"></tr>
-                <tr mat-row *matRowDef="let row;columns:displayedColumn"></tr>
-            </table>
-        </div>
+    <div class="row col-12 div-table table-container table">
+        <table mat-table class="table" role="table" [dataSource]="dataSource">
+            <ng-container matColumnDef="no">
+                <th mat-header-cell class="td-number column-no" *matHeaderCellDef>No</th>
+                <td mat-cell class="td-number" *matCellDef="let i=index">{{i+1}}</td>
+            </ng-container>
+            <ng-container matColumnDef="date">
+                <th mat-header-cell class="td-text" *matHeaderCellDef>Date</th>
+                <td mat-cell class="td-text" *matCellDef="let element">{{element.bkDate|date:'dd/MM/yyyy '}}</td>
+            </ng-container>
+            <!-- <ng-container matColumnDef="visitno">
+                <th mat-header-cell class="td-text  column-no" *matHeaderCellDef="">Visit No</th>
+                <td mat-cell class="td-text" *matCellDef="let element">{{element.bookingId}}</td>
+            </ng-container> -->
+            <ng-container matColumnDef="regno">
+                <th mat-header-cell class="td-text" *matHeaderCellDef>Reg No</th>
+                <td mat-cell class="td-text" *matCellDef="let element">{{element.regNo}}</td>
+            </ng-container>
+            <ng-container matColumnDef="patient">
+                <th mat-header-cell class="td-text" *matHeaderCellDef>Patient</th>
+                <td mat-cell class="td-text" *matCellDef="let element">{{element.patientName}}</td>
+            </ng-container>
+            <ng-container matColumnDef="doctor">
+                <th mat-header-cell class="td-text column-doc" *matHeaderCellDef>Doctor</th>
+                <td mat-cell class="td-text" *matCellDef="let element">{{element.doctorName}}</td>
+            </ng-container>
+            <ng-container matColumnDef="phone">
+                <th mat-header-cell class="td-text" *matHeaderCellDef>Phone No</th>
+                <td mat-cell class="td-text" *matCellDef="let element">{{element.bkPhone}}</td>
+            </ng-container>
+            <ng-container matColumnDef="serialno">
+                <th mat-header-cell class="td-number" *matHeaderCellDef="">Serial</th>
+                <td mat-cell class="td-number" *matCellDef="let element">{{element.bkSerialNo}}</td>
+            </ng-container>
+            <ng-container matColumnDef="wl">
+                <th mat-header-cell class="td-text" *matHeaderCellDef="">Status</th>
+                <td mat-cell class="td-text" *matCellDef="let element">{{element.bstatus}}</td>
+            </ng-container>
+            <ng-container matColumnDef="reg">
+                <th mat-header-cell class="td-object" *matHeaderCellDef="">Action</th>
+                <td mat-cell class="td-object" *matCellDef="let element">
+                    <div class="example-button-row">
+                        <button mat-flat-button color="main" class="small-btn" *ngIf="!element.regNo"
+                            (click)="registerBooking(element)">Register</button>
+                        <button mat-flat-button color="main" class="small-btn" *ngIf="element.regNo"
+                            (click)="confirmBooking(element)">Confirm</button>
+                    </div>
+                </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumn;sticky:true"></tr>
+            <tr mat-row *matRowDef="let row;columns:displayedColumn"></tr>
+        </table>
     </div>
 
 </div>

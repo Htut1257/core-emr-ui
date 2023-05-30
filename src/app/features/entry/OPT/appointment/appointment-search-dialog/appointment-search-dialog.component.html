@@ -1,10 +1,8 @@
-<h1 mat-dialog-title cdkDrag
-cdkDragRootElement=".cdk-overlay-pane" 
-cdkDragHandle>Appointment Search</h1>
+<h1 mat-dialog-title cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>{{title}}</h1>
 <form [formGroup]="appointForm" (ngSubmit)="searchAppointment(appointForm.value)">
     <div mat-dialog-content>
-        <div class="row">
-            <div class="col-6">
+        <div class="row ">
+            <div class="col-12 col-lg-6">
                 <mat-form-field class="col-12" appearance="outline">
                     <mat-label>From Date</mat-label>
                     <input matInput [matDatepicker]="picker1" formControlName="fromDate" name="fromDate"
@@ -16,7 +14,7 @@ cdkDragHandle>Appointment Search</h1>
                 </mat-form-field>
 
             </div>
-            <div class="col-6">
+            <div class="col-12 col-lg-6">
                 <mat-form-field class="col-12" appearance="outline">
                     <mat-label>To Date</mat-label>
                     <input matInput [matDatepicker]="picker2" formControlName="toDate" name="toDate"
@@ -27,15 +25,13 @@ cdkDragHandle>Appointment Search</h1>
                     <mat-error *ngIf="!appointForm.value.fromDate">Please To To Date</mat-error>
                 </mat-form-field>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-6">
+            <div class="col-12 col-lg-6">
                 <mat-form-field class="col-12" appearance="outline">
                     <mat-label>Registration-No</mat-label>
                     <input [id]="'regisNo'" matInput type="text" name="regNo" formControlName="regNo">
                 </mat-form-field>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-lg-6">
                 <mat-form-field class='col-12' appearance="outline">
                     <mat-label>Doctor</mat-label>
                     <input [id]="'doctor'" matInput [matAutocomplete]="auto" type="text" name="doctor"
@@ -49,10 +45,14 @@ cdkDragHandle>Appointment Search</h1>
             </div>
         </div>
     </div>
-    <div mat-dialog-actions>
-        <button class="float-right" mat-raised-button type="button" mat-dialog-close>Close</button>
-        <button class="delete-button float-right" type="submit" color="primary" mat-raised-button [disabled]="!appointForm.valid">
-            Search
-        </button>
+    <div mat-dialog-actions align="end">
+        <div class=example-button-row>
+            <button class="delete-button " type="submit" color="primary" mat-raised-button
+                [disabled]="!appointForm.valid">
+                Search
+            </button>
+            <button class="" mat-raised-button type="button" mat-dialog-close>Close</button>
+
+        </div>
     </div>
 </form>

@@ -36,15 +36,7 @@ export class VitalSignComponent implements OnInit {
     this.appointService.bookings.subscribe(data => {
       this.dataSource.data = data
     })
-    // this.appointService.bookings.pipe(
-    //   map((data:any)=>{
-    //     return data.filter(appoint=>{
-    //       return appoint.bstatus=="Confirm"
-    //     })
-    //   })
-    // ).subscribe(data=>{
-    //   this.dataSource.data = data
-    // })
+    
   }
 
   ngOnInit(): void {
@@ -106,8 +98,11 @@ export class VitalSignComponent implements OnInit {
   searchBooking() {
     this.dialog.open(AppointmentSearchDialogComponent, {
       disableClose: true,
-      width: '50%',
-      data:{'status':'Vital Sign'}
+      width: '40%',
+      data:{
+        'title':'Vital Sign Search',
+        'status':'Vital Sign'
+      }
     })
       .afterClosed()
       .subscribe(result => {

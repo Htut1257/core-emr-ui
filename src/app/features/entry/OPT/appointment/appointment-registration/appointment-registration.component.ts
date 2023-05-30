@@ -156,8 +156,6 @@ export class AppointmentRegistrationComponent implements OnInit {
     booking.bkDate = moment(data.bkDate).format("yyyy-MM-DD")
     this.appointService.saveAppointment(booking).subscribe(data => {
       this.toastService.showSuccessToast("", "Success Adding new Appointment")
-      // this.appointService._bookings.push(data)   
-      // this.appointService.bookings.next(this.appointService._bookings)
       this.onClear()
     })
   }

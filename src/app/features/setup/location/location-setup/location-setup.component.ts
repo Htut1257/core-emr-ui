@@ -13,7 +13,7 @@ import { ToastService } from 'src/app/core/services/toast-service/toast-service.
 export class LocationSetupComponent implements OnInit, OnDestroy {
 
   location: Location
-  locatonId:string
+  locatonId: string
   locationForm: FormGroup
 
   @ViewChild('reactiveForm', { static: true }) reactiveForm: NgForm
@@ -36,7 +36,8 @@ export class LocationSetupComponent implements OnInit, OnDestroy {
 
   initializeForm() {
     this.locationForm = this.formBuilder.group({
-
+      locationId: [{ value: '', disabled: true }],
+      locationName: ['']
     })
   }
 
@@ -56,7 +57,7 @@ export class LocationSetupComponent implements OnInit, OnDestroy {
   }
 
   onNew() {
-    this.locatonId=''
+    this.locatonId = ''
     this.clearForm()
   }
 
@@ -71,6 +72,29 @@ export class LocationSetupComponent implements OnInit, OnDestroy {
   clearForm() {
     this.locationForm.reset()
     this.reactiveForm.resetForm()
+  }
+
+  focusElement(eleString: string, nextString: string, type: string) {
+    if (type == "autocomplete") {
+      if (this.locationForm.controls['' + eleString + ''].value == null) {
+        return
+      }
+    }
+    if (type == "option") {
+      if (this.locationForm.controls['' + eleString + ''].value == null) {
+        return
+      }
+    }
+    document.querySelector<HTMLInputElement>(`#${nextString}`)?.focus()
+  }
+
+  //handle event from submitting
+  handleEnter(event: any) {
+    let tagname = event.srcElement.id
+    if (tagname !== 'btnSave') {
+      return false
+    }
+    return true
   }
 
 

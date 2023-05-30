@@ -1,11 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription, map } from 'rxjs'
 import { GridOptions, SelectionChangedEvent, ColDef, ColumnApi, GridApi } from 'ag-grid-community';
 import { Cashier } from 'src/app/core/model/checkout.model';
+import { Location } from 'src/app/core/model/location.model';
+import { PaymentType } from 'src/app/core/model/payment.model';
 import { DrTreatment } from 'src/app/core/model/autocomplete-item.model';
 import { CheckOutService } from 'src/app/core/services/check-out-service/check-out.service';
+import { LocationService } from 'src/app/core/services/location-service/location.service';
+import { PaymentService } from 'src/app/core/services/payment-service/payment.service';
 import { CommonServiceService } from 'src/app/core/services/common-service/common-service.service';
 import { AutocompleteCell } from 'src/app/shared/cell-renderer/autocomplete-cell';
 import { CheckboxRenderer } from 'src/app/shared/cell-renderer/checkbox-cell';
@@ -15,7 +19,8 @@ import { DoctorTreatment } from 'src/app/core/model/doctor-entry.model';
 @Component({
   selector: 'app-check-out-voucher',
   templateUrl: './check-out-voucher.component.html',
-  styleUrls: ['./check-out-voucher.component.css']
+  styleUrls: ['./check-out-voucher.component.css'],
+  encapsulation:ViewEncapsulation.None
 
 })
 export class CheckOutVoucherComponent implements OnInit {
@@ -50,7 +55,9 @@ export class CheckOutVoucherComponent implements OnInit {
   doctorId: string
   doctorName: string
   payment: any
+  payments: PaymentType[] = []
   location: any
+  locations: Location[] = []
   pharmacyDay: any = new FormControl(1)
 
   totalTax: number
@@ -62,6 +69,7 @@ export class CheckOutVoucherComponent implements OnInit {
   subscription: Subscription
   constructor(
     private route: Router, private checkService: CheckOutService,
+    private locationService: LocationService, private payService: PaymentService,
     private commonService: CommonServiceService,
   ) {
     this.commonService.isMobileObj$.subscribe(data => {
@@ -80,6 +88,8 @@ export class CheckOutVoucherComponent implements OnInit {
     this.getCheckOutData()
     this.getPaymentData()
     this.initializeGridTable()
+    this.getLocation()
+    this.getPayment()
     this.voucherDate.patchValue(this.todayDate)
 
     this.pharmacyDay.valueChanges.pipe(
@@ -89,6 +99,28 @@ export class CheckOutVoucherComponent implements OnInit {
     })
 
 
+  }
+
+  getLocation() {
+    this.locationService.getLocation().subscribe({
+      next: locations => {
+        this.locations = locations
+      },
+      error: err => {
+        console.trace(err)
+      }
+    })
+  }
+
+  getPayment() {
+    this.payService.getPayment().subscribe({
+      next: payments => {
+        this.payments = payments
+      },
+      error: err => {
+        console.trace(err)
+      }
+    })
   }
 
   //initialize data from the selected list
@@ -264,16 +296,16 @@ export class CheckOutVoucherComponent implements OnInit {
         headerName: 'Foc',
         field: 'isFOC',
         width: 30,
-        cellRendererSelector: (params)=>{
-          if(params.data.cityObject.itemOption != "Pharmacy"){
-            return{
-              component:CheckboxRenderer
-            } 
-          }else{
+        cellRendererSelector: (params) => {
+          if (params.data.cityObject.itemOption != "Pharmacy") {
+            return {
+              component: CheckboxRenderer
+            }
+          } else {
             return undefined
           }
         },
-        editable: false,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+        editable: false,
       },
       {
         headerName: 'Discount',
@@ -545,8 +577,8 @@ export class CheckOutVoucherComponent implements OnInit {
 
     let data: any = this.checkOut
     data.reVisitDate = this.todayDate
-    console.log(this.checkOutRow.map((item:any)=>item.cityObject.itemName))
-    console.log(this.drTreatment.map((item:any)=>item.cityObject.itemName))
+    console.log(this.checkOutRow.map((item: any) => item.cityObject.itemName))
+    console.log(this.drTreatment.map((item: any) => item.cityObject.itemName))
     console.log(data)
     return
     this.checkService.saveCheckOut(data).subscribe({

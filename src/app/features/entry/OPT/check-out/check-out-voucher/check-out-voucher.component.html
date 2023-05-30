@@ -1,41 +1,45 @@
 <div class="row form-height">
     <div class="col-12 row">
-        <mat-form-field class="col-lg-3 col-md-3 col-sm-12 pt-2" appearance="outline" disabled>
+        <mat-form-field class="div-no-margin col-lg-3 col-md-3 col-sm-12 pt-2" appearance="outline" disabled>
             <mat-label>Visit No</mat-label>
             <input matInput type="text" name="visitId" [(ngModel)]="visitNo" disabled>
         </mat-form-field>
-        <!-- <mat-form-field class="col-lg-3 col-md-3 col-sm-12 pt-2" appearance="outline">
-            <mat-label>Date</mat-label>
-            <input matInput [matDatepicker]="picker1" name="fromDate" [formControl]="voucherDate"
-                onfocus="this.select()">
-            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-            <mat-datepicker #picker1></mat-datepicker>
-        </mat-form-field> -->
-        <mat-form-field class="col-lg-3 col-md-3 col-sm-12 pt-2" appearance="outline">
-            <mat-label>Payment</mat-label>
-            <input matInput type="text" name="bookingId">
+       
+        <mat-form-field class="div-no-margin col-lg-3 col-md-3 col-sm-12 pt-2" appearance="outline">
+            <mat-label for="payment">Payment</mat-label>
+            <mat-select [id]="'payment'" name="payment">
+                <mat-option value="-">Select Payment</mat-option>
+                <mat-option *ngFor="let item of payments" [value]="item">
+                    {{item.paymentTypeName}}
+                </mat-option>
+            </mat-select>
         </mat-form-field>
-        <mat-form-field class="col-lg-3 col-md-3 col-sm-12 pt-2" appearance="outline">
-            <mat-label>Location</mat-label>
-            <input matInput type="text" name="bookingId">
+        <mat-form-field class="div-no-margin col-lg-3 col-md-3 col-sm-12 pt-2" appearance="outline">
+            <mat-label fir>Location</mat-label>
+            <mat-select [id]="'location'" name="location">
+                <mat-option value="-">Select Location</mat-option>
+                <mat-option *ngFor="let item of locations" [value]="item">
+                    {{item.locationName}}
+                </mat-option>
+            </mat-select>
         </mat-form-field>
-        <mat-form-field class="col-lg-3 col-md-3 col-sm-12 pt-2" appearance="outline" disabled>
+        <mat-form-field class="div-no-margin col-lg-3 col-md-3 col-sm-12 pt-2" appearance="outline" disabled>
             <mat-label>Reg No</mat-label>
             <input matInput type="text" name="regNo" [(ngModel)]="regNo" disabled>
         </mat-form-field>
-        <mat-form-field class="col-lg-3 col-md-3 col-sm-12 pt-2" appearance="outline" disabled>
+        <mat-form-field class="div-no-margin col-lg-3 col-md-3 col-sm-12 pt-2" appearance="outline" disabled>
             <mat-label>Admission No</mat-label>
             <input matInput type="text" name="admNo" [(ngModel)]="admNo" disabled>
         </mat-form-field>
-        <mat-form-field class="col-lg-3 col-md-3 col-sm-12 pt-2" appearance="outline" disabled>
+        <mat-form-field class="div-no-margin col-lg-3 col-md-3 col-sm-12 pt-2" appearance="outline" disabled>
             <mat-label>Name</mat-label>
             <input matInput type="text" name="patientName" [(ngModel)]="patientName" disabled>
         </mat-form-field>
-        <mat-form-field class="col-lg-3 col-md-3 col-sm-12 pt-2" appearance="outline">
+        <mat-form-field class="div-no-margin col-lg-3 col-md-3 col-sm-12 pt-2" appearance="outline">
             <mat-label>Doctor</mat-label>
             <input matInput type="text" name="doctotrName" [(ngModel)]="doctorName" disabled>
         </mat-form-field>
-        <mat-form-field class="col-lg-3 col-md-3 col-sm-12 pt-2" appearance="outline">
+        <mat-form-field class="div-no-margin col-lg-3 col-md-3 col-sm-12 pt-2" appearance="outline">
             <mat-label>Day</mat-label>
             <input matInput type="text" name="pharmacyDay" [formControl]="pharmacyDay" (keypress)="numberLimit($event)">
         </mat-form-field>
@@ -49,7 +53,7 @@
 
     </div>
     <div class="col-12  mt-3 ">
-        
+
         <div class="col-2 float-right">
             <mat-form-field class="col-10 " appearance="outline">
                 <mat-label>Total Amount</mat-label>
@@ -75,7 +79,7 @@
             </mat-form-field>
         </div>
         <div class="col-2 example-spacer ">
-          
+
         </div>
         <div class="col-2 ">
             <mat-form-field class="col-10 " appearance="outline">

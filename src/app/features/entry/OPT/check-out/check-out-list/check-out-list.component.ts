@@ -24,7 +24,7 @@ export class CheckOutListComponent implements OnInit {
   todayDate = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD')
   isMobile: boolean = false
   dataSource: MatTableDataSource<Booking>
-  displayedColumns: string[] = ["reg", "adm", "name"]
+  displayedColumns: string[] = ["reg", "adm", "name","date"]
 
   constructor(
     private route: Router, private serverService: ServerService,
@@ -60,6 +60,7 @@ export class CheckOutListComponent implements OnInit {
   getBooking(filter: any) {
     this.appointService.getAppointment(filter).subscribe(appoint => {
       this.bookings = appoint
+      console.log(appoint)
       this.dataSource = new MatTableDataSource(this.bookings)
     })
   }
@@ -99,8 +100,11 @@ export class CheckOutListComponent implements OnInit {
   searchBooking() {
     this.dialog.open(AppointmentSearchDialogComponent, {
       disableClose: true,
-      width: '50%',
-      data: { 'status': 'Billing' }
+      width: '40%',
+      data: { 
+        'title': 'Check Out Search',
+        'status': '-'
+       }
     })
       .afterClosed()
       .subscribe(result => {

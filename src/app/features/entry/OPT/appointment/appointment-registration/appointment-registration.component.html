@@ -1,5 +1,5 @@
 <div class="row">
-    <form #reactiveForm="ngForm" [formGroup]="appointForm" class="form" (ngSubmit)="saveAppointment(appointForm.value)"
+    <form #reactiveForm="ngForm"  class="form" [formGroup]="appointForm" (ngSubmit)="saveAppointment(appointForm.value)"
         (keydown.enter)="handleEnter($event)">
         <div class="row">
             <div class="col-12">
@@ -57,7 +57,8 @@
             <div class="col-12">
                 <mat-form-field class='col-12' appearance="outline">
                     <mat-label>Type</mat-label>
-                    <mat-select [id]="'bkType'" name="bkType" formControlName="bkType" (keyup.enter)="focusElement('bkType','btnSave','autocomplete')">
+                    <mat-select [id]="'bkType'" name="bkType" formControlName="bkType"
+                        (keyup.enter)="focusElement('bkType','btnSave','autocomplete')">
                         <mat-option *ngFor="let item of bookingTypes" [value]="item.description">
                             {{item.description}}
                         </mat-option>
@@ -66,9 +67,9 @@
             </div>
         </div>
         <div class="example-button-row float-right">
-            <button [id]="'btnSave'" mat-raised-button type="submit" color="primary"
+            <button [id]="'btnSave'" mat-raised-button  type="submit" color="primary"
                 [disabled]="!appointForm.valid">Save</button>
-            <button mat-raised-button type="button" color="primary" (click)="onClear()">Clear</button>
+            <button mat-raised-button class="small-btn" type="button" color="primary" (click)="onClear()">Clear</button>
         </div>
     </form>
 </div>

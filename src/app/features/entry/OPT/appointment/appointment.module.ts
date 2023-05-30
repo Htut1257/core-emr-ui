@@ -7,7 +7,7 @@ import { AppointmentHistoryComponent } from './appointment-history/appointment-h
 import { AppointmentComponent } from './appointment/appointment.component';
 import { AppointmentSearchDialogComponent } from './appointment-search-dialog/appointment-search-dialog.component';
 import { AppointmentPatientDialogComponent } from './appointment-patient-dialog/appointment-patient-dialog.component';
-import '../../../../../pollyfill';
+
 const components=[
   AppointmentComponent,
   AppointmentRegistrationComponent,

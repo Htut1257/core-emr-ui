@@ -1,8 +1,8 @@
-
 .mat-button.mat-primary,
 .mat-stroked-button.mat-primary {
-    color: #03A9F4;
+  color: #03A9F4;
 }
+
 .mat-button.mat-primary:hover,
 .mat-stroked-button.mat-primary:hover {
   background-color: #f0fff3;
@@ -17,5 +17,29 @@
 }
 
 .mat-icon-button.mat-primary {
-  color:#03A9F4;
+  color: #03A9F4;
+}
+
+
+.button-row {
+  display: table-cell;
+  max-width: 600px;
+}
+
+.button-row .mat-raised-button {
+  margin: 8px 8px 8px 0 !important;
+  height: 25px;
+  line-height: 25px;
+}
+
+.example-button-row {
+  display: table-cell;
+  max-width: 600px;
+}
+
+.example-button-row .mat-flat-button,
+.example-button-row .mat-raised-button {
+  margin: 8px 8px 8px 0;
+  height: 25px;
+  line-height: 25px;
 }

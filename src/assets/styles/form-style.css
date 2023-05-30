@@ -1,0 +1,25 @@
+
+mat-form-field.mat-form-field {
+    font-size: 11px;
+}
+
+mat-checkbox.mat-checkbox {
+    font-size: 11px;
+}
+
+mat-form-field-outline.mat-form-field-outline {
+    background-color: aqua;
+}
+
+.mat-input-element.mat-form-field-autofill-control {
+    height: 12px
+}
+
+.form-height {
+    height: 80vh;
+    overflow-y: auto;
+}
+
+.no-margin-form mat-form-field.mat-form-field {
+    font-size: 11px;
+}
