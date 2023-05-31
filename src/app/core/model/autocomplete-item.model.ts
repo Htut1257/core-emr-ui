@@ -20,6 +20,9 @@ export interface DrTreatment {
 export interface Pattern {
     patternCode: string
     despEng: string
+    id: string
+    despMM: string
+    factor: number
 }
 
 export interface Item {

@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, BehaviorSubject, observable } from "rxjs"
 import { ApiSetting } from 'src/app/api/api-setting';
-import { Cashier } from '../../model/checkout.model';
+import { Cashier, CashierHis } from '../../model/checkout.model';
 
 const httpHeader = new HttpHeaders({
   'ContentType': 'applicaton/json',
@@ -40,6 +40,10 @@ export class CheckOutService {
     return this.http.post<Cashier>(uri, data, httpOption)
   }
 
-
+  saveCheckoutHistory(data:CashierHis):Observable<CashierHis>{
+    let uri = `${ApiSetting.EmrMongoEndPoint}/opdMedical/save-opdMedicalHisCashier`
+    let httpOption = { headers: httpHeader }
+    return this.http.post<Cashier>(uri, data, httpOption)
+  }
 
 }

@@ -60,7 +60,6 @@ export class CheckOutListComponent implements OnInit {
   getBooking(filter: any) {
     this.appointService.getAppointment(filter).subscribe(appoint => {
       this.bookings = appoint
-      console.log(appoint)
       this.dataSource = new MatTableDataSource(this.bookings)
     })
   }
@@ -69,7 +68,6 @@ export class CheckOutListComponent implements OnInit {
   getCheckOut(id: string) {
     return this.checkService.getCheckoutByVisitId(id).subscribe({
       next: checkOut => {
-        console.log(checkOut)
         this.checkService._checkOut = checkOut
         if (this.isMobile) {
           this.commonService.getCurrentObject(true)
@@ -103,7 +101,7 @@ export class CheckOutListComponent implements OnInit {
       width: '40%',
       data: { 
         'title': 'Check Out Search',
-        'status': '-'
+        'status': 'Billing'
        }
     })
       .afterClosed()

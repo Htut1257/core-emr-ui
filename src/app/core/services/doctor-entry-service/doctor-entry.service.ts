@@ -32,7 +32,7 @@ export class DoctorEntryService extends AbstractService<DoctorMedicalHistory>{
   }//
 
   saveDoctorMedical(data: DoctorMedicalHistory): Observable<DoctorMedicalHistory> {
-    this.baseURL = `${uri}/opdMedical/save-opdMedicalHisCashier`
+    this.baseURL = `${uri}/opdMedical/save-opdMedicalHis`
     console.log(this.baseURL)
     // return this.http.post<VitalSign>(uri, data)
     return this.save(data)

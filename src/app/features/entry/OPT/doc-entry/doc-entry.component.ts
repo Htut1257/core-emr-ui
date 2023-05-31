@@ -124,7 +124,7 @@ export class DocEntryComponent implements OnInit {
       checkboxRenderer: CheckboxRenderer
     };
     this.examObj = {} as DrExamination
-    this.vitalSign = {} as VitalSign
+   // this.vitalSign = {} as VitalSign
     this.user = this.userService.getUserValue()
     if (this.user) {
       this.doctorId = this.user.doctorId
@@ -168,7 +168,7 @@ export class DocEntryComponent implements OnInit {
   getDocMedicalHistory(visitId: string) {
     this.entryService.getDoctorMedicalByVisitId(visitId).subscribe({
       next: entry => {
-        if (entry) {
+        if (entry!=null) {
           let data: any = entry
           this.medicalHisId = data.id
           this.cfFee = data.cfFees
@@ -248,7 +248,8 @@ export class DocEntryComponent implements OnInit {
   getVitalSign(bookingId: string) {
     this.vitalService.getVitalSignByPatient(bookingId).subscribe({
       next: vitalSign => {
-        if (vitalSign) {
+        console.log(vitalSign)
+        if (vitalSign!=null) {
           this.vitalSign = vitalSign
           this.temp = this.vitalSign.temperature
           this.bp = this.vitalSign.bpUpper + "/" + this.vitalSign.bpLower
@@ -488,7 +489,10 @@ export class DocEntryComponent implements OnInit {
       },
       patternObj: {
         patternCode: '',
-        despEng: ''
+        despEng: '',
+        id: '',
+        despMM: '',
+        factor: 0
       },
       day: 1,
       qty: 0,

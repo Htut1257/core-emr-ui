@@ -1,33 +1,40 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { FormGroup, FormControl, FormBuilder, NgForm, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription, map } from 'rxjs'
-import { GridOptions, SelectionChangedEvent, ColDef, ColumnApi, GridApi } from 'ag-grid-community';
+import { GridOptions, ColumnApi, GridApi } from 'ag-grid-community';
+
 import { Cashier } from 'src/app/core/model/checkout.model';
+import { CashierHis } from 'src/app/core/model/checkout.model';
 import { Location } from 'src/app/core/model/location.model';
 import { PaymentType } from 'src/app/core/model/payment.model';
 import { DrTreatment } from 'src/app/core/model/autocomplete-item.model';
+import { DoctorTreatment } from 'src/app/core/model/doctor-entry.model';
+import { Currency } from 'src/app/core/model/currency.model';
+
 import { CheckOutService } from 'src/app/core/services/check-out-service/check-out.service';
 import { LocationService } from 'src/app/core/services/location-service/location.service';
 import { PaymentService } from 'src/app/core/services/payment-service/payment.service';
+import { CurrencyService } from 'src/app/core/services/currency-service/currency.service';
 import { CommonServiceService } from 'src/app/core/services/common-service/common-service.service';
+import { ToastService } from 'src/app/core/services/toast-service/toast-service.service';
+
 import { AutocompleteCell } from 'src/app/shared/cell-renderer/autocomplete-cell';
 import { CheckboxRenderer } from 'src/app/shared/cell-renderer/checkbox-cell';
 import * as moment from 'moment';
-import { DoctorTreatment } from 'src/app/core/model/doctor-entry.model';
 
 @Component({
   selector: 'app-check-out-voucher',
   templateUrl: './check-out-voucher.component.html',
   styleUrls: ['./check-out-voucher.component.css'],
-  encapsulation:ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None
 
 })
 export class CheckOutVoucherComponent implements OnInit {
   //#region grid variable
 
   checkOut: Cashier
-
+  checkOutHis: CashierHis
   checkOutGridOption: GridOptions
   paymentGridOption: GridOptions
 
@@ -48,6 +55,9 @@ export class CheckOutVoucherComponent implements OnInit {
 
   //#endregion grid variable
 
+  checkOutForm: FormGroup
+  @ViewChild("#reactiveForm", { static: true }) reactiveForm: NgForm
+
   visitNo: string
   admNo: string
   regNo: string
@@ -56,8 +66,13 @@ export class CheckOutVoucherComponent implements OnInit {
   doctorName: string
   payment: any
   payments: PaymentType[] = []
+  payControl: any = new FormControl()
   location: any
   locations: Location[] = []
+  locationControl: any = new FormControl()
+  currency: any
+  currencies: Currency[] = []
+  currencyControl: any = new FormControl()
   pharmacyDay: any = new FormControl(1)
 
   totalTax: number
@@ -67,10 +82,13 @@ export class CheckOutVoucherComponent implements OnInit {
 
   todayDate: string = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD')
   subscription: Subscription
+
   constructor(
     private route: Router, private checkService: CheckOutService,
     private locationService: LocationService, private payService: PaymentService,
-    private commonService: CommonServiceService,
+    private currencyService: CurrencyService,
+    private commonService: CommonServiceService, private toastService: ToastService,
+    public formBuilder: FormBuilder,
   ) {
     this.commonService.isMobileObj$.subscribe(data => {
       if (data == false) {
@@ -85,20 +103,63 @@ export class CheckOutVoucherComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.initialzeForm()
+
     this.getCheckOutData()
     this.getPaymentData()
     this.initializeGridTable()
     this.getLocation()
     this.getPayment()
+    this.getCurency()
+
+  
+
     this.voucherDate.patchValue(this.todayDate)
 
-    this.pharmacyDay.valueChanges.pipe(
+    this.checkOutForm.controls['pharmacyDay'].valueChanges.pipe(
       map(name => name ? name : '1')
     ).subscribe(data => {
       this.setPharmacyDay(data)
     })
 
+  }
 
+  initialzeForm() {
+    this.checkOutForm = this.formBuilder.group({
+      visitNo: [{ value: '', disabled: true }],
+      admissionNo: [{ value: '', disabled: true }],
+      regNo: [{ value: '', disabled: true }],
+      patientName: [{ value: '', disabled: true }],
+      doctorName: [{ value: '', disabled: true }],
+      payment: [null, Validators.required],
+      location: [null, Validators.required],
+      pharmacyDay: [1],
+      currency: [null, Validators.required],
+      vouTotal: [0],
+      tax: [0],
+      discountPharmacy: [0],
+      discountOpd: [0],
+      totalAmount: [{ value: 0, disabled: true }]
+    })
+  }
+
+  initializeFormData(data: Cashier) {
+    this.checkOutForm.patchValue({
+      visitNo: data.visitId,
+      admissionNo: data.admissionNo?data.admissionNo:'',
+      regNo: data.regNo,
+      patientName: data.patientName,
+      doctorName: data.drName,
+    //  payment: null,
+    //  location: null,
+      pharmacyDay: 1,
+   //   currency: null,
+      vouTotal: 0,
+      tax: 0,
+      discountPharmacy: 0,
+      discountOpd: 0,
+      totalAmount: 0
+    })
   }
 
   getLocation() {
@@ -116,6 +177,7 @@ export class CheckOutVoucherComponent implements OnInit {
     this.payService.getPayment().subscribe({
       next: payments => {
         this.payments = payments
+        this.payControl.patchValue(this.payments[0])
       },
       error: err => {
         console.trace(err)
@@ -123,25 +185,43 @@ export class CheckOutVoucherComponent implements OnInit {
     })
   }
 
+  //compare payment data with initial data
+  comparePayment(pay1: PaymentType, pay2: PaymentType) {
+    return pay1 && pay2 ? pay1.paymentTypeId === pay2.paymentTypeId : pay1 === pay2
+  }
+
+  getCurency() {
+    this.currencyService.getCurrency().subscribe({
+      next: currencies => {
+        this.currencies = currencies
+        this.currencyControl.patchValue(this.currencies[0])
+      },
+      error: err => {
+        console.trace(err)
+      }
+    })
+  }
+
+  //compare currency data with initial data
+  compareCurrency(c1: Currency, c2: Currency) {
+    return c1 && c2 ? c1.currencyCode === c2.currencyCode : c1 === c2
+  }
+
   //initialize data from the selected list
   initCheckOutData() {
+    this.checkOut = {} as Cashier
     if (this.checkService._checkOut != undefined) {
+      
       this.checkOut = this.checkService._checkOut
-      this.visitNo = this.checkOut.visitId
-      this.admNo = ''
-      this.regNo = this.checkOut.regNo
-      this.patientName = this.checkOut.patientName
-      this.doctorId = this.checkOut.drId
-      this.doctorName = this.checkOut.drName
-      // this.pharmacyDay.setValue(1)
-      let treat: any = this.checkOut.treatments
-
-      this.renderTreatmentData(treat)
+      this.initializeFormData(this.checkOut)
+      this.renderTreatmentData(this.checkOut.treatments)
+      this.checkOutHis = this.checkOut
+    
     }
   }
 
   //render data to grid table 
-  renderTreatmentData(data: DrTreatment[]) {
+  renderTreatmentData(data: DoctorTreatment[]) {
     this.checkOutRow = data.reduce(function (filtered: any, option: any) {
       var someValue = {
         cityObject: {
@@ -179,6 +259,7 @@ export class CheckOutVoucherComponent implements OnInit {
     for (let item of this.checkOutRow) {
       this.drTreatment.push(item)
     }
+    this.setTotalAmount(this.drTreatment)
     this.checkOutRow.push(this.emptydrTreat())
     this.checkOutGridOption.api.setRowData(this.checkOutRow)
   }
@@ -191,14 +272,12 @@ export class CheckOutVoucherComponent implements OnInit {
       defaultColDef: {
         resizable: true
       },
-
     }
 
     this.paymentGridOption = {
       columnDefs: this.paymentColumnDef,
       rowData: this.paymentRow,
       suppressScrollOnNewData: false,
-
       onGridReady(event) {
         this.paymentApi = event.api
         this.paymentColumn = event.columnApi
@@ -366,7 +445,10 @@ export class CheckOutVoucherComponent implements OnInit {
       },
       patternObj: {
         patternCode: '',
-        despEng: ''
+        despEng: '',
+        id: '',
+        despMM: '',
+        factor: 0
       },
       day: this.pharmacyDay.value,
       qty: 0,
@@ -525,6 +607,7 @@ export class CheckOutVoucherComponent implements OnInit {
     rowData.forEach(element => {
       sumAmount += element.amount
     });
+    this.checkOutForm.get('totalAmount').patchValue(sumAmount)
     this.totalAmount = sumAmount
   }
 
@@ -561,10 +644,8 @@ export class CheckOutVoucherComponent implements OnInit {
     }, [])
   }
 
-  saveCheckOut() {
-    this.savetoDrTreatment()
-    this.checkOut.visitDate = this.todayDate
-
+  saveCashierData() {
+    this.checkOut.visitDate = ''
     this.checkOut.treatments = this.savetoDrTreatment()
     this.checkOut.vouTotal = this.totalAmount
     this.checkOut.discP = 0
@@ -574,14 +655,16 @@ export class CheckOutVoucherComponent implements OnInit {
     this.checkOut.paid = 0
     this.checkOut.balance = this.totalAmount
     this.checkOut.maxUniqueId = 0
+  }
 
-    let data: any = this.checkOut
-    data.reVisitDate = this.todayDate
-    console.log(this.checkOutRow.map((item: any) => item.cityObject.itemName))
-    console.log(this.drTreatment.map((item: any) => item.cityObject.itemName))
+  saveCashierHisData() {
+
+  }
+
+  saveCheckOut(data:any) {
     console.log(data)
-    return
-    this.checkService.saveCheckOut(data).subscribe({
+    return 
+    this.checkService.saveCheckOut(this.checkOut).subscribe({
       next: checkOut => {
         console.log(checkOut)
       },
