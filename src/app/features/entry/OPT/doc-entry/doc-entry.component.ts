@@ -168,7 +168,9 @@ export class DocEntryComponent implements OnInit {
   getDocMedicalHistory(visitId: string) {
     this.entryService.getDoctorMedicalByVisitId(visitId).subscribe({
       next: entry => {
+        console.log(entry)
         if (entry!=null) {
+
           let data: any = entry
           this.medicalHisId = data.id
           this.cfFee = data.cfFees
@@ -251,10 +253,9 @@ export class DocEntryComponent implements OnInit {
         console.log(vitalSign)
         if (vitalSign!=null) {
           this.vitalSign = vitalSign
-          this.temp = this.vitalSign.temperature
-          this.bp = this.vitalSign.bpUpper + "/" + this.vitalSign.bpLower
+          this.temp = this.vitalSign.temperature?this.vitalSign.bpLower:'0'
+          this.bp = this.vitalSign.bpUpper?this.vitalSign.bpUpper:'0' + "/" + this.vitalSign.bpLower?this.vitalSign.bpLower:'0'
         }
-
       },
       error: err => {
         console.trace(err)

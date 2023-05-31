@@ -23,7 +23,7 @@ export class DoctorEntryService extends AbstractService<DoctorMedicalHistory>{
   }//getOPDMedicalHisCashier
 
   getDoctorMedicalByVisitId(visitId:string):Observable<DoctorMedicalHistory[]>{
-    this.baseURL = `${uri}/opdMedical/find-opdMedicalHis-visitId`
+    this.baseURL = `${uri}/opdMedical/find-opdMedicalHis`
     console.log(this.baseURL)
     // return this.http.post<VitalSign>(uri, data)
     let httpParams=new HttpParams()

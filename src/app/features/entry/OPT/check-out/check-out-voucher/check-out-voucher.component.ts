@@ -112,10 +112,7 @@ export class CheckOutVoucherComponent implements OnInit {
     this.getPayment()
     this.getCurency()
 
-  
-
     this.voucherDate.patchValue(this.todayDate)
-
     this.checkOutForm.controls['pharmacyDay'].valueChanges.pipe(
       map(name => name ? name : '1')
     ).subscribe(data => {
@@ -450,7 +447,7 @@ export class CheckOutVoucherComponent implements OnInit {
         despMM: '',
         factor: 0
       },
-      day: this.pharmacyDay.value,
+      day: this.checkOutForm.get('pharmacyDay').value,
       qty: 0,
       price: 0,
       foc: false,
@@ -520,7 +517,9 @@ export class CheckOutVoucherComponent implements OnInit {
         gridApi.setFocusedCell(rowIndex, columnField);
         return
       }
-      data.qty = data.patternObj.factor * this.pharmacyDay.value
+      console.log(data.patternObj.factor)
+      console.log(this.checkOutForm.get('pharmacyDay').value)
+      data.qty = data.patternObj.factor *this.checkOutForm.get('pharmacyDay').value
       data.amount = data.price * data.qty
       this.setRowDatatoTable(rowIndex, this.checkOutRow, rowData, this.checkOutApi, this.checkOutGridOption)
       this.focusTableCell(rowIndex + 1, firstColumn, gridApi)
@@ -607,8 +606,8 @@ export class CheckOutVoucherComponent implements OnInit {
     rowData.forEach(element => {
       sumAmount += element.amount
     });
-    this.checkOutForm.get('totalAmount').patchValue(sumAmount)
-    this.totalAmount = sumAmount
+    this.checkOutForm.get('vouTotal').patchValue(sumAmount)
+    //this.totalAmount = sumAmount
   }
 
   //save list to mappable obj
@@ -644,10 +643,10 @@ export class CheckOutVoucherComponent implements OnInit {
     }, [])
   }
 
-  saveCashierData() {
+  saveCashierData(data:any) {
     this.checkOut.visitDate = ''
     this.checkOut.treatments = this.savetoDrTreatment()
-    this.checkOut.vouTotal = this.totalAmount
+    this.checkOut.vouTotal = data.totalAmount
     this.checkOut.discP = 0
     this.checkOut.discAmt = 0
     this.checkOut.taxP = 0
@@ -655,6 +654,9 @@ export class CheckOutVoucherComponent implements OnInit {
     this.checkOut.paid = 0
     this.checkOut.balance = this.totalAmount
     this.checkOut.maxUniqueId = 0
+
+    console.log(this.checkOut)
+
   }
 
   saveCashierHisData() {
@@ -662,7 +664,7 @@ export class CheckOutVoucherComponent implements OnInit {
   }
 
   saveCheckOut(data:any) {
-    console.log(data)
+   this.saveCashierData(data)
     return 
     this.checkService.saveCheckOut(this.checkOut).subscribe({
       next: checkOut => {
