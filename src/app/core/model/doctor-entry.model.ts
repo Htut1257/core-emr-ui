@@ -1,3 +1,4 @@
+import { Item } from "./autocomplete-item.model"
 
 export interface DoctorMedicalHistory {
     id: string
@@ -46,6 +47,30 @@ export interface DoctorTreatment {
     isFOC?: boolean
     amount?: number
     uniqueId?: number
+}
+
+export function tableItem(obj: DoctorTreatment): any {
+    const object = {
+        itemOption: obj.group,
+        itemType: obj.subGroup,
+        itemId: obj.code,
+        itemName: obj.desc,
+        relStr: obj.relStr,
+        fees: obj.fees,
+        fees1: obj.fees1,
+        fees2: obj.fees2,
+        fees3: obj.fees3,
+        fees4: obj.fees4,
+        fees5: obj.fees5,
+        fees6: obj.fees6,
+        isPercent: obj.isPercent,
+        serviceCost: obj.serviceCost,
+        itemUnit: obj.itemUnit,
+        expDate: obj.expDate,
+        isFOC: obj.isFOC,
+        uniqueId: obj.uniqueId,
+    }
+    return object
 }
 
 export interface DoctorNote {

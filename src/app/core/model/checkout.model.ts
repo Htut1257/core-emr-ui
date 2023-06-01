@@ -9,7 +9,7 @@ export interface Cashier {
     patientName: string
     drId: string
     drName: string
-    reVisitDate: Date
+    reVisitDate: string
     drNotes: string
     vouTotal: number
     discP: number
@@ -21,6 +21,15 @@ export interface Cashier {
     maxUniqueId: number
     treatments?: DoctorTreatment[]
     kvDrNotes?: DoctorNote[]
+    locId?: string
+    locName?: string
+    payTypeId?: string
+    payTypeName?: string
+    currId?: string
+    currName?: string
+    sessionId?: string
+    userId?: string
+    macId?: string
 }
 
 export interface CashierHis {
@@ -32,7 +41,7 @@ export interface CashierHis {
     patientName: string
     drId: string
     drName: string
-    reVisitDate: Date
+    reVisitDate: string
     drNotes: string
     locId?: string
     locName?: string
@@ -47,7 +56,7 @@ export interface CashierHis {
     taxA?: number
     paid: number
     balance: number
-    sesionId?: string
+    sessionId?: string
     treatments?: DoctorTreatment[]
     userId?: string
     macId?: string

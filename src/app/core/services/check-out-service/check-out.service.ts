@@ -41,7 +41,7 @@ export class CheckOutService {
   }
 
   saveCheckoutHistory(data:CashierHis):Observable<CashierHis>{
-    let uri = `${ApiSetting.EmrMongoEndPoint}/opdMedical/save-opdMedicalHisCashier`
+    let uri = `${ApiSetting.EmrEndPoint}/emr-med/saveEMRData`
     let httpOption = { headers: httpHeader }
     return this.http.post<Cashier>(uri, data, httpOption)
   }

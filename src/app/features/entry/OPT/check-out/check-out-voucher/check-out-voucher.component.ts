@@ -4,24 +4,25 @@ import { Router } from '@angular/router';
 import { Subscription, map } from 'rxjs'
 import { GridOptions, ColumnApi, GridApi } from 'ag-grid-community';
 
-import { Cashier } from 'src/app/core/model/checkout.model';
-import { CashierHis } from 'src/app/core/model/checkout.model';
+import { Cashier, CashierHis } from 'src/app/core/model/checkout.model';
 import { Location } from 'src/app/core/model/location.model';
 import { PaymentType } from 'src/app/core/model/payment.model';
-import { DrTreatment } from 'src/app/core/model/autocomplete-item.model';
-import { DoctorTreatment } from 'src/app/core/model/doctor-entry.model';
+import { DrTreatment, treatmentItem } from 'src/app/core/model/autocomplete-item.model';
+import { DoctorTreatment, tableItem } from 'src/app/core/model/doctor-entry.model';
 import { Currency } from 'src/app/core/model/currency.model';
 
 import { CheckOutService } from 'src/app/core/services/check-out-service/check-out.service';
 import { LocationService } from 'src/app/core/services/location-service/location.service';
 import { PaymentService } from 'src/app/core/services/payment-service/payment.service';
 import { CurrencyService } from 'src/app/core/services/currency-service/currency.service';
+import { UserService } from 'src/app/core/services/user-service/user-service.service';
 import { CommonServiceService } from 'src/app/core/services/common-service/common-service.service';
 import { ToastService } from 'src/app/core/services/toast-service/toast-service.service';
 
 import { AutocompleteCell } from 'src/app/shared/cell-renderer/autocomplete-cell';
 import { CheckboxRenderer } from 'src/app/shared/cell-renderer/checkbox-cell';
 import * as moment from 'moment';
+import { User } from 'src/app/core/model/user.model';
 
 @Component({
   selector: 'app-check-out-voucher',
@@ -58,35 +59,21 @@ export class CheckOutVoucherComponent implements OnInit {
   checkOutForm: FormGroup
   @ViewChild("#reactiveForm", { static: true }) reactiveForm: NgForm
 
-  visitNo: string
-  admNo: string
-  regNo: string
-  patientName: string
-  doctorId: string
-  doctorName: string
+  user: User
   payment: any
   payments: PaymentType[] = []
-  payControl: any = new FormControl()
   location: any
   locations: Location[] = []
-  locationControl: any = new FormControl()
   currency: any
   currencies: Currency[] = []
-  currencyControl: any = new FormControl()
   pharmacyDay: any = new FormControl(1)
-
-  totalTax: number
-  totalDiscount: number
-  totalAmount: number = 0
-  voucherDate: FormControl = new FormControl('')
 
   todayDate: string = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD')
   subscription: Subscription
-
   constructor(
     private route: Router, private checkService: CheckOutService,
     private locationService: LocationService, private payService: PaymentService,
-    private currencyService: CurrencyService,
+    private currencyService: CurrencyService, private userService: UserService,
     private commonService: CommonServiceService, private toastService: ToastService,
     public formBuilder: FormBuilder,
   ) {
@@ -95,6 +82,8 @@ export class CheckOutVoucherComponent implements OnInit {
         this.initCheckOutData()
       }
     })
+
+    this.user = this.userService.getUserValue()
 
     this.frameworkComponents = {
       autoComplete: AutocompleteCell,
@@ -108,11 +97,11 @@ export class CheckOutVoucherComponent implements OnInit {
     this.getCheckOutData()
     this.getPaymentData()
     this.initializeGridTable()
-    this.getLocation()
+
     this.getPayment()
+    this.getLocation()
     this.getCurency()
 
-    this.voucherDate.patchValue(this.todayDate)
     this.checkOutForm.controls['pharmacyDay'].valueChanges.pipe(
       map(name => name ? name : '1')
     ).subscribe(data => {
@@ -121,6 +110,7 @@ export class CheckOutVoucherComponent implements OnInit {
 
   }
 
+  //initialize Form
   initialzeForm() {
     this.checkOutForm = this.formBuilder.group({
       visitNo: [{ value: '', disabled: true }],
@@ -140,17 +130,15 @@ export class CheckOutVoucherComponent implements OnInit {
     })
   }
 
+  //initialize Form data
   initializeFormData(data: Cashier) {
     this.checkOutForm.patchValue({
       visitNo: data.visitId,
-      admissionNo: data.admissionNo?data.admissionNo:'',
+      admissionNo: data.admissionNo ? data.admissionNo : '',
       regNo: data.regNo,
       patientName: data.patientName,
       doctorName: data.drName,
-    //  payment: null,
-    //  location: null,
       pharmacyDay: 1,
-   //   currency: null,
       vouTotal: 0,
       tax: 0,
       discountPharmacy: 0,
@@ -159,6 +147,7 @@ export class CheckOutVoucherComponent implements OnInit {
     })
   }
 
+  //get location
   getLocation() {
     this.locationService.getLocation().subscribe({
       next: locations => {
@@ -170,11 +159,12 @@ export class CheckOutVoucherComponent implements OnInit {
     })
   }
 
+  //get payment
   getPayment() {
     this.payService.getPayment().subscribe({
       next: payments => {
         this.payments = payments
-        this.payControl.patchValue(this.payments[0])
+        this.checkOutForm.get('payment').patchValue(this.payments[0])
       },
       error: err => {
         console.trace(err)
@@ -187,11 +177,12 @@ export class CheckOutVoucherComponent implements OnInit {
     return pay1 && pay2 ? pay1.paymentTypeId === pay2.paymentTypeId : pay1 === pay2
   }
 
+  //get currency
   getCurency() {
     this.currencyService.getCurrency().subscribe({
       next: currencies => {
         this.currencies = currencies
-        this.currencyControl.patchValue(this.currencies[0])
+        this.checkOutForm.get('currency').patchValue(this.currencies[0])
       },
       error: err => {
         console.trace(err)
@@ -206,14 +197,11 @@ export class CheckOutVoucherComponent implements OnInit {
 
   //initialize data from the selected list
   initCheckOutData() {
-    this.checkOut = {} as Cashier
     if (this.checkService._checkOut != undefined) {
-      
+      this.checkOutHis = this.checkService._checkOut
       this.checkOut = this.checkService._checkOut
       this.initializeFormData(this.checkOut)
       this.renderTreatmentData(this.checkOut.treatments)
-      this.checkOutHis = this.checkOut
-    
     }
   }
 
@@ -221,26 +209,7 @@ export class CheckOutVoucherComponent implements OnInit {
   renderTreatmentData(data: DoctorTreatment[]) {
     this.checkOutRow = data.reduce(function (filtered: any, option: any) {
       var someValue = {
-        cityObject: {
-          itemOption: option.group,
-          itemType: option.subGroup,
-          itemId: option.code,
-          itemName: option.desc,
-          relStr: option.relStr,
-          fees: option.fees,
-          fees1: option.fees1,
-          fees2: option.fees2,
-          fees3: option.fees3,
-          fees4: option.fees4,
-          fees5: option.fees5,
-          fees6: option.fees6,
-          isPercent: option.isPercent,
-          serviceCost: option.serviceCost,
-          itemUnit: option.itemUnit,
-          expDate: option.expDate,
-          isFOC: option.isFOC,
-          uniqueId: option.uniqueId,
-        },
+        cityObject: tableItem(option),
         patternObj: option.pattern,
         day: option.days,
         qty: option.qty,
@@ -517,9 +486,8 @@ export class CheckOutVoucherComponent implements OnInit {
         gridApi.setFocusedCell(rowIndex, columnField);
         return
       }
-      console.log(data.patternObj.factor)
-      console.log(this.checkOutForm.get('pharmacyDay').value)
-      data.qty = data.patternObj.factor *this.checkOutForm.get('pharmacyDay').value
+
+      data.qty = data.patternObj.factor * data.day
       data.amount = data.price * data.qty
       this.setRowDatatoTable(rowIndex, this.checkOutRow, rowData, this.checkOutApi, this.checkOutGridOption)
       this.focusTableCell(rowIndex + 1, firstColumn, gridApi)
@@ -537,7 +505,6 @@ export class CheckOutVoucherComponent implements OnInit {
     }
 
     if (columnField == "price") {
-
       data.amount = data.price * data.qty
       this.setRowDatatoTable(rowIndex, this.checkOutRow, rowData, this.checkOutApi, this.checkOutGridOption)
       if (itemType != "Pharmacy" && itemType != '') {
@@ -556,8 +523,6 @@ export class CheckOutVoucherComponent implements OnInit {
     if (currentRow != undefined) {
       currentRow = rowData
     }
-    console.log("grid data" + this.checkOutRow.length)
-    console.log("actual data" + this.drTreatment.length)
     let totalRow = gridApi.getDisplayedRowCount() - 1
     if (totalRow == rowIndex) {
       let curentData = rowData
@@ -613,62 +578,129 @@ export class CheckOutVoucherComponent implements OnInit {
   //save list to mappable obj
   savetoDrTreatment(): DoctorTreatment[] {
     return this.drTreatment.reduce(function (filtered: any, option: any) {
+      const item = treatmentItem(option.cityObject)
       var someNewValue = {
-        group: option.cityObject.itemOption,
-        subGroup: option.cityObject.itemType,
-        code: option.cityObject.itemId,
-        desc: option.cityObject.itemName,
+        group: item.group,
+        subGroup: item.subGroup,
+        code: item.code,
+        desc: item.desc,
+        relStr: item.relStr,
+        fees: item.fees,
+        fees1: item.fees1,
+        fees2: item.fees2,
+        fees3: item.fees3,
+        fees4: item.fees4,
+        fees5: item.fees5,
+        fees6: item.fees6,
+        isPercent: item.isPercent,
+        serviceCost: item.serviceCost,
+        itemUnit: item.itemUnit,
+        expDate: item.expDate,
+        isFOC: item.isFOC,
+        uniqueId: item.uniqueId,
+
         pattern: option.patternObj,
         days: option.day,
         qty: option.qty,
         remark: option.remark,
-        relStr: option.cityObject.relStr,
-        fees: option.cityObject.fees,
-        fees1: option.cityObject.fees1,
-        fees2: option.cityObject.fees2,
-        fees3: option.cityObject.fees3,
-        fees4: option.cityObject.fees4,
-        fees5: option.cityObject.fees5,
-        fees6: option.cityObject.fees6,
-        isPercent: option.cityObject.isPercent,
-        serviceCost: option.cityObject.serviceCost,
-        itemUnit: option.cityObject.itemUnit,
-        expDate: '',
-        isFOC: option.foc,
         amount: option.amount,
-        uniqueId: 1,
       }
       filtered.push(someNewValue);
       return filtered
     }, [])
   }
 
-  saveCashierData(data:any) {
-    this.checkOut.visitDate = ''
+
+
+  // 
+  saveCashierData(data: any) {
+    this.checkOut.visitDate = moment(new Date(), 'MM/DD/YYYY').format("yyyy-MM-DDThh:mm:ss")
+    this.checkOut.reVisitDate = moment(new Date(), 'MM/DD/YYYY').format("yyyy-MM-DDThh:mm:ss")
+    this.checkOut.id = null
+    this.checkOut.admissionNo = ''
+
+    this.checkOut.locId = data.location.locationId
+    this.checkOut.locName = data.location.locationName
+
+    this.checkOut.currId = data.currency.currencyCode
+    this.checkOut.currName = data.currency.currencyName
+
+    this.checkOut.payTypeId = data.payment.paymentTypeId
+    this.checkOut.payTypeName = data.payment.paymentTypeName
+
     this.checkOut.treatments = this.savetoDrTreatment()
-    this.checkOut.vouTotal = data.totalAmount
+    this.checkOut.vouTotal = data.vouTotal
+    let totalAmount = data.vouTotal - (data.tax + data.discountOpd + data.discountPharmacy)
+    this.checkOut.paid = 0
+    this.checkOut.balance = totalAmount
+    if (data.payment.paymentTypeName == "Cash") {
+      this.checkOut.paid = totalAmount
+      this.checkOut.balance = 0
+    }
+
     this.checkOut.discP = 0
     this.checkOut.discAmt = 0
     this.checkOut.taxP = 0
-    this.checkOut.taxAmt = 0
-    this.checkOut.paid = 0
-    this.checkOut.balance = this.totalAmount
+    this.checkOut.taxAmt = data.tax
     this.checkOut.maxUniqueId = 0
 
+    this.checkOut.sessionId = null
+
+    this.checkOut.userId = this.user.userCode
+    this.checkOut.macId = "20"
+
+  }
+
+  saveCashierHisData(data: any) {
+    this.checkOut.id = ''
+    this.checkOut.drNotes = ''
+    this.checkOut.admissionNo = ''
+
+    this.checkOutHis.locId = data.location.locationId
+    this.checkOutHis.locName = data.location.locationName
+
+    this.checkOutHis.currId = data.currency.currencyCode
+    this.checkOutHis.currName = data.currency.currencyName
+
+    this.checkOutHis.payTypeId = data.payment.paymentTypeId
+    this.checkOutHis.payTypeName = data.payment.paymentTypeName
+
+    this.checkOutHis.treatments = this.savetoDrTreatment()
+    this.checkOutHis.vouTotal = data.vouTotal
+    let totalAmount = data.vouTotal - (data.tax + data.discountOpd + data.discountPharmacy)
+    this.checkOutHis.paid = 0
+    this.checkOutHis.balance = totalAmount
+    if (data.payment.paymentTypeName == "Cash") {
+      this.checkOutHis.paid = totalAmount
+      this.checkOutHis.balance = 0
+    }
+
+    this.checkOutHis.discP = 0
+    this.checkOutHis.discA = 0
+    this.checkOutHis.taxP = 0
+    this.checkOutHis.taxA = data.tax
+    this.checkOutHis.sessionId = null
+    this.checkOutHis.saleVouNo = null
+    this.checkOutHis.opdVouNo = null
+    this.checkOutHis.userId = this.user.userCode
+    this.checkOutHis.macId = "20"
+
+  }
+
+  saveCheckOut(data: any) {
+
+    this.saveCashierData(data)
+    this.saveCashierHisData(data)
     console.log(this.checkOut)
-
-  }
-
-  saveCashierHisData() {
-
-  }
-
-  saveCheckOut(data:any) {
-   this.saveCashierData(data)
-    return 
+    return
     this.checkService.saveCheckOut(this.checkOut).subscribe({
       next: checkOut => {
+        console.log("mongo completed")
         console.log(checkOut)
+        this.checkService.saveCheckoutHistory(this.checkOutHis).subscribe(data => {
+          console.log("maria completed")
+          console.log(data)
+        })
       },
       error: err => {
         console.trace(err)

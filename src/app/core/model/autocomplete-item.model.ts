@@ -1,3 +1,4 @@
+import { DoctorTreatment } from "./doctor-entry.model"
 
 export interface DrExamination {
     examinationObj: {
@@ -16,6 +17,8 @@ export interface DrTreatment {
     amount?: number,
     remark: string
 }
+
+
 
 export interface Pattern {
     patternCode: string
@@ -46,12 +49,28 @@ export interface Item {
     uniqueId?: string
 }
 
-export interface PatternItem {
-
-}
-
-export interface Day {
-
+export function treatmentItem(obj: Item): any {
+    const object = {
+        group: obj.itemOption,
+        subGroup: obj.itemType,
+        code: obj.itemId,
+        desc: obj.itemName,
+        relStr: obj.relStr,
+        fees: obj.fees,
+        fees1: obj.fees1,
+        fees2: obj.fees2,
+        fees3: obj.fees3,
+        fees4: obj.fees4,
+        fees5: obj.fees5,
+        fees6: obj.fees6,
+        isPercent: obj.isPercent,
+        serviceCost: obj.serviceCost,
+        itemUnit: obj.itemUnit,
+        expDate: obj.expDate,
+        isFOC: obj.isFOC,
+        uniqueId: obj.uniqueId,
+    }
+    return object
 }
 
 export interface DrNote {
