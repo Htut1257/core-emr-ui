@@ -4,7 +4,7 @@ import { DocEntryComponent } from './doc-entry/doc-entry.component';
 import { NurseEntryComponent } from './nurse-entry/nurse-entry.component';
 import { DoctorStatusViewComponent } from './doctor-status-view/doctor-status-view.component';
 const routes: Routes = [
-  {path:'doctor-entry',component:DocEntryComponent},
+  {path:'doctor-entry',component:DocEntryComponent,pathMatch:'full'},
   {path:'nurse-entry',component:NurseEntryComponent},
   {path:'doctor-status-view',component:DoctorStatusViewComponent},
   {

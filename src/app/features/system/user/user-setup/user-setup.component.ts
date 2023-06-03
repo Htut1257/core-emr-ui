@@ -30,7 +30,6 @@ export class UserSetupComponent implements OnInit {
   submitted: boolean = false
   isMobile = false
 
-
   constructor(
     private route: Router, private formBuilder: FormBuilder,
     private userService: UserService, private roleService: RoleService,
@@ -53,15 +52,13 @@ export class UserSetupComponent implements OnInit {
   ngOnInit(): void {
     this.initializeForm()
     this.getRole()
-    this.filteredDoc = this.docControl.valueChanges.pipe(
+    this.filteredDoc = this.userForm.get('doctor').valueChanges.pipe(
       startWith(''),
       switchMap(value => {
         return value ? this._filterDoc(value) : []
       })
     );
   }
-
-
 
   //initialize Form 
   initializeForm() {
@@ -72,22 +69,23 @@ export class UserSetupComponent implements OnInit {
       password: ['', Validators.required],
       email: [''],
       role: [null, Validators.required],
+      doctor:[null],
       active: [true],
     });
   }
 
   //initialize form data 
   initializeFormData(data: User) {
-    this.userForm.get('userCode').patchValue(data.userCode)
-    this.userForm.get('userName').patchValue(data.userName)
-    this.userForm.get('userShortName').patchValue(data.userShortName)
-    this.userForm.get('password').patchValue(data.password)
-    this.userForm.get('email').patchValue(data.email)
     let role = this.roleList.filter(item => item.roleCode == data.roleCode)
-
-    this.userForm.get('role').patchValue(role[0])
-    this.userForm.get('active').patchValue(data.active)
-
+    this.userForm.patchValue({
+      userCode:data.userCode,
+      userName:data.userName,
+      userShortName:data.userShortName,
+      password:data.password,
+      email:data.email,
+      role:role[0],
+      active:data.active
+    })
   }
 
   //get role data

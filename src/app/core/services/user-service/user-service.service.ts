@@ -25,12 +25,16 @@ export class UserService extends AbstractService<User>{
     super(http, uri)
     this.userSubject$ = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('user')))
     this.$user = this.userSubject$
-  //  this.user = {} as User
   }
 
   //get current User
   getUserValue(): User {
     return this.userSubject$.value
+  }
+
+  setUserValue(model:User){
+    localStorage.setItem('user', JSON.stringify(model))
+    this.userSubject$.next(model)
   }
 
   //User Login
@@ -64,6 +68,7 @@ export class UserService extends AbstractService<User>{
   //logOut current user and remove it
   logOutUser() {
     localStorage.removeItem('user')
+    localStorage.removeItem('machine')
     this.userSubject$.next(null)
     this.route.navigate(['/login']);
   }

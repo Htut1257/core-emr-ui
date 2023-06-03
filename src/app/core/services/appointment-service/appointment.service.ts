@@ -3,7 +3,8 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Booking } from '../../model/booking.model';
 import { AbstractService } from '../abstract-service/abstract.service';
-import { ApiSetting } from 'src/app/api/api-setting';
+// import { ApiSetting } from 'src/app/api/api-setting';
+import { ApiSetting } from 'src/assets/api/api-setting';
 var uri: any = `${ApiSetting.EmrEndPoint}`
 
 const httpHeaders = new HttpHeaders({

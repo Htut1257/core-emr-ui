@@ -4,7 +4,7 @@ import { AbstractService } from '../abstract-service/abstract.service';
 import { ApiSetting } from 'src/app/api/api-setting';
 import { Township } from '../../model/township.model';
 import { Observable } from 'rxjs';
-
+const uri = `${ApiSetting.EmrEndPoint}`
 const httpHeader = new HttpHeaders({
   'Content-Type': 'application/json',
   'Access-Control-Allow-Origin': '*',
@@ -12,7 +12,6 @@ const httpHeader = new HttpHeaders({
   'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,ORIGINS',
 });
 
-var uri: any = `${ApiSetting.EmrEndPoint}`
 @Injectable({
   providedIn: 'root'
 })
@@ -23,15 +22,14 @@ export class TownshipService extends AbstractService<Township>{
   }
 
 
-  getTown():Observable<any[]>{
-    let uri="http://192.168.100.213:8080/township/getAll"
-    let httpOption={headers:httpHeader}
-    return this.http.get<any[]>(uri,httpOption)
+  getTown(): Observable<any[]> {
+    this.baseURL = `${uri}/township/getAll`
+    let httpOption = { headers: httpHeader }
+    return this.http.get<any[]>(uri, httpOption)
   }
 
   getAllTownship(): Observable<any[]> {
     this.baseURL = `${uri}/township/getAll`
-    
     return this.getAll()
   }
 
@@ -45,6 +43,11 @@ export class TownshipService extends AbstractService<Township>{
     this.baseURL = `${uri}/township/getByParent`
     let httpParams = new HttpParams().set('parentId', id);
     return this.getByParams(httpParams);
+  }
+
+  saveTownShip(data: Township): Observable<Township> {
+    this.baseURL = `${uri}/township/getByParent`
+    return this.save(data)
   }
 
   removeTownship(id: string) {

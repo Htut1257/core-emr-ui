@@ -16,6 +16,7 @@ import { LocationService } from 'src/app/core/services/location-service/location
 import { PaymentService } from 'src/app/core/services/payment-service/payment.service';
 import { CurrencyService } from 'src/app/core/services/currency-service/currency.service';
 import { UserService } from 'src/app/core/services/user-service/user-service.service';
+import { MachineService } from 'src/app/core/services/machine-service/machine.service';
 import { CommonServiceService } from 'src/app/core/services/common-service/common-service.service';
 import { ToastService } from 'src/app/core/services/toast-service/toast-service.service';
 
@@ -23,6 +24,7 @@ import { AutocompleteCell } from 'src/app/shared/cell-renderer/autocomplete-cell
 import { CheckboxRenderer } from 'src/app/shared/cell-renderer/checkbox-cell';
 import * as moment from 'moment';
 import { User } from 'src/app/core/model/user.model';
+import { MachineInfo } from 'src/app/core/model/machine-info.model';
 
 @Component({
   selector: 'app-check-out-voucher',
@@ -60,6 +62,7 @@ export class CheckOutVoucherComponent implements OnInit {
   @ViewChild("#reactiveForm", { static: true }) reactiveForm: NgForm
 
   user: User
+  machine: MachineInfo
   payment: any
   payments: PaymentType[] = []
   location: any
@@ -74,6 +77,7 @@ export class CheckOutVoucherComponent implements OnInit {
     private route: Router, private checkService: CheckOutService,
     private locationService: LocationService, private payService: PaymentService,
     private currencyService: CurrencyService, private userService: UserService,
+    private machineService: MachineService,
     private commonService: CommonServiceService, private toastService: ToastService,
     public formBuilder: FormBuilder,
   ) {
@@ -84,6 +88,7 @@ export class CheckOutVoucherComponent implements OnInit {
     })
 
     this.user = this.userService.getUserValue()
+    this.machine = this.machineService.getMachineValue()
 
     this.frameworkComponents = {
       autoComplete: AutocompleteCell,
@@ -647,7 +652,7 @@ export class CheckOutVoucherComponent implements OnInit {
     this.checkOut.sessionId = null
 
     this.checkOut.userId = this.user.userCode
-    this.checkOut.macId = "20"
+    this.checkOut.macId = this.machine.machineId
 
   }
 

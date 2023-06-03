@@ -1,8 +1,10 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
+import { FormGroup, FormBuilder, NgForm, Validators, } from '@angular/forms';
 import { User } from 'src/app/core/model/user.model';
+import { MachineInfo } from 'src/app/core/model/machine-info.model';
 import { UserService } from 'src/app/core/services/user-service/user-service.service';
+import { MachineService } from 'src/app/core/services/machine-service/machine.service';
 import { ToastService } from 'src/app/core/services/toast-service/toast-service.service';
 @Component({
   selector: 'app-login',
@@ -12,15 +14,23 @@ import { ToastService } from 'src/app/core/services/toast-service/toast-service.
 export class LoginComponent implements OnInit {
   user: any
   userForm: FormGroup
-  submitted: boolean = false
-  constructor(private route: Router, private formBuilder: FormBuilder,
-    private userService: UserService, private toastService: ToastService) {
+  @ViewChild('reactiveForm', { static: true }) reactiveForm: NgForm
+
+  machine: any
+
+  isLoading: boolean = false
+  constructor(
+    private route: Router,
+    private userService: UserService, private machineService: MachineService,
+    private toastService: ToastService, private formBuilder: FormBuilder,
+  ) {
     this.user = {} as User
     this.userService.logOutUser()
   }
 
   ngOnInit(): void {
     this.initializeForm();
+    this.getIpAddress();
   }
 
   //initialize From 
@@ -31,14 +41,21 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  //get form controls
-  get f(): { [key: string]: AbstractControl } {
-    return this.userForm.controls;
+  //get ip address of client machine
+  getIpAddress() {
+    this.machineService.getIpAddress().subscribe(data => {
+      this.machine = data
+      console.log(this.machine)
+    })
+  }
+
+  getMachineId(model: MachineInfo) {
+    return this.machineService.getMachine(model)
   }
 
   //get user data to login
   loginUser(userData: any) {
-    this.submitted = true
+    this.isLoading = true
     if (this.userForm.invalid) {
       return
     }
@@ -46,49 +63,53 @@ export class LoginComponent implements OnInit {
     this.userService.loginUser(user.userName, user.password).subscribe({
       next: data => {
         this.user = data
-     
         if (this.user == null) {
-          this.resetForm()
+          this.clearForm()
           document.querySelector<HTMLInputElement>(`#name`).focus()
           return
         }
-        localStorage.setItem('user',JSON.stringify(this.user))
-        if(this.user.uniqueId){
-          this.route.navigate(['/main/opd/doctor-entry'])
-        }
-        else{
-          this.route.navigate(['/main'])
-        }
-      
+
+        this.getMachineId(this.machine).subscribe({
+          next: machine => {
+           this.userService.setUserValue(this.user)
+           this.machineService.setMachineValue(machine)
+            if (this.user.doctorId) {
+              this.route.navigate(['/main/opd/doctor-entry'])
+            }
+            else {
+              this.route.navigate(['/main'])
+            }
+          },
+          error: err => {
+            console.trace(err)
+          }
+        })
       },
-      error:err=>{
-        console.log(err)
+      error: err => {
+        console.trace(err)
       }
     })
   }
 
   //clear form 
-  resetForm() {
-    this.submitted = false
+  clearForm() {
+    this.isLoading = false
     this.userForm.reset()
+    this.reactiveForm.resetForm()
   }
 
-  //key enter event
-  focusNext(event: any) {
-    let eleString = event.srcElement.id
-    let nextString = ''
-    switch (eleString) {
-      case 'name': {
-        nextString = 'password'
-        document.querySelector<HTMLInputElement>(`#${nextString}`)?.focus()
-        break
-      }
-      case 'password': {
-        nextString = 'login'
-        document.querySelector<HTMLInputElement>(`#${nextString}`)?.focus()
-        break
+  focusElement(eleString: string, nextString: string, type: string) {
+    if (type == "autocomplete") {
+      if (this.userForm.controls['' + eleString + ''].value == null) {
+        return
       }
     }
+    if (type == "option") {
+      if (this.userForm.controls['' + eleString + ''].value == null) {
+        return
+      }
+    }
+    document.querySelector<HTMLInputElement>(`#${nextString}`)?.focus()
   }
 
   //block auto submit 

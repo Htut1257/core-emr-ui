@@ -1,7 +1,5 @@
 import { Component, AfterViewInit, ViewChild, ViewEncapsulation, ElementRef, HostListener } from '@angular/core';
 import { ICellEditorAngularComp } from 'ag-grid-angular';
-import { of } from 'rxjs';
-import { Pattern } from 'src/app/core/model/pattern.model';
 import { AutocompleteService } from 'src/app/core/services/autocomplete-service/autocomplete.service';
 import { PatternService } from 'src/app/core/services/pattern-service/pattern.service';
 @Component({
@@ -32,7 +30,7 @@ import { PatternService } from 'src/app/core/services/pattern-service/pattern.se
 	`
 })
 
-export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
+export class AutocompleteCellMultiSelect implements ICellEditorAngularComp, AfterViewInit {
 
     // variables for agGrid
     public params: any;
@@ -65,7 +63,6 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
 
     ngAfterViewInit() {
         window.setTimeout(() => {
-            console.log(this.inputValue)
             if (this.inputValue == this.cellValue) {
                 this.input.nativeElement.select();
             } else {
@@ -78,9 +75,8 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
     // ICellEditorAngularComp functions
     agInit(params: any): void {
         this.params = params;
-
         //to get witch field to use
-           console.log(params)
+        console.log(params)
         this.columnObject = params.colDef.field
         if (!params.rowData) {
             this.apiEndpoint = params.apiEndpoint;
@@ -106,14 +102,23 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
         } else {
             this.inputValue = params.charPress;
         }
-        this.getApiData( params.charPress).subscribe(data => {
+        this.getApiData(params.charPress).subscribe(data => {
             this.rowData = data;
         });
     }
 
     getValue(): any {
         if (!this.returnObject) return this.selectedObject[this.propertyName];
-        return this.selectedObject;
+        let data: any = [
+            {
+                desc: "testing ",
+                id: "6464907f52eef633b8c45ea3"
+            }, {
+                desc: "testing 1",
+                id: "6464907f52eef633b8c45ea3"
+            }
+        ]
+        return data;
     }
     isPopup(): boolean {
         return true;
@@ -147,7 +152,7 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
     @HostListener('keydown', ['$event'])
     onKeydown(event) {
         event.stopPropagation();
-        if(event.keyCode>=66 && event.keyCode<=90 || event.key=="Backspace"){
+        if (event.keyCode >= 66 && event.keyCode <= 90 || event.key == "Backspace") {
             document.querySelector<HTMLInputElement>(`#autoText`)?.focus()
         }
         if (event.key == "Escape") {
@@ -166,7 +171,7 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
     }
 
     processDataInput(event) {
-     
+
         if (this.useApi) {
             this.columnFilter = this.gridApi.getFilterInstance(this.propertyName);
             if (event.length == 0) this.gridApi.setRowData();

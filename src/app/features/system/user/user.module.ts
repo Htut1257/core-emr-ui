@@ -6,7 +6,8 @@ import { UserListComponent } from './user-list/user-list.component';
 import { UserSetupComponent } from './user-setup/user-setup.component';
 import { UserContainerComponent } from './user-container/user-container.component';
 import { AutocompleteCell } from 'src/app/shared/cell-renderer/autocomplete-cell';
-const components=[
+import { AutocompleteCellMultiSelect } from 'src/app/shared/cell-renderer/autocomplete-multiselect-cell';
+const components = [
   UserSetupComponent,
   UserListComponent
 ]
@@ -14,15 +15,16 @@ const components=[
   declarations: [
     components,
     UserContainerComponent,
-    AutocompleteCell
-  
+    AutocompleteCell,
+    AutocompleteCellMultiSelect,
+
   ],
   imports: [
     CommonModule,
     CommonModulesModule,
     UserRoutingModule
   ],
-  exports:[
+  exports: [
     components
   ]
 })

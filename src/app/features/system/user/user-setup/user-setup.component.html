@@ -57,7 +57,7 @@
                 <mat-form-field class='col-12' appearance="outline">
                     <mat-label>Doctor</mat-label>
                     <input [id]="'doctor'" matInput [matAutocomplete]="auto1" type="text" name="doctor"
-                        [formControl]="docControl" (keyup.enter)="focusElement('doctor','btnSave','autocomplete')">
+                       formControlName="doctor" (keyup.enter)="focusElement('doctor','btnSave','autocomplete')">
                     <mat-autocomplete autoActiveFirstOption #auto1="matAutocomplete" [displayWith]="DocDisplayFn">
                         <mat-option *ngFor="let item of filteredDoc|async " [value]="item">
                             {{item.doctorName}}
