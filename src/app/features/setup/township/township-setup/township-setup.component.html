@@ -1,1 +1,20 @@
-<p>township-setup works!</p>
+<form #reactiveForm="ngForm" role="form" [formGroup]="townForm" (ngSubmit)="onSaveTown(townForm.value)">
+    <div class="row">
+        <mat-form-field class="col-12" appearance="outline">
+            <mat-label> TownShip Id</mat-label>
+            <input matInput [id]="'townId'" type="text" formControlName="townShipId">
+        </mat-form-field>
+        <mat-form-field class="col-12" appearance="outline">
+            <mat-label> TownShip Name</mat-label>
+            <input matInput [id]="'townName'" type="text" formControlName="townShipName">
+            <mat-error *ngIf="!townForm.value.townShipName">Please Enter TownShip</mat-error>
+        </mat-form-field>
+    </div>
+    <div class="example-button-row float-right">
+        <button mat-raised-button color="primary" type="button" (click)="onNew()">New</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="!townForm.valid">
+            {{ (townId==null) ? 'Add':'Save' }}
+        </button>
+        <button mat-raised-button color="primary" type="button" (click)="onClear()">Clear</button>
+    </div>
+</form>

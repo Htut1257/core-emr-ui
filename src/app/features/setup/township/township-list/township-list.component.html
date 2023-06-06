@@ -1,1 +1,14 @@
-<p>township-list works!</p>
+<div class="table-container">
+    <table mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="position">
+            <th class="td-number" *matHeaderCellDef>No</th>
+            <td class="td-number" *matCellDef="let element;let i=index">{{i+1}}</td>
+        </ng-container>
+        <ng-container matColumnDef="name">
+            <th class="td-text" *matHeaderCellDef>Name</th>
+            <td class="td-text" *matCellDef="let element">{{element.townshipName}}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumn;sticky:true"></tr>
+        <tr mat-row *matRowDef="let row;columns:displayedColumn" (dblclick)="ongetRowData(row)"></tr>
+    </table>
+</div>

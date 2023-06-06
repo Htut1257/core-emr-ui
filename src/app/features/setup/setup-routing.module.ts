@@ -21,6 +21,10 @@ const routes: Routes = [
   {
     path: 'location',
     loadChildren: () => import('./location/location.module').then(module => module.LocationModule)
+  },
+  {
+    path: 'township',
+    loadChildren: () => import('./township/township.module').then(module => module.TownshipModule)
   }
 ];
 

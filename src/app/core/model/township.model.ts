@@ -1,5 +1,6 @@
 export interface Township {
-    townshipId: number
+    townshipId: string
     townshipName: string
     parentId: number
+   // updatedDate:Date
 }

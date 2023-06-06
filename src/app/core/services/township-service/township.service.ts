@@ -1,9 +1,10 @@
 import { Injectable, Inject } from '@angular/core';
+import { Observable, BehaviorSubject, observable } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { AbstractService } from '../abstract-service/abstract.service';
 import { ApiSetting } from 'src/app/api/api-setting';
 import { Township } from '../../model/township.model';
-import { Observable } from 'rxjs';
+
 const uri = `${ApiSetting.EmrEndPoint}`
 const httpHeader = new HttpHeaders({
   'Content-Type': 'application/json',
@@ -16,6 +17,12 @@ const httpHeader = new HttpHeaders({
   providedIn: 'root'
 })
 export class TownshipService extends AbstractService<Township>{
+
+  _town: Township
+  _towns: Township[] = []
+
+  townSubject: BehaviorSubject<Township[]> = new BehaviorSubject<Township[]>([])
+  town$: Observable<Township[]> = this.townSubject.asObservable()
 
   constructor(@Inject(HttpClient) http: HttpClient) {
     super(http, uri)
@@ -30,7 +37,14 @@ export class TownshipService extends AbstractService<Township>{
 
   getAllTownship(): Observable<any[]> {
     this.baseURL = `${uri}/township/getAll`
-    return this.getAll()
+    return new Observable(observable => {
+      this.getAll().subscribe(towns => {
+        this._towns = towns
+        observable.next(towns)
+        this.townSubject.next(towns)
+        observable.complete()
+      })
+    })
   }
 
   getTownshipByName(name: string): Observable<Township[]> {
@@ -46,7 +60,7 @@ export class TownshipService extends AbstractService<Township>{
   }
 
   saveTownShip(data: Township): Observable<Township> {
-    this.baseURL = `${uri}/township/getByParent`
+    this.baseURL = `${uri}/township/save`
     return this.save(data)
   }
 
