@@ -73,7 +73,7 @@ export class AppointmentSearchDialogComponent implements OnInit {
   }
 
   getDoctor(name: string) {
-    this.doctorService.getDoctor(name).subscribe({
+    this.doctorService.getDoctor().subscribe({
       next: doctors => {
         this.doctors = doctors
       },

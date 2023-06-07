@@ -76,6 +76,12 @@ export const navItems: any = [
         route: "setup",
         children:[
             {
+                displayName: 'Doctor Setup',
+                iconName: 'doctor-setup',
+                route: 'setup/doctor',
+                children: []
+            },
+            {
                 displayName: 'Opd Setup',
                 iconName: 'opd-setup',
                 route: 'setup/opd/opd-setup',

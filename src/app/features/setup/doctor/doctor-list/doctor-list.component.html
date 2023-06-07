@@ -1,0 +1,22 @@
+<div class="table table-container">
+    <table mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="position">
+            <th mat-header-cell class="td-number" *matHeaderCellDef>No</th>
+            <td mat-cell class="td-number" *matCellDef="let element;let i=index"> {{i+1}}</td>
+        </ng-container>
+        <ng-container matColumnDef="name">
+            <th mat-header-cell class="td-text" *matHeaderCellDef>Name</th>
+            <td mat-cell class="td-text" *matCellDef="let element"> {{element.doctorName}}</td>
+        </ng-container>
+        <ng-container matColumnDef="nrc">
+            <th mat-header-cell class="td-text" *matHeaderCellDef>NRC</th>
+            <td mat-cell class="td-text" *matCellDef="let element">{{element.nirc}}</td>
+        </ng-container>
+        <ng-container matColumnDef="gender">
+            <th mat-header-cell class="td-object" *matHeaderCellDef>Gender</th>
+            <td mat-cell class="td-object" *matCellDef="let element">{{element.genderId}}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumn;sticky:true"></tr>
+        <tr mat-row *matRowDef="let row;columns:displayedColumn" (dblclick)="getRowData(row)"></tr>
+    </table>
+</div>

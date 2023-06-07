@@ -91,7 +91,7 @@ export class NurseEntryComponent implements OnInit {
   }
 
   getDoctor(id: string) {
-    this.docService.getDoctor(id).subscribe({
+    this.docService.getDoctor().subscribe({
       next: doctors => {
         this.doctors = doctors;
       },

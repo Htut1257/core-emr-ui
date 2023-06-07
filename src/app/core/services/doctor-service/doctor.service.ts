@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { AbstractService } from '../abstract-service/abstract.service';
 import { ApiSetting } from 'src/app/api/api-setting';
@@ -11,6 +11,12 @@ var uri: any = `${ApiSetting.EmrEndPoint}`
 })
 export class DoctorService extends AbstractService<Doctor>{
 
+  _doctor: Doctor
+  _doctors: Doctor[] = []
+
+  doctorSubject: BehaviorSubject<Doctor[]> = new BehaviorSubject<Doctor[]>([])
+  doctor$: Observable<Doctor[]> = this.doctorSubject.asObservable();
+
   constructor(@Inject(HttpClient) http: HttpClient) {
     super(http, uri)
   }
@@ -21,10 +27,17 @@ export class DoctorService extends AbstractService<Doctor>{
     return this.getByParams(httpParams);
   }
 
-  getDoctor(id: string): Observable<Doctor[]> {
+  getDoctor(): Observable<Doctor[]> {
     this.baseURL = `${uri}/doctor/getAllActive`
-    let httpParams = new HttpParams().set('id', id);
-    return this.getByParams(httpParams);
+    // let httpParams = new HttpParams().set('id', id);
+    return new Observable(observable => {
+      return this.getAll().subscribe(doctors => {
+        this._doctors = doctors
+        observable.next(doctors)
+        this.doctorSubject.next(doctors)
+        observable.complete()
+      })
+    })
   }
 
   getInativeDoctor(): Observable<Doctor[]> {
