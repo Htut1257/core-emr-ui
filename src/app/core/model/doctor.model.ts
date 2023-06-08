@@ -10,15 +10,32 @@ export interface Doctor {
     phoneNo: String
     updateDate: Date
     drType: String
-    
-}
-
-export interface Initial{
 
 }
 
-export interface Speciality{
-    
+export const Type = [
+    {
+        id: 1,
+        description: 'Doctor'
+    },
+    {
+        id: 2,
+        description: 'test 2'
+    },
+    {
+        id: 3,
+        description: 'Technician'
+    }
+]
+
+export interface Initial {
+    initialId: string
+    initialName: string
+}
+
+export interface Speciality {
+    specId: string
+    desp: string
 }
 
 export interface DoctorFees {

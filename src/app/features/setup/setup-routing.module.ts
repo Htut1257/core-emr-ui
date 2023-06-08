@@ -29,6 +29,18 @@ const routes: Routes = [
   {
     path: 'doctor',
     loadChildren: () => import('./doctor/doctor.module').then(module => module.DoctorModule)
+  },
+  {
+    path: 'gender',
+    loadChildren: () => import('./gender/gender.module').then(module => module.GenderModule)
+  },
+  {
+    path: 'initial',
+    loadChildren: () => import('./initial/initial.module').then(module => module.InitialModule)
+  },
+  {
+    path: 'speciality',
+    loadChildren: () => import('./speciality/speciality.module').then(module => module.SpecialityModule)
   }
 ];
 

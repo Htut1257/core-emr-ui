@@ -4,7 +4,7 @@ import { Observable, BehaviorSubject } from 'rxjs'
 import { Initial } from '../../model/doctor.model';
 import { ApiSetting } from 'src/app/api/api-setting';
 import { AbstractService } from '../abstract-service/abstract.service';
-const uri = `${ApiSetting.EmrEndPoint}/opdsetup`
+const uri = `${ApiSetting.EmrEndPoint}/opdSetup`
 @Injectable({
   providedIn: 'root'
 })

@@ -26,7 +26,6 @@ export class MainDefaultComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    console.log(window.location.hostname)
     this.items = navItems;
     this.subscription=this.commonService.isProgress$.subscribe(data=>{
       this.loading=data

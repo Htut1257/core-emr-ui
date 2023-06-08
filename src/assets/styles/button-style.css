@@ -38,7 +38,7 @@
 }
 
 .example-button-row .mat-flat-button,
-.example-button-row .mat-raised-button {
+.example-button-row .mat-raised-button,.example-button-row .mat-icon-button {
   margin: 8px 8px 8px 0;
   height: 25px;
   line-height: 25px;

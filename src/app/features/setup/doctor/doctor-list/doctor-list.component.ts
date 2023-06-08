@@ -52,7 +52,12 @@ export class DoctorListComponent implements OnInit {
   }
 
   getRowData(data: Doctor) {
-    console.log(data)
+    this.doctorService._doctor=data
+    if(this.isMobile){
+      this.commonService.getCurrentObject(true)
+    }else{
+      this.commonService.getCurrentObject(false)
+    }
   }
 
 }
