@@ -4,6 +4,10 @@
             <th mat-header-cell class="td-number" *matHeaderCellDef="">No</th>
             <td mat-cell class="td-number" *matCellDef="let element;let i=index">{{i+1}}</td>
         </ng-container>
+        <ng-container matColumnDef="code">
+            <th mat-header-cell class="td-text" *matHeaderCellDef="">Code</th>
+            <td mat-cell class="td-text" *matCellDef="let element">{{element.genderId}}</td>
+        </ng-container>
         <ng-container matColumnDef="desc">
             <th mat-header-cell class="td-text" *matHeaderCellDef="">Description</th>
             <td mat-cell class="td-text" *matCellDef="let element">{{element.description}}</td>

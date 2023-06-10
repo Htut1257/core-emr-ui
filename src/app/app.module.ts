@@ -13,11 +13,9 @@ import { LayoutsModule } from './shared/layouts/layouts.module';
 import { LoginModule } from './features/system/login/login.module';
 import { RegistrationModule } from './features/registration/registration.module';
 import { HttpInterceptorService } from './shared/http-interceptor/http-interceptor.service';
-
-
 @NgModule({
   declarations: [
-    AppComponent,
+    AppComponent
 
   ],
   imports: [
@@ -26,7 +24,8 @@ import { HttpInterceptorService } from './shared/http-interceptor/http-intercept
     BrowserAnimationsModule,
     HttpClientModule,
     //common modules
-    AgGridModule,
+    
+   // AgGridModule.withComponents([AutocompleteCell]),
     //component modules
     LayoutsModule,
     LoginModule,

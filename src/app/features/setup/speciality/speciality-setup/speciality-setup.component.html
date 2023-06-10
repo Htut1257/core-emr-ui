@@ -1,1 +1,20 @@
-<p>speciality-setup works!</p>
+<form #reactiveForm="ngForm" class="form" role="form" [formGroup]="specialForm" (ngSubmit)="onSave(specialForm.value)"
+    (keydown.enter)="handleEnter($event)">
+    <div class="row">
+        <mat-form-field class="col-12" appearance="outline" hideRequiredMarker="hideRequiredMarker">
+            <mat-label>Code</mat-label>
+            <input [id]="'specId'" matInput type="text" name="specId" formControlName="specId"
+                (keyup.enter)="focusElement('specId','desp','text')">
+        </mat-form-field>
+        <mat-form-field class="col-12" appearance="outline" hideRequiredMarker="hideRequiredMarker">
+            <mat-label>Description</mat-label>
+            <input [id]="'desp'" matInput type="text" name="desp" formControlName="desp"
+                (keyup.enter)="focusElement('desp','btnSave','text')">
+        </mat-form-field>
+    </div>
+    <div class="example-button-row">
+        <button mat-raised-button color="primary" type="button" (click)="onNew()">New</button>
+        <button [id]="'btnSave'" mat-raised-button color="primary" type="submit">Save</button>
+        <button mat-raised-button color="primary" type="button" (click)="onClear()">Clear</button>
+    </div>
+</form>

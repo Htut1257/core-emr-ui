@@ -26,6 +26,7 @@ export class SpecialityService extends AbstractService<Speciality>{
       return this.getAll().subscribe(specials => {
         this._specials = specials
         observable.next(specials)
+        this.specialSubject.next(specials)
         observable.complete()
       })
     })

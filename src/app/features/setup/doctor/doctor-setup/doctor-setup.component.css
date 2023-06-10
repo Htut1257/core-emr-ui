@@ -3,10 +3,17 @@
     padding-bottom: 5px;
 }
 
-
-.ag-row.row{
-    margin-left: 0% !important;
-    margin-right: 0% !important;
-    padding-left: 0% !important;
-    padding-right: 0% !important;
+.actions-button-cell {
+    overflow: visible;
 }
+
+.ag-row {
+    z-index: 0;
+}
+
+.ag-row.ag-row-focus {
+    z-index: 1;
+}
+
+.ag-root-wrapper { overflow: visible; } 
+

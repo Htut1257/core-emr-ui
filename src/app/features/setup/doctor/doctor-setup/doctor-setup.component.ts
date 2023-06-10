@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Subscription } from 'rxjs'
 import { FormGroup, Validators, FormBuilder, NgForm } from '@angular/forms';
 import { GridApi, GridOptions, ColumnApi } from 'ag-grid-community';
 import { MatDialog } from '@angular/material/dialog';
@@ -12,11 +13,9 @@ import { SpecialityService } from 'src/app/core/services/speciality-service/spec
 import { CommonServiceService } from 'src/app/core/services/common-service/common-service.service';
 import { ToastService } from 'src/app/core/services/toast-service/toast-service.service';
 
-import { GenderContainerComponent } from '../../gender/gender-container/gender-container.component';
-import { InitialContainerComponent } from '../../initial/initial-container/initial-container.component';
-import { SpecialityContainerComponent } from '../../speciality/speciality-container/speciality-container.component';
+import { InitialDialogComponent } from '../../initial/initial-dialog/initial-dialog.component';
 import { GenderDialogComponent } from '../../gender/gender-dialog/gender-dialog.component';
-
+import { SpecialityDialogComponent } from '../../speciality/speciality-dialog/speciality-dialog.component';
 
 import { AutocompleteCell } from 'src/app/shared/cell-renderer/autocomplete-cell';
 
@@ -26,7 +25,7 @@ import { AutocompleteCell } from 'src/app/shared/cell-renderer/autocomplete-cell
   styleUrls: ['./doctor-setup.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class DoctorSetupComponent implements OnInit {
+export class DoctorSetupComponent implements OnInit, OnDestroy {
 
   //#region grid variable
 
@@ -67,7 +66,7 @@ export class DoctorSetupComponent implements OnInit {
   doctor: Doctor
   doctorForm: FormGroup
   @ViewChild("reactiveForm", { static: true }) reactiveForm: NgForm
-
+  subscribe: Subscription
   constructor(
     private doctorService: DoctorService, private genderService: GenderService,
     private initialService: InitialService, private specialService: SpecialityService,
@@ -102,6 +101,12 @@ export class DoctorSetupComponent implements OnInit {
     this.getInitial()
     this.getSpeciality()
 
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscribe) {
+      this.subscribe.unsubscribe()
+    }
   }
 
   initializeForm() {
@@ -222,9 +227,20 @@ export class DoctorSetupComponent implements OnInit {
     this.opdFeeColumnDef = [
       {
         headerName: 'Opd Service',
-        field: 'service',
+        field: 'opdFeeObj',
         width: 100,
         editable: true,
+        cellEditor: 'autoComplete',
+        cellEditorParams: {
+          'propertyRendered': 'serviceName',
+          'returnObject': true,
+          'columnDefs': [
+            { headerName: 'Code', field: 'serviceId' },
+            { headerName: 'Description', field: 'serviceName' },
+            { headerName: 'Fee', field: 'fees' },
+          ]
+        },
+        cellClass: "actions-button-cell"
       },
       {
         headerName: 'Opd Fee',
@@ -234,9 +250,9 @@ export class DoctorSetupComponent implements OnInit {
       }
     ]
     this.opdFeeRow = [
-      { service: '', fee: '' },
-      { service: '', fee: '' },
-      { service: '', fee: '' },
+      { opdFeeObj: { serviceId: '', servieName: '', fees: '' }, fee: '' },
+      { opdFeeObj: { serviceId: '', servieName: '', fees: '' }, fee: '' },
+      { opdFeeObj: { serviceId: '', servieName: '', fees: '' }, fee: '' },
     ]
   }
 
@@ -288,7 +304,7 @@ export class DoctorSetupComponent implements OnInit {
 
   openInitial(event) {
     event.stopPropagation()
-    this.dialog.open(GenderDialogComponent, {
+    this.dialog.open(InitialDialogComponent, {
       disableClose: true,
       width: '40%',
       data: {
@@ -312,7 +328,7 @@ export class DoctorSetupComponent implements OnInit {
 
   openSpeciality(event) {
     event.stopPropagation()
-    this.dialog.open(GenderDialogComponent, {
+    this.dialog.open(SpecialityDialogComponent, {
       disableClose: true,
       width: '40%',
       data: {

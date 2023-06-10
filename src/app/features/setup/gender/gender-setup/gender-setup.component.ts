@@ -23,6 +23,7 @@ export class GenderSetupComponent implements OnInit {
   ) {
     this.commonService.isMobileObj$.subscribe(data => {
       if (data == false) {
+        console.log(data)
         this.gender = this.genderService._gender
         this.genders = this.genderService._genders
 

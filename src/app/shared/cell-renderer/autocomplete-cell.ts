@@ -1,17 +1,18 @@
 import { Component, AfterViewInit, ViewChild, ViewEncapsulation, ElementRef, HostListener } from '@angular/core';
 import { ICellEditorAngularComp } from 'ag-grid-angular';
-import { of } from 'rxjs';
-import { Pattern } from 'src/app/core/model/pattern.model';
+
 import { AutocompleteService } from 'src/app/core/services/autocomplete-service/autocomplete.service';
 import { PatternService } from 'src/app/core/services/pattern-service/pattern.service';
+import { OpdService } from 'src/app/core/services/opd-service/opd.service';
 @Component({
     selector: 'auto-complete',
     encapsulation: ViewEncapsulation.None,
     host: {
-        style: `position: absolute;
-					left: 0px; 
-					top: 0px;
-					background-color: transparant;
+        style: `
+        position:absolute ;
+        left: 0px; 
+        top: 0px;
+        background-color: transparent;
 					` },
     template: ` 
 		<input #input [id]="'autoText'"
@@ -47,7 +48,7 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
     public filteredRowData: any;
     public inputValue: string;
     public apiEndpoint: string;
-    public gridHeight: number = 315;
+    public gridHeight: number = 175;
     public gridWidth: number = 500;
     public useApi: boolean;
     public propertyName: string;
@@ -80,7 +81,7 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
         this.params = params;
 
         //to get witch field to use
-           console.log(params)
+        console.log(params)
         this.columnObject = params.colDef.field
         if (!params.rowData) {
             this.apiEndpoint = params.apiEndpoint;
@@ -106,7 +107,7 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
         } else {
             this.inputValue = params.charPress;
         }
-        this.getApiData( params.charPress).subscribe(data => {
+        this.getApiData(params.charPress).subscribe(data => {
             this.rowData = data;
         });
     }
@@ -118,6 +119,7 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
     isPopup(): boolean {
         return true;
     }
+    getPopupPosition?(): 'over'
     isCancelAfterEnd(): boolean {
         return this.isCanceled
     }
@@ -147,7 +149,7 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
     @HostListener('keydown', ['$event'])
     onKeydown(event) {
         event.stopPropagation();
-        if(event.keyCode>=66 && event.keyCode<=90 || event.key=="Backspace"){
+        if (event.keyCode >= 66 && event.keyCode <= 90 || event.key == "Backspace") {
             document.querySelector<HTMLInputElement>(`#autoText`)?.focus()
         }
         if (event.key == "Escape") {
@@ -166,7 +168,7 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
     }
 
     processDataInput(event) {
-     
+
         if (this.useApi) {
             this.columnFilter = this.gridApi.getFilterInstance(this.propertyName);
             if (event.length == 0) this.gridApi.setRowData();

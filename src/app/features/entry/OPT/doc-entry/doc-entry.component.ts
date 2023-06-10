@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { Grid, ColDef, GridOptions, GridApi, ColumnApi, Column } from "ag-grid-community";
@@ -51,6 +51,7 @@ const MY_DATE_FORMAT = {
       { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
       { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMAT }
     ],
+    encapsulation:ViewEncapsulation.None
 })
 export class DocEntryComponent implements OnInit {
   //#region table grid variables
@@ -384,6 +385,7 @@ export class DocEntryComponent implements OnInit {
             { headerName: 'Type', field: 'itemType' }
           ]
         },
+        cellEditorPopup: true,
         valueFormatter: params => {
           if (params.value) {
             return params.value.itemName;

@@ -14,7 +14,7 @@ export class GenderListComponent implements OnInit {
   gender: Gender
   genders: Gender[] = []
 
-  displayedColumn: string[] = ["position", "desc"]
+  displayedColumn: string[] = ["position", "code", "desc"]
   dataSource: MatTableDataSource<Gender>
 
   isMobile: boolean = false
