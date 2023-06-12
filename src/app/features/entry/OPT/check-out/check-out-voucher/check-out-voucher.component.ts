@@ -696,8 +696,7 @@ export class CheckOutVoucherComponent implements OnInit {
 
     this.saveCashierData(data)
     this.saveCashierHisData(data)
-    console.log(this.checkOut)
-    return
+
     this.checkService.saveCheckOut(this.checkOut).subscribe({
       next: checkOut => {
         console.log("mongo completed")

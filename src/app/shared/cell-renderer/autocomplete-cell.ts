@@ -59,6 +59,7 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
 
     constructor(
         private autoService: AutocompleteService, private patternService: PatternService,
+        private opdService: OpdService,
     ) {
 
     }
@@ -66,7 +67,7 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
 
     ngAfterViewInit() {
         window.setTimeout(() => {
-            console.log(this.inputValue)
+
             if (this.inputValue == this.cellValue) {
                 this.input.nativeElement.select();
             } else {
@@ -81,7 +82,7 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
         this.params = params;
 
         //to get witch field to use
-        console.log(params)
+
         this.columnObject = params.colDef.field
         if (!params.rowData) {
             this.apiEndpoint = params.apiEndpoint;
@@ -109,6 +110,7 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
         }
         this.getApiData(params.charPress).subscribe(data => {
             this.rowData = data;
+
         });
     }
 
@@ -188,6 +190,22 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
     }
 
     getApiData(filter) {
+        //opdService
+        // switch(this.columnObject ){
+        //     case "cityObject":{
+        //         return this.autoService.getTreatmentData(filter)
+        //     }
+        //     case "examinationObj":{
+        //         return this.autoService.getExaminationData(filter)
+        //     }
+        //     case "patternObj":{
+        //         return this.patternService.getPattern()
+        //     }
+        //     case "opdFeeObj":{
+        //         return this.opdService.getOpdServicebyFilter("serviceName",filter)
+        //     }
+        // }
+
         if (this.columnObject == "cityObject") {
             return this.autoService.getTreatmentData(filter)
         } else if (this.columnObject == "examinationObj") {
@@ -195,6 +213,9 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
         } else if (this.columnObject == "patternObj") {
             // return this.autoService.getTreatmentData(filter)
             return this.patternService.getPattern()
+        }
+        else if (this.columnObject == "opdFeeObj") {
+            return this.opdService.getOpdServicebyFilter("serviceName", filter)
         }
         else {
             return this.autoService.getTreatmentData(filter)

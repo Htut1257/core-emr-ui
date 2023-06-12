@@ -3,13 +3,13 @@ import { Subscription } from 'rxjs'
 import { FormGroup, Validators, FormBuilder, NgForm } from '@angular/forms';
 import { GridApi, GridOptions, ColumnApi } from 'ag-grid-community';
 import { MatDialog } from '@angular/material/dialog';
-import { Doctor, Initial, Speciality, Type } from 'src/app/core/model/doctor.model';
+import { Doctor, DoctorFees, Initial, Speciality, Type } from 'src/app/core/model/doctor.model';
 import { Gender } from 'src/app/core/model/gender.model';
+
 import { DoctorService } from 'src/app/core/services/doctor-service/doctor.service';
 import { GenderService } from 'src/app/core/services/gender-service/gender.service';
 import { InitialService } from 'src/app/core/services/initial-service/initial.service';
 import { SpecialityService } from 'src/app/core/services/speciality-service/speciality.service';
-
 import { CommonServiceService } from 'src/app/core/services/common-service/common-service.service';
 import { ToastService } from 'src/app/core/services/toast-service/toast-service.service';
 
@@ -50,7 +50,9 @@ export class DoctorSetupComponent implements OnInit, OnDestroy {
   dcFeeRow: any
 
   public frameworkComponents
-
+  opdFees: any[] = []
+  otFees: any[] = []
+  dcFees: any[] = []
   //#endregion grid variable
   gender: Gender
   genders: Gender[] = []
@@ -62,7 +64,7 @@ export class DoctorSetupComponent implements OnInit, OnDestroy {
   specials: Speciality[] = []
 
   type: any[] = []
-
+  doctorId: string = ''
   doctor: Doctor
   doctorForm: FormGroup
   @ViewChild("reactiveForm", { static: true }) reactiveForm: NgForm
@@ -81,10 +83,10 @@ export class DoctorSetupComponent implements OnInit, OnDestroy {
     this.commonService.isMobileObj$.subscribe(data => {
       if (data == false) {
         this.doctor = this.doctorService._doctor
-        if (this.doctor) {
+        if (this.doctor != undefined) {
+          this.doctorId = this.doctor.doctorId
           this.initializeFormData(this.doctor)
         }
-
       }
     })
   }
@@ -117,7 +119,7 @@ export class DoctorSetupComponent implements OnInit, OnDestroy {
       speciality: [null],
       initial: [null, Validators.required],
       licenseNo: [''],
-      type: [null],
+      type: [null, Validators.required],
       active: [true],
     })
   }
@@ -131,7 +133,6 @@ export class DoctorSetupComponent implements OnInit, OnDestroy {
       speciality: '',
       initial: data.initialID,
       licenseNo: data.licenseNo,
-      //type: 
       active: data.active
     })
   }
@@ -235,24 +236,48 @@ export class DoctorSetupComponent implements OnInit, OnDestroy {
           'propertyRendered': 'serviceName',
           'returnObject': true,
           'columnDefs': [
-            { headerName: 'Code', field: 'serviceId' },
-            { headerName: 'Description', field: 'serviceName' },
-            { headerName: 'Fee', field: 'fees' },
+            {
+              headerName: 'Code',
+              field: 'serviceId',
+              width: 40
+            },
+            {
+              headerName: 'Description',
+              field: 'serviceName',
+              width: 100
+            },
+            {
+              headerName: 'Fee',
+              field: 'fees',
+              width: 40
+            },
           ]
         },
-        cellClass: "actions-button-cell"
+        valueFormatter: params => {
+          if (params.value) {
+            return params.value.serviceName;
+          }
+          return "";
+        },
+        // cellClass: "actions-button-cell"
       },
       {
         headerName: 'Opd Fee',
-        field: 'fee',
+        field: 'opdFeeObj.fees',
+        type: 'rightAligned',
         width: 100,
         editable: true,
       }
     ]
     this.opdFeeRow = [
-      { opdFeeObj: { serviceId: '', servieName: '', fees: '' }, fee: '' },
-      { opdFeeObj: { serviceId: '', servieName: '', fees: '' }, fee: '' },
-      { opdFeeObj: { serviceId: '', servieName: '', fees: '' }, fee: '' },
+      {
+        opdFeeObj: {
+          serviceId: '',
+          serviceName: '',
+          fees: ''
+        },
+        fee: ''
+      },
     ]
   }
 
@@ -298,8 +323,78 @@ export class DoctorSetupComponent implements OnInit, OnDestroy {
     ]
   }
 
-  onClick(event) {
+  emptyOpd() {
+    return {
+      opdFeeObj: {
+        serviceId: '',
+        serviceName: '',
+        fees: 0
+      },
+      fee: 0
+    }
+  }
 
+  cellEditingStopped(event) {
+    let columnField = event.colDef.field
+    let rowData = event.data
+    let row = event.rowIndex
+    var firstEditCol = event.columnApi.getAllDisplayedColumns()[0];
+    if (this.opdFeeApi.getFocusedCell()) {
+      this.opdCellEvent(row, firstEditCol, columnField, this.opdFeeApi, rowData, this.opdFees)
+    }
+
+  }
+  //cell Editing event for OpdTable
+  opdCellEvent(rowIndex: any, firstColumn: any, columnField: string, gridApi: GridApi, rowData: Object, lstRow: any[]) {
+    let data: any = rowData
+    if (columnField == "opdFeeObj") {
+      data.fee = data.opdFeeObj.fees
+      this.addNewRowtoTable(rowIndex, firstColumn, gridApi, rowData, lstRow, this.emptyOpd())
+      this.focusTableCell(rowIndex + 1, firstColumn, gridApi)
+    }
+    if (columnField == "opdFeeObj.fees") {
+      console.log(data)
+    }
+  }
+  //cell Editing event for Ot Table
+  otCellEvent(rowIndex: any, firstColumn: any, columnField: string, gridApi: GridApi, rowData: Object, lstRow: any[]) {
+    let data: any = rowData
+  }
+  //cell Editing event for Dc Table
+  dcCellEvent(rowIndex: any, firstColumn: any, columnField: string, gridApi: GridApi, rowData: Object, lstRow: any[]) {
+    let data: any = rowData
+  }
+
+  //add new row to table
+  addNewRowtoTable(rowIndex: any, firstColumn: any, gridApi: GridApi, rowData: Object, lstRow: any[], rowObj: Object) {
+    let currentRow = lstRow[rowIndex]
+    if (currentRow != undefined) {
+      currentRow = rowData
+    }
+    let totalRow = gridApi.getDisplayedRowCount() - 1
+    if (totalRow == rowIndex) {
+      let curentData = rowData
+      lstRow.push(curentData)
+      gridApi.applyTransaction({
+        add: [rowObj]
+      })
+    }
+  }
+
+  //set Data to Table
+  setRowDatatoTable(rowIndex: any, tableRow: any, rowData: Object, gridApi: GridApi, gridOption: GridOptions, rowObj: Object) {
+    tableRow[rowIndex] = rowData;
+    gridOption.api.setRowData(tableRow);
+    gridApi.applyTransaction({
+      add: [rowObj]
+    })
+  }
+
+  //focusing table cell
+  focusTableCell(rowIndex: any, column: any, gridApi: GridApi) {
+    gridApi.ensureIndexVisible(0)
+    gridApi.ensureColumnVisible(column);
+    gridApi.setFocusedCell(rowIndex, column);
   }
 
   openInitial(event) {
@@ -338,7 +433,45 @@ export class DoctorSetupComponent implements OnInit, OnDestroy {
     })
   }
 
+
+  saveOpdFee(): DoctorFees[] {
+    let opdDocFee = []
+    for (let i = 0; i < this.opdFees.length; i++) {
+      let item = this.opdFees[i].opdFeeObj
+      console.log(item)
+      var someValue = {
+        mapId: '',
+        drId: '047',
+        serviceId: item.serviceId,
+        serviceName: item.serviceName,
+        fees: item.fees,
+        uniqueId: i + 1,
+      }
+      opdDocFee.push(someValue)
+    }
+    return opdDocFee;
+  }
+
   onSaveDoctor(data: any) {
+    this.doctor = data
+    this.doctor.doctorId = this.doctorId
+    this.doctor.genderId = data.gender.genderId
+    this.doctor.speciality = data.speciality.specId
+    this.doctor.initialID = data.initial.initialId
+    this.doctor.nirc = data.nirc
+    this.doctor.licenseNo = data.licenseNo
+    this.doctor.drType = data.type
+    this.doctor.listOPD = this.saveOpdFee()
+    console.log(this.doctor)
+    this.doctorService.saveDoctor(this.doctor).subscribe({
+      next: doctor => {
+        console.log(doctor)
+      },
+      error: err => {
+        console.trace(err)
+      }
+    })
+
 
   }
 

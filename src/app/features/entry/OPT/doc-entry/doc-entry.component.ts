@@ -103,7 +103,7 @@ export class DocEntryComponent implements OnInit {
   regNo: string
   patientName: string
   cfFee: number
-  foc: boolean
+  foc: boolean=false
   pharmacyDays: number = 1
   reVisitDate: string
   doctorNote: string
@@ -385,7 +385,6 @@ export class DocEntryComponent implements OnInit {
             { headerName: 'Type', field: 'itemType' }
           ]
         },
-        cellEditorPopup: true,
         valueFormatter: params => {
           if (params.value) {
             return params.value.itemName;
@@ -471,7 +470,7 @@ export class DocEntryComponent implements OnInit {
     }
   }
 
-  emptydrTreat(): DrTreatment {
+  emptydrTreat(): any {
     return {
       cityObject: {
         itemOption: '',

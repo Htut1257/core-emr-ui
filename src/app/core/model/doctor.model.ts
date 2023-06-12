@@ -1,15 +1,18 @@
 export interface Doctor {
-    doctorId: String
-    doctorName: String
-    genderId: String
-    nirc: String
+    doctorId: string
+    doctorName: string
+    genderId: string
+    nirc?: string
     speciality: number
     initialID: number
-    licenseNo: String
+    licenseNo: string
     active: boolean
-    phoneNo: String
-    updateDate: Date
-    drType: String
+    phoneNo?: string
+    updateDate?: Date
+    drType: string
+    listOPD?: DoctorFees[]
+    listOT?: DoctorFees[]
+    listDC?: DoctorFees[]
 
 }
 
@@ -45,4 +48,17 @@ export interface DoctorFees {
     serviceName: string
     fees: number
     uniqueId: number
+}
+
+
+export function ServiceFee(obj: any): any {
+    const object = {
+        mapId:'',
+        drId: '',
+        serviceId: obj.serviceId,
+        serviceName: obj.serviceName,
+        fees: obj.fees,
+        uniqueId:0,
+    }
+    return object
 }
