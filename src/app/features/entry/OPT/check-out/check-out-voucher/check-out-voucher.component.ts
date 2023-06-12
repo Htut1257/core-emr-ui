@@ -205,6 +205,8 @@ export class CheckOutVoucherComponent implements OnInit {
     if (this.checkService._checkOut != undefined) {
       this.checkOutHis = this.checkService._checkOut
       this.checkOut = this.checkService._checkOut
+      //console.log(this.checkOutHis)
+      console.log(this.checkOut)
       this.initializeFormData(this.checkOut)
       this.renderTreatmentData(this.checkOut.treatments)
     }
@@ -218,7 +220,7 @@ export class CheckOutVoucherComponent implements OnInit {
         patternObj: option.pattern,
         day: option.days,
         qty: option.qty,
-        price: option.remark,
+        price: option.fees,
         foc: option.isFOC,
         discount: 0,
         amount: option.fees * option.qty,
