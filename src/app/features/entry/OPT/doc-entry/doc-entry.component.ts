@@ -198,6 +198,9 @@ export class DocEntryComponent implements OnInit {
       filtered.push(someNewValue);
       return filtered
     }, [])
+    for (let item of this.examinationRow) {
+      this.drExamination.push(item)
+    }
     this.examinationRow.push(this.emptyExamination())
     this.examinationGridOption.api.setRowData(this.examinationRow)
 
@@ -235,7 +238,9 @@ export class DocEntryComponent implements OnInit {
       filtered.push(someValue)
       return filtered
     }, [])
-
+    for (let item of this.treatmentRow) {
+      this.drTreatment.push(item)
+    }
     let treatRow: any = this.emptydrTreat()
     treatRow.day = this.pharmacyDays
     this.treatmentRow.push(treatRow)
@@ -245,6 +250,9 @@ export class DocEntryComponent implements OnInit {
   renderDocNote(data: DrNote[]) {
     this.noteRow = data
     this.noteRow.push(this.emptyNote)
+    for (let item of this.noteRow) {
+      this.drNote.push(item)
+    }
     this.noteGridOption.api.setRowData(this.noteRow)
   }
 
