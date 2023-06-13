@@ -132,7 +132,7 @@
         <div class="col-2">
             <mat-form-field class="col-12">
                 <mat-label>CF Type</mat-label>
-                <mat-select [id]="'cfType'" name="cfType">
+                <mat-select [id]="'cfType'" name="cfType" [(ngModel)]="cfFeeobj" [compareWith]="compareCfType">
                     <mat-option value="0">Select CF fees</mat-option>
                     <mat-option *ngFor="let item of cfFees" [value]="item" (onSelectionChange)="getDoctorFeeData(item)">
                         {{item.serviceName}}

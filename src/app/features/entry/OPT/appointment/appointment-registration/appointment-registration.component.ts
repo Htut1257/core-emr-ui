@@ -92,7 +92,9 @@ export class AppointmentRegistrationComponent implements OnInit {
       bkPhone: [''],
       bkType: [null],
     });
+    console.log(this.bookingTypes[0])
     this.appointForm.get('bkDate').patchValue(this.todayDate)
+    this.appointForm.get('bkType').patchValue(this.bookingTypes[0].description)
   }
 
   getDoctor(name: string) {
@@ -148,6 +150,8 @@ export class AppointmentRegistrationComponent implements OnInit {
   compareGender(b1: Gender, b2: Gender) {
     return b1 && b2 ? b1.genderId === b2.genderId : b1 === b2
   }
+
+
 
   saveAppointment(data: any) {
     let booking = data

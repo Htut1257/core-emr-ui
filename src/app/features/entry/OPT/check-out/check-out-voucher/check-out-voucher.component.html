@@ -1,5 +1,5 @@
 <div class="row form-height">
-    <form class="form" role="form" [formGroup]="checkOutForm" #reactiveForm="ngForm"
+    <form #reactiveForm="ngForm" class="form" role="form" [formGroup]="checkOutForm" 
         (ngSubmit)="saveCheckOut(checkOutForm.value)">
         <div class="col-12 row">
             <mat-form-field class="div-no-margin col-lg-3 col-md-3 col-sm-12 pt-2" appearance="outline">
@@ -107,6 +107,7 @@
             <div class="example-button-row float-right">
                 <button [id]="'btnSave'" mat-raised-button type="submit" color="primary" class="md-small"
                     [disabled]="!checkOutForm.valid">Save</button>
+                    <button mat-raised-button type="button" color="primary" (click)="onClear()">Clear</button>
                 <button mat-raised-button type="button" color="primary">Print</button>
             </div>
 

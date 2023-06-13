@@ -12,8 +12,14 @@ export interface Booking {
     createdBy: string
     actionStatus: string
     bStatus: string
+    bkPatientStatus:string
 }
 
+
+export interface bookingType{
+    id:string
+    description:string
+}
 
 export const bookingType: any = [
     {

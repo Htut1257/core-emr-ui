@@ -101,7 +101,7 @@ export class CheckOutListComponent implements OnInit {
       width: '40%',
       data: { 
         'title': 'Check Out Search',
-        'status': 'Billing'
+        'status': '-'
        }
     })
       .afterClosed()

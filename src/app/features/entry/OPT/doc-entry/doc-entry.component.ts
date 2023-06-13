@@ -29,8 +29,6 @@ import * as moment from 'moment';
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { MAT_DATE_FORMATS, MAT_DATE_LOCALE, DateAdapter } from '@angular/material/core';
 
-
-
 const MY_DATE_FORMAT = {
   parse: {
     dateInput: 'DD/MM/YYYY', // this is how your date will be parsed from Input
@@ -51,7 +49,7 @@ const MY_DATE_FORMAT = {
       { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
       { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMAT }
     ],
-    encapsulation:ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None
 })
 export class DocEntryComponent implements OnInit {
   //#region table grid variables
@@ -103,7 +101,7 @@ export class DocEntryComponent implements OnInit {
   regNo: string
   patientName: string
   cfFee: number
-  foc: boolean=false
+  foc: boolean = false
   pharmacyDays: number = 1
   reVisitDate: string
   doctorNote: string
@@ -125,7 +123,7 @@ export class DocEntryComponent implements OnInit {
       checkboxRenderer: CheckboxRenderer
     };
     this.examObj = {} as DrExamination
-   // this.vitalSign = {} as VitalSign
+    // this.vitalSign = {} as VitalSign
     this.user = this.userService.getUserValue()
     if (this.user) {
       this.doctorId = this.user.doctorId
@@ -159,7 +157,7 @@ export class DocEntryComponent implements OnInit {
       this.booking = serverData
       if (serverData.bstatus == "Doctor Room") {
         if (this.doctorId == serverData.doctorId) {//
-          console.log(this.booking)
+
           this.onInitData(this.booking)
         }
       }
@@ -170,13 +168,14 @@ export class DocEntryComponent implements OnInit {
     this.entryService.getDoctorMedicalByVisitId(visitId).subscribe({
       next: entry => {
         console.log(entry)
-        if (entry!=null) {
+        if (entry != null) {
 
           let data: any = entry
           this.medicalHisId = data.id
           this.cfFee = data.cfFees
           this.pharmacyDays = data.treatments[0].days
           this.reVisitDate = moment(data.reVisitDate, 'YYYY-MM-DD').format('YYYY-MM-DD')
+          this.cfFeeobj = data.cfType
           this.renderExaminationData(data.examinations)
           this.renderTreatmetData(data.treatments)
           this.renderDocNote(data.kvDrNotes)
@@ -227,10 +226,7 @@ export class DocEntryComponent implements OnInit {
           serviceCost: option.serviceCost,
           itemUnit: option.itemUnit,
         },
-        patternObj: {
-          patternCode: option.pattern.patternCode,
-          despEng: option.pattern.despEng
-        },
+        patternObj: option.pattern,
         day: option.days,
         qty: option.qty,
         remark: option.remark,
@@ -259,11 +255,11 @@ export class DocEntryComponent implements OnInit {
   getVitalSign(bookingId: string) {
     this.vitalService.getVitalSignByPatient(bookingId).subscribe({
       next: vitalSign => {
-        console.log(vitalSign)
-        if (vitalSign!=null) {
+
+        if (vitalSign != null) {
           this.vitalSign = vitalSign
-          this.temp = this.vitalSign.temperature?this.vitalSign.bpLower:'0'
-          this.bp = this.vitalSign.bpUpper?this.vitalSign.bpUpper:'0' + "/" + this.vitalSign.bpLower?this.vitalSign.bpLower:'0'
+          this.temp = this.vitalSign.temperature ? this.vitalSign.bpLower : '0'
+          this.bp = this.vitalSign.bpUpper ? this.vitalSign.bpUpper : '0' + "/" + this.vitalSign.bpLower ? this.vitalSign.bpLower : '0'
         }
       },
       error: err => {
@@ -287,6 +283,10 @@ export class DocEntryComponent implements OnInit {
   getDoctorFeeData(fees: OpdCfFee) {
     this.cfFeeobj = fees
     this.cfFee = fees.fees
+  }
+
+  compareCfType(fee1: OpdCfFee, fee2: OpdCfFee) {
+    return fee1 && fee2 ? fee1.serviceId === fee2.serviceId : fee1 === fee2
   }
 
   getVisitDate() {
@@ -340,7 +340,7 @@ export class DocEntryComponent implements OnInit {
     this.treatmentApi = params.api
     this.treatmentColumn = params.columnApi
     this.treatmentApi.sizeColumnsToFit()
-
+    //this.treatmentColumn.autoSizeAllColumns()
   }
 
   //table for note
@@ -711,6 +711,8 @@ export class DocEntryComponent implements OnInit {
     this.reVisitDate = this.todayDate
     for (let item of this.treatmentRow) {
       if (item.cityObject.itemOption == "Pharmacy") {
+        console.log(this.pharmacyDays)
+        console.log(item)
         item.day = this.pharmacyDays
         item.qty = this.pharmacyDays * item.patternObj.factor
       }
@@ -718,10 +720,14 @@ export class DocEntryComponent implements OnInit {
     this.treatmentGridOption.api.setRowData(this.treatmentRow);
     let treatRow: any = this.emptydrTreat()
     treatRow.day = this.pharmacyDays
-    this.treatmentApi.applyTransaction({
-      add: [treatRow]
-    })
+    if (this.drTreatment.length >= this.treatmentRow.length) {
+      this.treatmentApi.applyTransaction({
+        add: [treatRow]
+      })
+    }
+
     this.reVisitDate = moment(this.reVisitDate, "YYYY-MM-DD").add(this.pharmacyDays, 'day').format('YYYY-MM-DD')
+    console.log(this.treatmentRow)
   }
 
   //search the patient of current doctor session 
@@ -732,6 +738,7 @@ export class DocEntryComponent implements OnInit {
       data: { 'data key': 'data value' }
     }).afterClosed().subscribe({
       next: booking => {
+        console.log(booking)
         if (booking) {
           this.booking = booking
           this.onInitData(this.booking)
@@ -809,7 +816,7 @@ export class DocEntryComponent implements OnInit {
       treatments: this.savetoDrTreatment(),
       kvDrNotes: this.drNote
     }
-    console.log(docMedic)
+
     let booking: any = this.booking
     booking.bStatus = booking.bstatus
     this.entryService.saveDoctorMedical(docMedic).subscribe({
@@ -838,6 +845,10 @@ export class DocEntryComponent implements OnInit {
     this.examinationGridOption.api.setRowData(this.examinationRow)
     this.treatmentGridOption.api.setRowData(this.treatmentRow)
     this.noteGridOption.api.setRowData(this.noteRow)
+
+    this.drExamination=[]
+    this.drTreatment=[]
+    this.drNote=[]
 
     this.bookingId = ''
     this.bookingDate = ''

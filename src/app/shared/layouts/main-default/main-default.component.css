@@ -89,3 +89,10 @@ mat-drawer-content {
     text-transform: uppercase;
     line-height: 43px;
 }
+
+.loading-container{
+    top:40px;
+    position:absolute;
+    width: 100%;
+    z-index:99;
+}

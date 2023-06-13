@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
-import { Observable,startWith,map } from 'rxjs'
+import { Observable, startWith, map, filter,switchMap } from 'rxjs'
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -20,7 +20,7 @@ import { FormControl } from '@angular/forms';
 })
 export class NurseEntryComponent implements OnInit {
   doctors: Doctor[] = []
-  filteredDoc: Observable<any[]>;
+  filteredDoc: Observable<Doctor[]>;
   docControl = new FormControl()
   bookings: Booking[]
   todayDate = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD')
@@ -31,7 +31,7 @@ export class NurseEntryComponent implements OnInit {
   constructor(
     private route: Router, private nurseService: NurseService,
     private appointService: AppointmentService, private docService: DoctorService,
-    private serverService:ServerService,
+    private serverService: ServerService,
     public dialog: MatDialog
   ) {
     this.dataSource = new MatTableDataSource<Booking>(this.bookings)
@@ -52,7 +52,9 @@ export class NurseEntryComponent implements OnInit {
     this.getServerSideData();
     this.filteredDoc = this.docControl.valueChanges.pipe(
       startWith(''),
-      map(name => (name ? this._filterDoc(name) : this.doctors.slice()))
+      switchMap(name => {
+        return name ? this._filterDoc(name) : []
+      })
     );
   }
 
@@ -91,14 +93,12 @@ export class NurseEntryComponent implements OnInit {
   }
 
   getDoctor(id: string) {
-    this.docService.getDoctor().subscribe({
-      next: doctors => {
-        this.doctors = doctors;
-      },
-      error: err => {
-        console.trace(err)
-      }
-    })
+   return  this.docService.getDoctor().pipe(
+      filter(data => !!data),
+      map(item => {
+        return item.filter(option => option.doctorName.toLowerCase().includes(id))
+      })
+    )
   }
 
   DocDisplayFn(item: any) {
@@ -106,15 +106,9 @@ export class NurseEntryComponent implements OnInit {
   }
 
   //filter data for autocomplete
-  private _filterDoc(value: any): any {
+  private _filterDoc(value: any): Observable<Doctor[]> {
     let filterValue = value
-    this.getDoctor(value)
-    if (value.doctorName != null) {
-      filterValue = value.doctorName.toLowerCase()
-    } else {
-      filterValue = value.toLowerCase()
-    }
-    return this.doctors.filter(data => data.doctorName.toLowerCase().includes(filterValue));
+    return this.getDoctor(filterValue)
   }
 
   getNurse() {
@@ -139,7 +133,7 @@ export class NurseEntryComponent implements OnInit {
     this.dialog.open(AppointmentSearchDialogComponent, {
       disableClose: true,
       width: '50%',
-      data:{'status':'Doctor Waiting'}
+      data: { 'status': 'Doctor Waiting' }
     })
       .afterClosed()
       .subscribe(result => {
@@ -149,7 +143,7 @@ export class NurseEntryComponent implements OnInit {
       })
   }
 
-  getDoctorData(event:any){
+  getDoctorData(event: any) {
     let doc = event.option.value
     let filter = {
       fromDate: this.todayDate,

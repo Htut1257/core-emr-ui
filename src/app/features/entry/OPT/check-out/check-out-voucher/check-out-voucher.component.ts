@@ -59,7 +59,7 @@ export class CheckOutVoucherComponent implements OnInit {
   //#endregion grid variable
 
   checkOutForm: FormGroup
-  @ViewChild("#reactiveForm", { static: true }) reactiveForm: NgForm
+  @ViewChild('reactiveForm', { static: true }) reactiveForm: NgForm
 
   user: User
   machine: MachineInfo
@@ -214,6 +214,7 @@ export class CheckOutVoucherComponent implements OnInit {
 
   //render data to grid table 
   renderTreatmentData(data: DoctorTreatment[]) {
+    console.log(data)
     this.checkOutRow = data.reduce(function (filtered: any, option: any) {
       var someValue = {
         cityObject: tableItem(option),
@@ -559,16 +560,18 @@ export class CheckOutVoucherComponent implements OnInit {
   //set nummber of days pharmacy Item
   setPharmacyDay(day: number) {
     for (let item of this.checkOutRow) {
-      if (item.cityObject.itemOption == "Pharmacy") {
+      if (item.cityObject.itemOption === "Pharmacy") {
         item.day = day
         item.qty = day * item.patternObj.factor
         item.amount = item.price * item.qty
       }
     }
     this.checkOutGridOption.api.setRowData(this.checkOutRow);
-    this.checkOutApi.applyTransaction({
-      add: [this.emptydrTreat()]
-    })
+    if (this.drTreatment.length >= this.checkOutRow.length) {
+      this.checkOutApi.applyTransaction({
+        add: [this.emptydrTreat()]
+      })
+    }
     this.setTotalAmount(this.checkOutRow)
   }
 
@@ -616,8 +619,6 @@ export class CheckOutVoucherComponent implements OnInit {
       return filtered
     }, [])
   }
-
-
 
   // 
   saveCashierData(data: any) {
@@ -707,12 +708,26 @@ export class CheckOutVoucherComponent implements OnInit {
         this.checkService.saveCheckoutHistory(this.checkOutHis).subscribe(data => {
           console.log("maria completed")
           console.log(data)
+          this.onClear()
         })
+       
       },
       error: err => {
         console.trace(err)
       }
     })
+  }
+
+  onClear() {
+    this.checkOutForm.reset()
+    this.reactiveForm.resetForm()
+    this.checkOutForm.get('payment').patchValue(this.payments[0])
+    this.checkOutForm.get('currency').patchValue(this.currencies[0])
+
+    this.drTreatment = []
+    this.checkOutRow = [this.emptydrTreat()]
+    this.checkOutGridOption.api.setRowData(this.checkOutRow)
+
   }
 
   //limit input to number

@@ -1,5 +1,5 @@
 <div class="row">
-    <form #reactiveForm="ngForm"  class="form" [formGroup]="appointForm" (ngSubmit)="saveAppointment(appointForm.value)"
+    <form #reactiveForm="ngForm" class="form" [formGroup]="appointForm" (ngSubmit)="saveAppointment(appointForm.value)"
         (keydown.enter)="handleEnter($event)">
         <div class="row">
             <div class="col-12">
@@ -67,7 +67,7 @@
             </div>
         </div>
         <div class="example-button-row float-right">
-            <button [id]="'btnSave'" mat-raised-button  type="submit" color="primary"
+            <button [id]="'btnSave'" mat-raised-button type="submit" color="primary"
                 [disabled]="!appointForm.valid">Save</button>
             <button mat-raised-button class="small-btn" type="button" color="primary" (click)="onClear()">Clear</button>
         </div>
