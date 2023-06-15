@@ -1,8 +1,8 @@
 import { Injectable, Inject } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs'; 'rxjs';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-// import { ApiSetting } from 'src/app/api/api-setting';
-import { ApiSetting } from 'src/assets/api/api-setting';
+ import { ApiSetting } from 'src/app/api/api-setting';
+//import { ApiSetting } from 'src/assets/api/api-setting';
 import { AbstractService } from '../abstract-service/abstract.service';
 import { MachineInfo } from '../../model/machine-info.model';
 var uri = `${ApiSetting.EmrEndPoint}`
@@ -35,7 +35,7 @@ export class MachineService extends AbstractService<MachineInfo>{
 
   getMachine(model: MachineInfo) {
     this.baseURL = `${uri}/machine/get-machine`
-    let httpParams = new HttpParams()
+    let httpParams = new HttpParams() 
       .set('machineIp', model.machineIp)
       .set('machineName', model.machineName)
     return this.getById(httpParams)

@@ -1,0 +1,10 @@
+<mat-form-field hideRequiredMarker="hideRequiredMarker">
+    <mat-label>Session</mat-label>
+    <mat-select [formControl]="sessionControl" (selectionChange)="getSelectedSession()" >
+        <mat-option [value]="null">--</mat-option>
+        <mat-option *ngFor="let item of sessions" [value]="item">
+            {{item.sessionName}}
+        </mat-option>
+    </mat-select>
+    <mat-error>Please Select Session</mat-error>
+</mat-form-field>

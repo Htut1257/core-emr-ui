@@ -41,6 +41,10 @@ const routes: Routes = [
   {
     path: 'speciality',
     loadChildren: () => import('./speciality/speciality.module').then(module => module.SpecialityModule)
+  },
+  {
+    path: 'customer',
+    loadChildren: () => import('./customer-group/customer-group.module').then(module => module.CustomerGroupModule)
   }
 ];
 

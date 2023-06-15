@@ -1,11 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 import { FormGroup, FormBuilder, NgForm, Validators, } from '@angular/forms';
 import { User } from 'src/app/core/model/user.model';
 import { MachineInfo } from 'src/app/core/model/machine-info.model';
 import { UserService } from 'src/app/core/services/user-service/user-service.service';
 import { MachineService } from 'src/app/core/services/machine-service/machine.service';
 import { ToastService } from 'src/app/core/services/toast-service/toast-service.service';
+
+import { SessionComponent } from '../session/session.component';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -23,6 +26,7 @@ export class LoginComponent implements OnInit {
     private route: Router,
     private userService: UserService, private machineService: MachineService,
     private toastService: ToastService, private formBuilder: FormBuilder,
+    public dialog: MatDialog,
   ) {
     this.user = {} as User
     this.userService.logOutUser()
@@ -63,21 +67,23 @@ export class LoginComponent implements OnInit {
     this.userService.loginUser(user.userName, user.password).subscribe({
       next: data => {
         this.user = data
+        console.log(this.user)
         if (this.user == null) {
           this.clearForm()
           document.querySelector<HTMLInputElement>(`#name`).focus()
           return
         }
-
+ 
         this.getMachineId(this.machine).subscribe({
           next: machine => {
-           this.userService.setUserValue(this.user)
-           this.machineService.setMachineValue(machine)
+            this.userService.setUserValue(this.user)
+            this.machineService.setMachineValue(machine)
             if (this.user.doctorId) {
               this.route.navigate(['/main/opd/doctor-entry'])
             }
             else {
-              this.route.navigate(['/main'])
+              this.openSession()
+             // this.route.navigate(['/main'])
             }
           },
           error: err => {
@@ -119,6 +125,18 @@ export class LoginComponent implements OnInit {
       return false
     }
     return true
+  }
+
+  openSession() {
+    this.dialog.open(SessionComponent, {
+      disableClose: false,
+      data: {
+        'title': 'Appointment Search',
+        'status': '-'
+      }
+    }).afterClosed().subscribe(data=>{
+
+    })
   }
 
 }

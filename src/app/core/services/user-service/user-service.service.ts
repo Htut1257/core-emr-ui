@@ -6,6 +6,7 @@ import { User } from '../../model/user.model';
 import { AbstractService } from '../abstract-service/abstract.service';
 import { ApiSetting } from 'src/app/api/api-setting';
 
+var api='../../../../assets/api.config.json';
 const userApi = ApiSetting.UserApiEndPoint;
 var uri: any = `${ApiSetting.UserApiEndPoint}`
 @Injectable({
@@ -22,6 +23,7 @@ export class UserService extends AbstractService<User>{
   users$:Observable<User[]>=this.users.asObservable();
 
   constructor(@Inject(HttpClient) http: HttpClient, private route: Router) {
+    console.log(api)
     super(http, uri)
     this.userSubject$ = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('user')))
     this.$user = this.userSubject$

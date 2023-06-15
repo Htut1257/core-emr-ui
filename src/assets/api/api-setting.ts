@@ -1,8 +1,10 @@
 export class ApiSetting {
 
-    
+
     //local DESKTOP-LV3P92S
     //ng build --configuration production --base-href /coreemr/  
+
+
 
     public static get UserApiEndPoint() {
         return 'http://localhost:8079';
@@ -23,8 +25,13 @@ export class ApiSetting {
         return 'http://localhost:8080';
     }
 
-    public static get EmrMongoEndPoint(){
+    public static get EmrMongoEndPoint() {
         return 'http://localhost:8082';
     }
 
+}
+
+
+export const configApi = {
+    emrEndPoint: 'http://localhost:8080'
 }

@@ -26,14 +26,14 @@
                     </div>
                     <button mat-raised-button [id]="'login'" color="primary"
                         class="btn btn-block btn-primary mb-4 btn-login col-12"
-                        [disabled]="!userForm.valid">Login</button>
+                        [disabled]="!userForm.valid||isLoading">Login</button>
                     <div class="form-group text-left mt-2 d-none">
                         <div class="checkbox checkbox-primary d-inline">
                             <input type="checkbox" name="checkbox-fill-1" id="checkbox-fill-a1" checked="">
                             <label for="checkbox-fill-a1" class="cr"> Save credentials</label>
                         </div>
                     </div>
-                    <p class="mb-2 text-muted d-none">Forgot password? <a class="f-w-400">Reset</a></p>
+                    <p class="mb-2 text-muted  ">Forgot password? <a class="f-w-400" (click)="openSession()">Reset</a></p>
                     <p class="mb-0 text-muted d-none">Don’t have an account? <a class="f-w-400">Signup</a></p>
                 </form>
             </mat-card-content>
