@@ -187,6 +187,7 @@ export class AppointmentRegistrationComponent implements OnInit {
     this.appointForm.reset()
     this.reactiveForm.resetForm()
     this.appointForm.get('bkDate').patchValue(this.todayDate)
+    this.appointForm.get('bkType').patchValue(this.bookingTypes[0].description)
 
   }
 

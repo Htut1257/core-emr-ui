@@ -15,6 +15,21 @@ export interface Booking {
     bkPatientStatus:string
 }
 
+export interface DoctorBooking{
+    drId:string
+    drName:string
+    schedule:string
+    cntRegistered:string
+    cntCancel:string
+    cntBooking:string
+    cntConfirm:string
+    cntRegister:string
+    cntVitalSign:string
+    cntDoctorWaiting:string
+    cntDoctorRoom:string
+    cntBilling:string
+    cntFinished:string
+}
 
 export interface bookingType{
     id:string

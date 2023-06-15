@@ -1,10 +1,12 @@
 import { Injectable, Inject } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
-import { Booking } from '../../model/booking.model';
+import { Booking, DoctorBooking } from '../../model/booking.model';
 import { AbstractService } from '../abstract-service/abstract.service';
-// import { ApiSetting } from 'src/app/api/api-setting';
-import { ApiSetting } from 'src/assets/api/api-setting';
+import { ApiConfigService } from '../api-config-service/api-config.service';
+
+import { ApiSetting } from 'src/app/api/api-setting';
+
 var uri: any = `${ApiSetting.EmrEndPoint}`
 
 const httpHeaders = new HttpHeaders({
@@ -18,8 +20,11 @@ const httpHeaders = new HttpHeaders({
 })
 export class AppointmentService extends AbstractService<Booking>{
 
-  constructor(@Inject(HttpClient) http: HttpClient) {
+  constructor(
+    @Inject(HttpClient) http: HttpClient, private apiService: ApiConfigService
+  ) {
     super(http, uri)
+    uri = `${this.apiService.getConfig().EmrEndPoint}`
   }
   _booking: Booking
   _bookings: Booking[] = []
@@ -57,15 +62,23 @@ export class AppointmentService extends AbstractService<Booking>{
     let httpParams = new HttpParams()
       .set("bkId", appoint.bookingId)
       .set("bkStatus", appoint.bStatus)
-      let httpOption = { headers: httpHeaders, params: httpParams }
-    return this.http.post<Booking>(this.baseURL,appoint,httpOption)
+    let httpOption = { headers: httpHeaders, params: httpParams }
+    return this.http.post<Booking>(this.baseURL, appoint, httpOption)
   }
-
 
   deleteAppointment(id: string) {
     this.baseURL = `${uri}/setup/delete-Bonus`
     let httpParams = new HttpParams().set('id', id);
     this.delete(httpParams);
+  }
+
+  getDoctorBookingStatus(drId: string, tranDate: string): Observable<DoctorBooking[]> {
+    let url = `${uri}/patient/getDoctorStatusColumn`
+    let httpParams = new HttpParams()
+      .set("drId", drId)
+      .set("tranDate", tranDate)
+    let httpOption = { headers: httpHeaders, params: httpParams }
+    return this.http.get<DoctorBooking[]>(url, httpOption)
   }
 
 }

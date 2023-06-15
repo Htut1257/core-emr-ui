@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -13,10 +13,15 @@ import { LayoutsModule } from './shared/layouts/layouts.module';
 import { LoginModule } from './features/system/login/login.module';
 import { RegistrationModule } from './features/registration/registration.module';
 import { HttpInterceptorService } from './shared/http-interceptor/http-interceptor.service';
+import { ApiConfigService } from './core/services/api-config-service/api-config.service';
+
+export function initConfig(appConfig: ApiConfigService) {
+  return () => appConfig.loadConfig();
+}
+
 @NgModule({
   declarations: [
-    AppComponent
-
+    AppComponent,
   ],
   imports: [
     BrowserModule,
@@ -24,8 +29,8 @@ import { HttpInterceptorService } from './shared/http-interceptor/http-intercept
     BrowserAnimationsModule,
     HttpClientModule,
     //common modules
-    
-   // AgGridModule.withComponents([AutocompleteCell]),
+
+    // AgGridModule.withComponents([AutocompleteCell]),
     //component modules
     LayoutsModule,
     LoginModule,
@@ -33,6 +38,13 @@ import { HttpInterceptorService } from './shared/http-interceptor/http-intercept
 
   ],
   providers: [
+    ApiConfigService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initConfig,
+      deps: [ApiConfigService],
+      multi: true,
+    },
     { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptorService, multi: true }
   ],
   bootstrap: [AppComponent]

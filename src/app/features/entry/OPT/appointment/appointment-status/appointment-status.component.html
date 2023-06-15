@@ -1,0 +1,58 @@
+<div class=" table-container">
+    <table mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="position">
+            <th mat-header-cell class="td-number" *matHeaderCellDef="">No</th>
+            <td mat-cell class="td-number" *matCellDef="let element;let i=index">{{i+1}}</td>
+        </ng-container>
+        <ng-container matColumnDef="doctor">
+            <th mat-header-cell class="td-text" *matHeaderCellDef="">Doctor</th>
+            <td mat-cell class="td-text" *matCellDef="let element">{{element.drName}}</td>
+        </ng-container>
+        <ng-container matColumnDef="schedule">
+            <th mat-header-cell class="td-text" *matHeaderCellDef="">Schedule</th>
+            <td mat-cell class="td-text" *matCellDef="let element">5:30 pm</td>
+        </ng-container>
+        <ng-container matColumnDef="status1">
+            <th mat-header-cell class="td-number" *matHeaderCellDef="">Total </th>
+            <td mat-cell class="td-number" *matCellDef="let element">{{element.cntRegistered}}</td>
+        </ng-container>
+        <ng-container matColumnDef="status2">
+            <th mat-header-cell class="td-number" *matHeaderCellDef="">Cancel</th>
+            <td mat-cell class="td-number" *matCellDef="let element">{{element.cntCancel}}</td>
+        </ng-container>
+        <ng-container matColumnDef="status3">
+            <th mat-header-cell class="td-number" *matHeaderCellDef="">Booking</th>
+            <td mat-cell class="td-number" *matCellDef="let element">{{element.cntBooking}}</td>
+        </ng-container>
+        <ng-container matColumnDef="status4">
+            <th mat-header-cell class="td-number" *matHeaderCellDef="">Confirm</th>
+            <td mat-cell class="td-number" *matCellDef="let element">{{element.cntConfirm}}</td>
+        </ng-container>
+        <ng-container matColumnDef="status5">
+            <th mat-header-cell class="td-number" *matHeaderCellDef="">Register</th>
+            <td mat-cell class="td-number" *matCellDef="let element">{{element.cntRegister}}</td>
+        </ng-container>
+        <ng-container matColumnDef="status6">
+            <th mat-header-cell class="td-number" *matHeaderCellDef="">Vital Sign</th>
+            <td mat-cell class="td-number" *matCellDef="let element">{{element.cntVitalSign}}</td>
+        </ng-container>
+        <ng-container matColumnDef="status7">
+            <th mat-header-cell class="td-number" *matHeaderCellDef="">Doctor Waiting</th>
+            <td mat-cell class="td-number" *matCellDef="let element">{{element.cntDoctorWaiting}}</td>
+        </ng-container>
+        <ng-container matColumnDef="status8">
+            <th mat-header-cell class="td-number" *matHeaderCellDef="">Doctor Room</th>
+            <td mat-cell class="td-number" *matCellDef="let element">{{element.cntDoctorRoom}}</td>
+        </ng-container>
+        <ng-container matColumnDef="status9">
+            <th mat-header-cell class="td-number" *matHeaderCellDef="">Billing</th>
+            <td mat-cell class="td-number" *matCellDef="let element">{{element.cntBilling}}</td>
+        </ng-container>
+        <ng-container matColumnDef="status10">
+            <th mat-header-cell class="td-number" *matHeaderCellDef="">Finished</th>
+            <td mat-cell class="td-number" *matCellDef="let element">{{element.cntFinished}}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumn;sticky:true"></tr>
+        <tr mat-row *matRowDef="let row;columns:displayedColumn"></tr>
+    </table>
+</div>

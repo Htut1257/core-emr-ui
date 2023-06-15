@@ -32,6 +32,6 @@ export class ApiSetting {
 }
 
 
-export const configApi = {
+export var configApi = {
     emrEndPoint: 'http://localhost:8080'
 }
