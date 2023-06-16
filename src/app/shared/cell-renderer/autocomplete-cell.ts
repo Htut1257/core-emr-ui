@@ -19,7 +19,7 @@ import { OpdService } from 'src/app/core/services/opd-service/opd.service';
 			[(ngModel)]="inputValue"
 			(ngModelChange)="processDataInput($event)"
 			style=" height: 28px; font-weight: 400; font-size: 12px;"
-			[style.width]="params.column.actualWidth + 'px'">
+			[style.width]="params.column.actualWidth + 'px'" autocomplete="off">
 		<ag-grid-angular
 			style="font-weight: 150;" 
 			[style.height]="gridHeight + 'px'"

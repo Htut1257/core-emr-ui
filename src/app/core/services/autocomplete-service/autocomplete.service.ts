@@ -28,7 +28,6 @@ export class AutocompleteService {
   getExaminationData(params: string): Observable<any> {
     return new Observable(observable => {
       let uri = `${ApiSetting.EmrMongoEndPoint}/autoComplete/medTermsAutoComplete`
-      console.log("called")
       let httpParams = new HttpParams()
         .set("medDesc", params)
       let httpOption = { headers: httpHeader, params: httpParams }

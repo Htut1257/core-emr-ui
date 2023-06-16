@@ -63,6 +63,12 @@ export const navItems: any = [
                 children: []
             },
             {
+                displayName: 'Doctor Booking Status',
+                iconName: 'DoctorBooking Status',
+                route: 'main/opd/appointment/appointment-status',
+                children: []
+            },
+            {
                 displayName: 'Nurse Entry',
                 iconName: 'doctorentry',
                 route: 'main/opd/nurse-entry',

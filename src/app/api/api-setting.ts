@@ -20,7 +20,7 @@ export class ApiSetting {
     }
 
     public static get EmrEndPoint() {
-        return 'http://192.168.100.48:8080';
+        return 'http://192.168.100.4:8080';
     }
 
     public static get EmrMongoEndPoint(){

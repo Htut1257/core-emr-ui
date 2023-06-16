@@ -28,6 +28,7 @@ import { AppointmentPatientDialogComponent } from '../appointment/appointment-pa
 import * as moment from 'moment';
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { MAT_DATE_FORMATS, MAT_DATE_LOCALE, DateAdapter } from '@angular/material/core';
+import { AutocompleteCellMultiSelect } from 'src/app/shared/cell-renderer/autocomplete-multiselect-cell';
 
 const MY_DATE_FORMAT = {
   parse: {
@@ -120,6 +121,7 @@ export class DocEntryComponent implements OnInit {
   ) {
     this.frameworkComponents = {
       autoComplete: AutocompleteCell,
+      autoCompletemulti:AutocompleteCellMultiSelect,
       checkboxRenderer: CheckboxRenderer
     };
     this.examObj = {} as DrExamination
@@ -356,7 +358,7 @@ export class DocEntryComponent implements OnInit {
         headerName: "Examination",
         field: "examinationObj",
         editable: true,
-        cellEditor: 'autoComplete',
+        cellEditor: 'autoCompletemulti',
         cellEditorParams: {
           'propertyRendered': 'desc',
           'returnObject': true,
@@ -365,7 +367,9 @@ export class DocEntryComponent implements OnInit {
           ]
         },
         valueFormatter: params => {
-          if (params.value) return params.value.desc;
+          if (params.value) {
+            return params.value.desc;
+          }
           return params.value;
         },
       }
@@ -388,9 +392,9 @@ export class DocEntryComponent implements OnInit {
           'propertyRendered': 'itemName',
           'returnObject': true,
           'columnDefs': [
-            { headerName: 'Name', field: 'itemName' },
-            { headerName: 'Option', field: 'itemOption' },
-            { headerName: 'Type', field: 'itemType' }
+            { headerName: 'Name', field: 'itemName',width:100},
+            { headerName: 'Option', field: 'itemOption',width:50},
+            { headerName: 'Type', field: 'itemType',width:50 }
           ]
         },
         valueFormatter: params => {
@@ -711,8 +715,7 @@ export class DocEntryComponent implements OnInit {
     this.reVisitDate = this.todayDate
     for (let item of this.treatmentRow) {
       if (item.cityObject.itemOption == "Pharmacy") {
-        console.log(this.pharmacyDays)
-        console.log(item)
+
         item.day = this.pharmacyDays
         item.qty = this.pharmacyDays * item.patternObj.factor
       }
@@ -727,7 +730,6 @@ export class DocEntryComponent implements OnInit {
     }
 
     this.reVisitDate = moment(this.reVisitDate, "YYYY-MM-DD").add(this.pharmacyDays, 'day').format('YYYY-MM-DD')
-    console.log(this.treatmentRow)
   }
 
   //search the patient of current doctor session 

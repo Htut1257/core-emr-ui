@@ -11,7 +11,7 @@
                         <mat-form-field appearance="outline">
                             <mat-label>User Name</mat-label>
                             <input [id]="'name'" matInput type="text" name="userName" formControlName="userName"
-                                (keyup.enter)="focusElement('name','password','text')">
+                                (keyup.enter)="focusElement('name','password','text')" autocomplete="off"> 
                             <mat-error *ngIf="!userForm.value.userName">Please Enter User Name</mat-error>
                         </mat-form-field>
                     </div>
@@ -20,7 +20,7 @@
                             <mat-label>Password</mat-label>
                             <input [id]="'password'" matInput type="password" formControlName="password"
                                 (keyup.enter)="focusElement('password','login','text')" onfocus="this.select()"
-                                autocomplete="new-password">
+                                autocomplete="new-password" autocomplete="off">
                             <mat-error *ngIf="!userForm.value.password">Please Enter Password</mat-error>
                         </mat-form-field>
                     </div>

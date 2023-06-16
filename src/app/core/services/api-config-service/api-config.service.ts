@@ -9,14 +9,12 @@ export class ApiConfigService {
   config: any
   loaded = false
   constructor(private http: HttpClient) {
-    this.loadConfig()
-
+    //  this.loadConfig()
   }
 
   loadConfig() {
     this.http.get('assets/appConfig.json').subscribe(data => {
       this.config = data;
-      console.log(data)
       this.loaded = true;
     })
 

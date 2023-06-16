@@ -64,27 +64,30 @@ export class AutocompleteCellMultiSelect implements ICellEditorAngularComp, Afte
     ngAfterViewInit() {
         window.setTimeout(() => {
             if (this.inputValue == this.cellValue) {
-                this.input.nativeElement.select();
+               // this.input.nativeElement.select();
             } else {
                 this.input.nativeElement.focus();
             }
-            if (this.inputValue && !this.useApi) this.updateFilter();
+            if (this.inputValue && !this.useApi) this.updateFilter(); 
         })
     }
 
     // ICellEditorAngularComp functions
     agInit(params: any): void {
         this.params = params;
-        //to get witch field to use
-        console.log(params)
+         //to get witch field to use
+        //console.log(params)
         this.columnObject = params.colDef.field
+      
         if (!params.rowData) {
             this.apiEndpoint = params.apiEndpoint;
             this.useApi = true;
             this.rowData = [{}]
         } else {
             this.rowData = params.rowData;
+          
         }
+        console.log(params.value)
         if (params.gridHeight) this.gridHeight = params.gridHeight;
         if (params.gridWidth) this.gridWidth = params.gridWidth;
         this.columnDefs = params.columnDefs;
@@ -98,7 +101,7 @@ export class AutocompleteCellMultiSelect implements ICellEditorAngularComp, Afte
         this.cellValue = params.value[this.propertyName];
         this.returnObject = params.returnObject;
         if (!params.charPress) {
-            if (this.cellValue) this.inputValue = this.cellValue;
+           // if (this.cellValue) this.inputValue = this.cellValue;
         } else {
             this.inputValue = params.charPress;
         }
@@ -109,16 +112,10 @@ export class AutocompleteCellMultiSelect implements ICellEditorAngularComp, Afte
 
     getValue(): any {
         if (!this.returnObject) return this.selectedObject[this.propertyName];
-        let data: any = [
-            {
-                desc: "testing ",
-                id: "6464907f52eef633b8c45ea3"
-            }, {
-                desc: "testing 1",
-                id: "6464907f52eef633b8c45ea3"
-            }
-        ]
-        return data;
+        this.selectedObject.desc=this.cellValue+" "+this.selectedObject.desc
+
+        console.log(this.selectedObject)
+        return this.selectedObject;
     }
     isPopup(): boolean {
         return true;
@@ -145,8 +142,9 @@ export class AutocompleteCellMultiSelect implements ICellEditorAngularComp, Afte
         if (this.gridApi.getSelectedRows()[0]) {
             this.selectedObject = this.gridApi.getSelectedRows()[0];
             this.isCanceled = false;
+            this.inputValue+=this.selectedObject.desc+","
         }
-        this.params.api.stopEditing();
+       // this.params.api.stopEditing();
     }
 
     @HostListener('keydown', ['$event'])
@@ -161,6 +159,7 @@ export class AutocompleteCellMultiSelect implements ICellEditorAngularComp, Afte
         }
         if (event.key == "Enter" || event.key == "Tab") {
             this.rowConfirmed();
+            console.log(event)
             return false;
         }
         if (event.key == "ArrowUp" || event.key == "ArrowDown") {
@@ -171,12 +170,16 @@ export class AutocompleteCellMultiSelect implements ICellEditorAngularComp, Afte
     }
 
     processDataInput(event) {
-
+        
+        let Arr= event.split(",")
+        let value=Arr[Arr.length-1]
+        console.log(Arr)
+        console.log(value)
         if (this.useApi) {
             this.columnFilter = this.gridApi.getFilterInstance(this.propertyName);
             if (event.length == 0) this.gridApi.setRowData();
             if (event.length >= 1) {
-                this.getApiData(event).subscribe(data => {
+                this.getApiData(value).subscribe(data => {
                     this.rowData = data;
                 });
             };
