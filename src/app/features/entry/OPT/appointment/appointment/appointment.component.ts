@@ -10,7 +10,6 @@ export class AppointmentComponent {
   constructor(private commonService:CommonServiceService){
     this.commonService.isMobile$.subscribe(data=>{
       this.isMobile=data  
-      console.log(data)
     })
   }
 

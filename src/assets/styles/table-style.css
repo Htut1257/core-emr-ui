@@ -1,4 +1,78 @@
+.ag-header-cell {
+    font-size: 16px !important;
+    
+}
+
 .table-container {
+    max-width: 90%;
+    height: 74vh;
+    overflow: auto;
+}
+
+.table-container.large {
+    max-width: 100%;
+}
+
+table {
+    width: 100%;
+    padding: 20px;
+    border: solid 0.1px rgb(209, 203, 203);
+}
+
+th.mat-header-cell.cdk-header-cell {
+    color: #707171;
+    background-color: #F5F7F7;
+    font-size: 16px;
+   
+    padding: 0 5px 0 5px !important;
+}
+
+tr.mat-header-row {
+    height: 35px !important;
+    vertical-align: middle !important;
+}
+
+tr.mat-row {
+    height: 25px !important;
+}
+
+tr.mat-row:nth-child(even) {
+    background-color: rgba(0, 179, 166, 0.04) !important;
+}
+
+tr.mat-footer-row {
+    height: 25px !important;
+}
+
+.mat-cell {
+    font-size: 14px;
+    min-height: 25px;
+    max-height: 30px;
+    border: solid 0.1px rgb(209, 203, 203);
+    padding: 0 5px 0 5px !important;
+}
+
+.td-number {
+    text-align: right !important;
+}
+
+.td-text {
+    text-align: left !important;
+}
+
+.td-object {
+    text-align: center !important;
+}
+
+.position-column {
+    min-width: 10px !important;
+}
+
+.action-column {
+    min-width: 70px !important;
+}
+
+/* .table-container {
     max-width: 100%;
     margin-top: 25px;
     height: 74vh;
@@ -17,7 +91,7 @@ table {
 
 .table-mat {
     width: auto;
-    /* margin: auto; */
+ 
     margin-top: 25px;
     overflow-y: scroll;
 }
@@ -94,13 +168,7 @@ tr.mat-footer-row {
 
 
 
-/* .mat-row:nth-child(even) {
-    background-color: white;
-}
 
-.mat-row:nth-child(odd) {
-    background-color: #e6ebe6;
-} */
 
 tr.mat-row:hover {
     cursor: pointer;
@@ -110,16 +178,16 @@ tr.mat-row:hover {
 th.mat-header-cell.cdk-header-cell {
     font-size: 14px !important;
     font-weight: bold !important;
-    /* border: solid 0.1px rgb(209, 203, 203); */
+   
 }
 
 th.table-row {
-    /* background-color: aqua; */
+
     height: 30px !important;
 }
 
 .mat-header-row {
-    /* background-color: aqua; */
+
     height: 30px !important;
 }
 
@@ -133,7 +201,7 @@ th.table-row {
     flex: 0 0 10% !important;
     width: 20% !important;
     text-align: left !important;
-}
+} */
 
 /* 
 .mat-button.mat-blue {
@@ -144,3 +212,12 @@ th.table-row {
     background-color: blue;
     color: white;
  } */
+
+
+/* .mat-row:nth-child(even) {
+    background-color: white;
+}
+
+.mat-row:nth-child(odd) {
+    background-color: #e6ebe6;
+} */

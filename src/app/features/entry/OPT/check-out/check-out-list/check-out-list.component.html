@@ -1,8 +1,8 @@
 <div class="row">
-    <div class="col-12 example-button-row">
-        <button mat-flat-button class="float-right" color="primary" (click)="searchBooking()"> Filter</button>
+    <div class="form-group-btn">
+        <button mat-flat-button class="btn-small float-right" color="primary" (click)="searchBooking()"> Filter</button>
     </div>
-    <div class="col-12 div-table tabe table-container">
+    <div class="table-container">
         <table mat-table [dataSource]="dataSource" matSort>
             <ng-container matColumnDef="reg">
                 <th class="td-text" mat-header-cell *matHeaderCellDef mat-sort-header>Reg No </th>

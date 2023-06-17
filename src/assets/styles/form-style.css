@@ -1,4 +1,13 @@
+.div-no-margin.mat-form-field-appearance-outline .mat-form-field-wrapper {
+    margin: auto;
+    padding-bottom: 5px;
+}
 
+
+.div-no-margin.mat-form-field-appearance-outline.search{
+    padding-right: 0%;
+}
+/* 
 mat-form-field.mat-form-field {
     font-size: 11px;
 }
@@ -22,4 +31,4 @@ mat-form-field-outline.mat-form-field-outline {
 
 .no-margin-form mat-form-field.mat-form-field {
     font-size: 11px;
-}
+} */

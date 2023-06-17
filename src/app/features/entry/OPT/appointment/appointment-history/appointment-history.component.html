@@ -1,38 +1,35 @@
 <div class="row">
-    <div class="row col-12">
-        <mat-form-field class="col-12 col-lg-9" apperarance="outline">
-            <mat-label>Search</mat-label>
-            <input matInput type="text" name="fromDate" (keyup)="applyFilter($event)">
-        </mat-form-field>
-        <div class="col-12 col-lg-3 example-button-row">
-            <button mat-raised-button class="small-btn float-right col-2 " color="primary"> Print</button>
-            <button mat-raised-button class="float-right small-btn col-2 " color="primary" (click)="searchBooking()"> Filter</button>
-        </div>
+    <mat-form-field class="div-no-margin col-12 col-lg-9 " appearance="outline">
+        <mat-label>Search</mat-label>
+        <input matInput type="text" name="fromDate" (keyup)="applyFilter($event)">
+    </mat-form-field>
+    <div class="col-12 col-lg-3 form-btn-group ">
+        <button mat-flat-button color="primary" type="button" class="col-12 col-lg-5 btn-small float-right">
+            Print</button>
+        <button mat-flat-button color="primary" type="button" class="col-12 col-lg-5 btn-small  float-right"
+            (click)="searchBooking()">
+            Filter</button>
     </div>
-    <div class=" div-table table-container table">
-        <table mat-table class="table" role="table" [dataSource]="dataSource">
-            <ng-container matColumnDef="no">
-                <th mat-header-cell class="td-number column-no" *matHeaderCellDef>No</th>
-                <td mat-cell class="td-number" *matCellDef="let i=index">{{i+1}}</td>
+    <div class="col-12 table-container">
+        <table mat-table class="table" role="table" [dataSource]="dataSource" matSort>
+            <ng-container matColumnDef="no" class="position-column">
+                <th mat-header-cell class="td-number position-column" *matHeaderCellDef>No</th>
+                <td mat-cell class="td-number position-column" *matCellDef="let i=index">{{i+1}}</td>
             </ng-container>
             <ng-container matColumnDef="date">
                 <th mat-header-cell class="td-text" *matHeaderCellDef>Date</th>
                 <td mat-cell class="td-text" *matCellDef="let element">{{element.bkDate|date:'dd/MM/yyyy '}}</td>
             </ng-container>
-            <!-- <ng-container matColumnDef="visitno">
-                <th mat-header-cell class="td-text  column-no" *matHeaderCellDef="">Visit No</th>
-                <td mat-cell class="td-text" *matCellDef="let element">{{element.bookingId}}</td>
-            </ng-container> -->
             <ng-container matColumnDef="regno">
                 <th mat-header-cell class="td-text" *matHeaderCellDef>Reg No</th>
                 <td mat-cell class="td-text" *matCellDef="let element">{{element.regNo}}</td>
             </ng-container>
             <ng-container matColumnDef="patient">
-                <th mat-header-cell class="td-text" *matHeaderCellDef>Patient</th>
+                <th mat-header-cell class="td-text" *matHeaderCellDef mat-sort-header>Patient</th>
                 <td mat-cell class="td-text" *matCellDef="let element">{{element.patientName}}</td>
             </ng-container>
             <ng-container matColumnDef="doctor">
-                <th mat-header-cell class="td-text column-doc" *matHeaderCellDef>Doctor</th>
+                <th mat-header-cell class="td-text column-doc" *matHeaderCellDef mat-sort-header>Doctor</th>
                 <td mat-cell class="td-text" *matCellDef="let element">{{element.doctorName}}</td>
             </ng-container>
             <ng-container matColumnDef="phone">
@@ -48,14 +45,18 @@
                 <td mat-cell class="td-text" *matCellDef="let element">{{element.bstatus}}</td>
             </ng-container>
             <ng-container matColumnDef="reg">
-                <th mat-header-cell class="td-object" *matHeaderCellDef="">Action</th>
-                <td mat-cell class="td-object" *matCellDef="let element">
-                    <div class="example-button-row">
+                <th mat-header-cell class="td-text action-column" *matHeaderCellDef="">Action</th>
+                <td mat-cell class="td-text action-column" *matCellDef="let element">
+                    <button mat-flat-button color="primary" class=" btn-small ">Register</button>
+
+                    <!-- <button mat-flat-button color="main" *ngIf="!element.regNo"
+                        (click)="registerBooking(element)">Register</button> -->
+                    <!-- <div class="example-button-row">
                         <button mat-flat-button color="main" class="small-btn" *ngIf="!element.regNo"
                             (click)="registerBooking(element)">Register</button>
                         <button mat-flat-button color="main" class="small-btn" *ngIf="element.regNo"
                             (click)="confirmBooking(element)">Confirm</button>
-                    </div>
+                    </div> -->
                 </td>
             </ng-container>
             <tr mat-header-row *matHeaderRowDef="displayedColumn;sticky:true"></tr>

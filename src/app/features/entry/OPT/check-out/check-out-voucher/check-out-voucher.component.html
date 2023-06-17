@@ -1,13 +1,13 @@
 <div class="row form-height">
-    <form #reactiveForm="ngForm" class="form" role="form" [formGroup]="checkOutForm" 
+    <form #reactiveForm="ngForm" class="form" role="form" [formGroup]="checkOutForm"
         (ngSubmit)="saveCheckOut(checkOutForm.value)">
-        <div class="col-12 row">
+        <div class="row">
             <mat-form-field class="div-no-margin col-lg-3 col-md-3 col-sm-12 pt-2" appearance="outline">
                 <mat-label>Visit No</mat-label>
                 <input matInput type="text" name="visitId" formControlName="visitNo">
             </mat-form-field>
-
-            <mat-form-field class="div-no-margin col-lg-3 col-md-3 col-sm-12 pt-2" appearance="outline">
+            <mat-form-field class="div-no-margin col-lg-3 col-md-3 col-sm-12 pt-2" appearance="outline"
+                hideRequiredMarker="hideRequiredMarker">
                 <mat-label>Payment</mat-label>
                 <mat-select [id]="'payment'" name="payment" formControlName="payment">
                     <mat-option value="-">Select Payment</mat-option>
@@ -17,7 +17,8 @@
                 </mat-select>
             </mat-form-field>
 
-            <mat-form-field class="div-no-margin col-lg-3 col-md-3 col-sm-12 pt-2" appearance="outline">
+            <mat-form-field class="div-no-margin col-lg-3 col-md-3 col-sm-12 pt-2" appearance="outline"
+                hideRequiredMarker="hideRequiredMarker">
                 <mat-label>Location</mat-label>
                 <mat-select [id]="'location'" name="location" formControlName="location">
                     <mat-option value="-">Select Location</mat-option>
@@ -48,15 +49,44 @@
                     (keypress)="numberLimit($event)">
             </mat-form-field>
         </div>
-
-        <div class="col-12 mt-2">
+        <div class="col-12 ">
             <ag-grid-angular #checkOutGrid class="ag-theme-balham" style="width:100%;height:315px"
                 [gridOptions]="checkOutGridOption" [frameworkComponents]="frameworkComponents"
                 (gridReady)="onGridReadyCheckOut($event)" (cellValueChanged)="cellValueChanged($event)"
                 (cellEditingStopped)="cellEditingStopped($event)"> </ag-grid-angular>
-
         </div>
-        <div class="col-12  mt-3 ">
+        <div class="row">
+            <mat-form-field class="col-2" appearance="outline">
+                <mat-label>Total Amount</mat-label>
+                <input matInput class="td-number" type="text" formControlName="totalAmount">
+            </mat-form-field>
+            <mat-form-field class="col-2 " appearance="outline" hideRequiredMarker>
+                <mat-label>Currency</mat-label>
+                <mat-select [id]="'currency'" name="currency" formControlName="currency"
+                    [compareWith]="compareCurrency">
+                    <mat-option *ngFor="let item of currencies" [value]="item">
+                        {{item.currencyName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field class="col-2" appearance="outline">
+                <mat-label>Discount Opd</mat-label>
+                <input matInput formControlName="discountOpd">
+            </mat-form-field>
+            <mat-form-field class="col-2" appearance="outline">
+                <mat-label>Discount Pharmacy</mat-label>
+                <input matInput formControlName="discountPharmacy">
+            </mat-form-field>
+            <mat-form-field class="col-2" appearance="outline">
+                <mat-label>Tax</mat-label>
+                <input matInput formControlName="tax">
+            </mat-form-field>
+            <mat-form-field class="col-2" appearance="outline">
+                <mat-label>Vou Total</mat-label>
+                <input matInput formControlName="vouTotal">
+            </mat-form-field>
+        </div>
+        <!-- <div class="col-12  mt-3 ">
 
             <div class="col-2 float-right">
                 <mat-form-field class="col-10 " appearance="outline">
@@ -65,7 +95,7 @@
                 </mat-form-field>
             </div>
             <div class="col-2 float-right">
-                <mat-form-field class="col-10 " appearance="outline">
+                <mat-form-field class="col-10 " appearance="outline" hideRequiredMarker>
                     <mat-label>Currency</mat-label>
                     <mat-select [id]="'currency'" name="currency" formControlName="currency"
                         [compareWith]="compareCurrency">
@@ -102,13 +132,15 @@
                     <input matInput formControlName="vouTotal">
                 </mat-form-field>
             </div>
-        </div>
+        </div> -->
         <div>
-            <div class="example-button-row float-right">
-                <button [id]="'btnSave'" mat-raised-button type="submit" color="primary" class="md-small"
+            <div class="from-group-btn">
+                <button mat-flat-button type="button" color="primary" class="btn-small float-right"
+                    (click)="onClear()">Clear</button>
+                <button mat-flat-button type="button" color="primary" class="btn-small float-right">Print</button>
+                <button [id]="'btnSave'" mat-flat-button type="submit" color="primary" class="btn-small float-right"
                     [disabled]="!checkOutForm.valid">Save</button>
-                    <button mat-raised-button type="button" color="primary" (click)="onClear()">Clear</button>
-                <button mat-raised-button type="button" color="primary">Print</button>
+
             </div>
 
         </div>

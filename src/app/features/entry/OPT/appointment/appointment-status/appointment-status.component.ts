@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { DoctorBooking } from 'src/app/core/model/booking.model';
 import { AppointmentService } from 'src/app/core/services/appointment-service/appointment.service';
+import { ServerService } from 'src/app/core/services/server-service/server.service';
 import * as moment from 'moment';
 @Component({
   selector: 'app-appointment-status',
@@ -21,12 +22,23 @@ export class AppointmentStatusComponent implements OnInit {
 
   constructor(
     private appointService: AppointmentService,
+    private serverService: ServerService,
   ) {
 
   }
 
   ngOnInit(): void {
-    this.getDoctorBookingStatus('-', this.todayDate)
+    this.getDoctorBookingStatus('-', "2023-06-16")
+    this.getServerSideData()
+  }
+
+  getServerSideData() {
+    let uri = '/opdBooking/getMessage'
+    this.serverService.getServerSource(uri).subscribe(data => {
+      let serverData = JSON.parse(data.data)
+      console.log(serverData)
+      this.getDoctorBookingStatus('-', "2023-06-16")
+    })
   }
 
   getDoctorBookingStatus(id: string, date: string) {

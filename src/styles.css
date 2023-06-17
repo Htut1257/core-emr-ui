@@ -16,7 +16,6 @@
     border-right: 1px solid #aaa;
 }
 
-
 html,
 body {
     height: 100%;
@@ -46,8 +45,6 @@ body {
     float: right;
 }
 
-
-
 #outer {
     display: flex;
     width: 95px;
@@ -62,11 +59,9 @@ body {
     min-height: 40px;
 }
 
-
 .example-spacer {
     flex: 1 1 auto;
 }
-
 
 .small-btn {
     margin-left: 5%;
@@ -77,6 +72,32 @@ body {
     line-height: 30px;
 }
 
-.title-name{
-    font-size:x-large;
+.title-name {
+    font-size: x-large;
 }
+
+.container-list{
+    flex: 50%;
+  
+}
+
+.container-list.large{
+    flex: 50%;
+}
+
+.container-list.small{
+    flex: 30%;
+}
+
+.container-setup {
+    flex: 50%;
+}
+
+.container-setup.large{
+    flex: 50%;
+}
+
+.container-setup.small{
+    flex: 30%;
+}
+

@@ -1,8 +1,8 @@
 <div class="table table-container">
     <table mat-table [dataSource]="dataSource">
-        <ng-container matColumnDef="position">
-            <th mat-header-cell class="td-number" *matHeaderCellDef>No</th>
-            <td mat-cell class="td-number" *matCellDef="let element;let i=index"> {{i+1}}</td>
+        <ng-container matColumnDef="position" class="position-column">
+            <th mat-header-cell class="td-number position-column" *matHeaderCellDef>No</th>
+            <td mat-cell class="td-number position-column" *matCellDef="let element;let i=index"> {{i+1}}</td>
         </ng-container>
         <ng-container matColumnDef="name">
             <th mat-header-cell class="td-text" *matHeaderCellDef>Name</th>

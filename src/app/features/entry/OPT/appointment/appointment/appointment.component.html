@@ -1,11 +1,12 @@
 <div class="row">
-    <div class="classContainer">
+    <div class="container-list large">
         <app-appointment-history></app-appointment-history>
     </div>
-    <div class="container" *ngIf="!isMobile">
-        <div class="card card-border pt-3 pb-3">
-            <app-appointment-registration></app-appointment-registration>
-        </div>
+    <div class="container-setup small" *ngIf="!isMobile">
+        <!-- <div class="card card-border pt-3 pb-3">
+            
+        </div> -->
+        <app-appointment-registration></app-appointment-registration>
 
     </div>
 </div>

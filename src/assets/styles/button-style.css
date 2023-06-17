@@ -1,4 +1,43 @@
-.mat-button.mat-primary,
+.btn-small {
+  margin-left: 5%;
+  padding: 0 5px 0 5px;
+  width: min-content;
+  min-width: 25px;
+  height: 26px;
+  line-height: 25px !important;
+}
+
+.btn-table.btn-small {
+  margin: 1px 1px !important;
+  padding: 0% !important;
+}
+
+.form-btn-group {
+  display: block;
+}
+
+div.form-btn-group.search {
+  padding-left: 0%;
+}
+
+.form-btn-group {
+  display: block;
+  width: 100%;
+}
+
+.mat-raised-button.mat-primary,
+.mat-flat-button.mat-primary,
+.mat-fab.mat-primary,
+.mat-mini-fab.mat-primary {
+  color: #f0fff3;
+  background-color: #03A9F4;
+}
+
+.mat-flat-button.mat-primary {
+  margin: 2px 2px 2px 0;
+}
+
+/* .mat-button.mat-primary,
 .mat-stroked-button.mat-primary {
   color: #03A9F4;
 }
@@ -42,4 +81,4 @@
   margin: 8px 8px 8px 0;
   height: 25px;
   line-height: 25px;
-}
+} */

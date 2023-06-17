@@ -120,6 +120,7 @@ export class AppointmentRegistrationComponent implements OnInit {
     return this.patientService.getPatientByName(name).pipe(
       filter(data => !!data),
       map(item => {
+        console.log(item)
         return item.filter(option => option.patientName.toLowerCase().includes(name))
       })
     )

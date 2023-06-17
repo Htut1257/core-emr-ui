@@ -1,50 +1,49 @@
 <form #reactiveForm="ngForm" class="form form-height" [formGroup]="vitalForm" (ngSubmit)="onSaveVital(vitalForm.value)">
-    <div class="row col-12">
-        <div class="col-6">
-            <mat-form-field class="col-12" appearance="outline">
-                <mat-label>Booking ID</mat-label>
-                <input matInput name="bookingId" formControlName="bookingId">
-            </mat-form-field>
-        </div>
-        <div class="col-6">
-            <mat-form-field class="col-12" appearance="outline">
-                <mat-label>Register No</mat-label>
-                <input matInput name="regNo" formControlName="regNo">
-            </mat-form-field>
-        </div>
-        <div class="col-12">
-            <mat-form-field class="col-12" appearance="outline">
-                <mat-label>Nurse Remark</mat-label>
-                <textarea matInput name="nurseRemark" formControlName="nurseRemark"></textarea>
-            </mat-form-field>
-        </div>
-        <div class="row col-12">
+    <div class="row">
+
+        <mat-form-field class="div-no-margin col-6" appearance="outline">
+            <mat-label>Booking ID</mat-label>
+            <input matInput name="bookingId" formControlName="bookingId">
+        </mat-form-field>
+
+
+        <mat-form-field class="div-no-margin col-6" appearance="outline">
+            <mat-label>Register No</mat-label>
+            <input matInput name="regNo" formControlName="regNo">
+        </mat-form-field>
+
+        <mat-form-field class="div-no-margin col-12" appearance="outline">
+            <mat-label>Nurse Remark</mat-label>
+            <textarea matInput name="nurseRemark" formControlName="nurseRemark"></textarea>
+        </mat-form-field>
+
+        <div class="row">
             <div class="col-2 group-first-text-field-left">
-                <mat-form-field class="col-12" appearance="outline">
+                <mat-form-field class="div-no-margin col-12" appearance="outline">
                     <mat-label>Temperature</mat-label>
                     <input matInput name="temperature" formControlName="temperature">
                 </mat-form-field>
             </div>
             <div class="col-2 group-text-field-left">
-                <mat-form-field class="col-12" appearance="outline">
+                <mat-form-field class="div-no-margin col-12" appearance="outline">
                     <mat-label>Plus</mat-label>
                     <input matInput name="plus" formControlName="plus">
                 </mat-form-field>
             </div>
             <div class="col-2 group-text-field-left">
-                <mat-form-field class="col-12" appearance="outline">
+                <mat-form-field class="div-no-margin col-12" appearance="outline">
                     <mat-label>Resp</mat-label>
                     <input matInput name="respiratory" formControlName="respiratory">
                 </mat-form-field>
             </div>
             <div class="col-2 group-text-field-left">
-                <mat-form-field class="col-12" appearance="outline">
+                <mat-form-field class="div-no-margin col-12" appearance="outline">
                     <mat-label>Upper Bp</mat-label>
                     <input matInput name="bpUpper" formControlName="bpUpper">
                 </mat-form-field>
             </div>
             <div class="col-2 group-text-field-left">
-                <mat-form-field class="col-12" appearance="outline">
+                <mat-form-field class="div-no-margin col-12" appearance="outline">
                     <mat-label>Lower Bp</mat-label>
                     <input matInput name="bpLower" formControlName="bpLower">
                 </mat-form-field>
@@ -55,27 +54,27 @@
         </div>
         <div class="row col-12">
             <div class="col-2 group-first-text-field-left">
-                <mat-form-field class="col-12" appearance="outline">
+                <mat-form-field class="div-no-margin col-12" appearance="outline">
                     <mat-label> Status</mat-label>
                     <input matInput name="oxygenStatus" formControlName="oxygenStatus">
                 </mat-form-field>
             </div>
             <div class="col-2 group-text-field-left">
-                <mat-form-field class="col-12" appearance="outline">
+                <mat-form-field class="div-no-margin col-12" appearance="outline">
                     <mat-label>Rate</mat-label>
                     <input matInput name="oxygenRate" formControlName="oxygenRate">
                 </mat-form-field>
             </div>
 
             <div class="col-2 group-text-field-left">
-                <mat-form-field class="col-12" appearance="outline">
+                <mat-form-field class="div-no-margin col-12" appearance="outline">
                     <mat-label>Concentration</mat-label>
                     <input matInput name="oxygenConcentration" formControlName="oxygenConcentration">
                 </mat-form-field>
             </div>
 
             <div class="col-2 group-text-field-left">
-                <mat-form-field class="col-12" appearance="outline">
+                <mat-form-field class="div-no-margin col-12" appearance="outline">
                     <mat-label>Method</mat-label>
                     <input matInput name="oxygenMethod" formControlName="oxygenMethod">
                 </mat-form-field>
@@ -86,13 +85,13 @@
         </div>
         <div class="row col-12">
             <div class="col-2 group-first-text-field-left">
-                <mat-form-field class="col-12" appearance="outline">
+                <mat-form-field class="div-no-margin col-12" appearance="outline">
                     <mat-label> Glucometer</mat-label>
                     <input matInput name="glucometer" formControlName="glucometer">
                 </mat-form-field>
             </div>
             <div class="col-2 group-text-field-left">
-                <mat-form-field class="col-12" appearance="outline">
+                <mat-form-field class="div-no-margin col-12" appearance="outline">
                     <mat-label> Unit</mat-label>
                     <input matInput name="glucoUnit" formControlName="glucoUnit">
                 </mat-form-field>
@@ -103,39 +102,40 @@
         </div>
         <div class="row col-12">
             <div class="col-2 group-first-text-field-left">
-                <mat-form-field class="col-12" appearance="outline">
+                <mat-form-field class="div-no-margin col-12" appearance="outline">
                     <mat-label> Weight</mat-label>
                     <input matInput name="weight" formControlName="weight">
                 </mat-form-field>
             </div>
             <div class="col-2 group-text-field-left">
-                <mat-form-field class="col-12" appearance="outline">
+                <mat-form-field class="div-no-margin col-12" appearance="outline">
                     <mat-label>Unit</mat-label>
                     <input matInput name="weightUnit" formControlName="weightUnit">
                 </mat-form-field>
             </div>
             <div class="col-2 group-text-field-left">
-                <mat-form-field class="col-12" appearance="outline">
+                <mat-form-field class="div-no-margin col-12" appearance="outline">
                     <mat-label>Height</mat-label>
                     <input matInput name="height" formControlName="height">
                 </mat-form-field>
             </div>
             <div class="col-2 group-text-field-left">
-                <mat-form-field class="col-12" appearance="outline">
+                <mat-form-field class="div-no-margin col-12" appearance="outline">
                     <mat-label>Unit</mat-label>
                     <input matInput name="heightUnit" formControlName="heightUnit">
                 </mat-form-field>
             </div>
             <div class="col-2 group-text-field-left">
-                <mat-form-field class="col-12" appearance="outline">
+                <mat-form-field class="div-no-margin col-12" appearance="outline">
                     <mat-label>BMI</mat-label>
                     <input matInput name="bmi" formControlName="bmi">
                 </mat-form-field>
             </div>
         </div>
     </div>
-    <div class="example-button-row float-right">
-        <button mat-raised-button type="submit" color="primary">Save</button>
-        <button mat-raised-button type="button" color="primary" (click)="onClear()">Clear</button>
+    <div class="from-group-btn">
+        <button mat-flat-button type="button" class="btn-small float-right" color="primary"
+            (click)="onClear()">Clear</button>
+        <button mat-flat-button type="submit" class="btn-small float-right" color="primary">Save</button>
     </div>
 </form>

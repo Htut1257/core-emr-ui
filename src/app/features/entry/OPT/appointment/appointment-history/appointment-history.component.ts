@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild,ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -13,7 +13,8 @@ import * as moment from 'moment';
 @Component({
   selector: 'app-appointment-history',
   templateUrl: './appointment-history.component.html',
-  styleUrls: ['./appointment-history.component.css']
+  styleUrls: ['./appointment-history.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class AppointmentHistoryComponent implements OnInit {
   bookings: Booking[]
