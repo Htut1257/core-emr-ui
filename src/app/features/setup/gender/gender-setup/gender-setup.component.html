@@ -1,22 +1,23 @@
 <form #reactiveForm="ngForm" class="form" role="form" [formGroup]="genderForm"
     (ngSubmit)="onSaveGender(genderForm.value)" (keydown.enter)="handleEnter($event)">
     <div class="row">
-        <mat-form-field class="col-12" appearance="outline" hideRequiredMarker="hideRequiredMarker">
+        <mat-form-field class="div-no-margin col-12" appearance="outline" hideRequiredMarker="hideRequiredMarker">
             <mat-label for="genderId">Code</mat-label>
             <input [id]="'genderId'" matInput type="text" name="genderId" formControlName="genderId"
             (keyup.enter)="focusElement('genderId','genderName','text')">
         </mat-form-field>
-        <mat-form-field class="col-12" appearance="outline" hideRequiredMarker="hideRequiredMarker">
+        <mat-form-field class="div-no-margin col-12" appearance="outline" hideRequiredMarker="hideRequiredMarker">
             <mat-label for="descrition">Description</mat-label>
             <input [id]="'genderName'" matInput type="text" name="description" formControlName="description"
                 (keyup.enter)="focusElement('genderName','btnSave','text')">
             <mat-error *ngIf="!genderForm.value.description">Please Enter Gender</mat-error>
         </mat-form-field>
     </div>
-    <div class="example-button-row float-right">
-        <button mat-raised-button color="primary" type="button" (click)="onNew()">New</button>
-        <button [id]="'btnSave'" mat-raised-button color="primary" type="submit"
+    <div class="form-group-btn">
+        
+        <button [id]="'btnSave'" mat-flat-button color="primary" type="submit" class="btn-small float-right"
             [disabled]="!genderForm.valid">Save</button>
-        <button mat-raised-button color="primary" type="button" (click)="onClear()">Clear</button>
+        <button mat-flat-button color="primary" type="button" class="btn-small float-right" (click)="onClear()">Clear</button>
+        <button mat-flat-button color="primary" type="button" class="btn-small float-right" (click)="onNew()">New</button>
     </div>
 </form>

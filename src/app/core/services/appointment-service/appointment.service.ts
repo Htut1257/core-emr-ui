@@ -24,7 +24,7 @@ export class AppointmentService extends AbstractService<Booking>{
     @Inject(HttpClient) http: HttpClient, private apiService: ApiConfigService
   ) {
     super(http, uri)
-   // uri = `${this.apiService.getConfig().EmrEndPoint}`
+    uri = `${this.apiService.getConfig().EmrEndPoint}`
   }
   _booking: Booking
   _bookings: Booking[] = []

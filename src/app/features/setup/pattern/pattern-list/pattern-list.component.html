@@ -1,29 +1,27 @@
-<div class="col-12">
-    <div class="table table-container">
-        <table mat-table [dataSource]="dataSource">
-            <ng-container matColumnDef="position">
-                <th mat-header-cell class="td-number column-no" *matHeaderCellDef>No</th>
-                <td mat-cell class="td-number" *matCellDef="let i=index">{{i+1}}</td>
-            </ng-container>
-            <ng-container matColumnDef="code">
-                <th mat-header-cell class="td-text" *matHeaderCellDef>Code</th>
-                <td mat-cell class="td-text" *matCellDef="let element">{{element.patternCode}}</td>
-            </ng-container>
-            <ng-container matColumnDef="despEng">
-                <th mat-header-cell class="td-text" *matHeaderCellDef>Eng</th>
-                <td mat-cell class="td-text" *matCellDef="let element">{{element.despEng}}</td>
-            </ng-container>
-            <ng-container matColumnDef="despMyan">
-                <th mat-header-cell class="td-text" *matHeaderCellDef>Myan</th>
-                <td mat-cell class="td-text" *matCellDef="let element">{{element.despMM}}</td>
-            </ng-container>
-            <ng-container matColumnDef="factor">
-                <th mat-header-cell class="td-number" *matHeaderCellDef>Factor</th>
-                <td mat-cell class="td-number" *matCellDef="let element">{{element.factor}}</td>
-            </ng-container>
-            <tr mat-header-row *matHeaderRowDef="displayedColumn;sticky:true"></tr>
-            <tr mat-row *matRowDef="let row;columns:displayedColumn" (dblclick)="getRowData(row)"></tr>
+<div class="table-container large">
+    <table mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="position">
+            <th mat-header-cell class="td-number column-no" *matHeaderCellDef>No</th>
+            <td mat-cell class="td-number" *matCellDef="let i=index">{{i+1}}</td>
+        </ng-container>
+        <ng-container matColumnDef="code">
+            <th mat-header-cell class="td-text" *matHeaderCellDef>Code</th>
+            <td mat-cell class="td-text" *matCellDef="let element">{{element.patternCode}}</td>
+        </ng-container>
+        <ng-container matColumnDef="despEng">
+            <th mat-header-cell class="td-text" *matHeaderCellDef>Eng</th>
+            <td mat-cell class="td-text" *matCellDef="let element">{{element.despEng}}</td>
+        </ng-container>
+        <ng-container matColumnDef="despMyan">
+            <th mat-header-cell class="td-text" *matHeaderCellDef>Myan</th>
+            <td mat-cell class="td-text" *matCellDef="let element">{{element.despMM}}</td>
+        </ng-container>
+        <ng-container matColumnDef="factor">
+            <th mat-header-cell class="td-number" *matHeaderCellDef>Factor</th>
+            <td mat-cell class="td-number" *matCellDef="let element">{{element.factor}}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumn;sticky:true"></tr>
+        <tr mat-row *matRowDef="let row;columns:displayedColumn" (dblclick)="getRowData(row)"></tr>
 
-        </table>
-    </div>
+    </table>
 </div>

@@ -1,42 +1,32 @@
-<div class="col-12">
-    <form class="form" role="form" #reactiveForm="ngForm" [formGroup]="patternForm"
-        (ngSubmit)="onSavepattern(patternForm.value)"   (keydown.enter)="handleEnter($event)">
-        <div class="row">
-            <div class="col-12 ">
-                <mat-form-field class='col-12 ' appearance="outline">
-                    <mat-label>Code</mat-label>
-                    <input [id]="'patternCode'" matInput type="text" name="patternCode" formControlName="patternCode"
-                    (keyup.enter)="focusElement('patternCode','despEng','text')">
-                    <mat-error *ngIf="!patternForm.value.patternCode">Please Enter Pattern Code</mat-error>
-                </mat-form-field>
-            </div>
-            <div class="col-12 ">
-                <mat-form-field class='col-12 ' appearance="outline">
-                    <mat-label>Description English</mat-label>
-                    <input [id]="'despEng'" matInput type="text" name="despEng" formControlName="despEng"
-                    (keyup.enter)="focusElement('despEng','despMM','text')">
-                    <mat-error *ngIf="!patternForm.value.despEng">Please Enter Pattern Description English</mat-error>
-                </mat-form-field>
-            </div>
-            <div class="col-12 ">
-                <mat-form-field class='col-12 ' appearance="outline">
-                    <mat-label>Description Myanmar</mat-label>
-                    <input [id]="'despMM'" matInput type="text" name="despMM" formControlName="despMM"
-                    (keyup.enter)="focusElement('despMM','factor','text')">
-                </mat-form-field>
-            </div>
-            <div class="col-12 ">
-                <mat-form-field class='col-12 ' appearance="outline">
-                    <mat-label>Factor</mat-label>
-                    <input [id]="'factor'" matInput type="text" name="factor" formControlName="factor"
-                    (keyup.enter)="focusElement('factor','btnSave','text')">
-                    <mat-error *ngIf="!patternForm.value.factor">Please Enter Pattern Factor</mat-error>
-                </mat-form-field>
-            </div>
-        </div>
-        <div class="example-button-row float-right">
-            <button [id]="'btnSave'" mat-flat-button color="primary" type="submit" [disabled]="!patternForm.valid">Save</button>
-            <button mat-flat-button color="secondary" type="button" (click)="onClear()">Clear</button>
-        </div>
-    </form>
-</div>
+<form class="form" role="form" #reactiveForm="ngForm" [formGroup]="patternForm"
+    (ngSubmit)="onSavepattern(patternForm.value)" (keydown.enter)="handleEnter($event)">
+    <div class="row">
+        <mat-form-field class='div-no-margin col-12 ' appearance="outline" hideRequiredMarker="hideRequiredMarker">
+            <mat-label>Code</mat-label>
+            <input [id]="'patternCode'" matInput type="text" name="patternCode" formControlName="patternCode"
+                (keyup.enter)="focusElement('patternCode','despEng','text')">
+        </mat-form-field>
+        <mat-form-field class='div-no-margin col-12 ' appearance="outline" hideRequiredMarker="hideRequiredMarker">
+            <mat-label>Description English</mat-label>
+            <input [id]="'despEng'" matInput type="text" name="despEng" formControlName="despEng"
+                (keyup.enter)="focusElement('despEng','despMM','text')">
+        </mat-form-field>
+        <mat-form-field class='div-no-margin col-12 ' appearance="outline">
+            <mat-label>Description Myanmar (optional)</mat-label>
+            <input [id]="'despMM'" matInput type="text" name="despMM" formControlName="despMM"
+                (keyup.enter)="focusElement('despMM','factor','text')">
+        </mat-form-field>
+        <mat-form-field class='div-no-margin col-12 ' appearance="outline" hideRequiredMarker="hideRequiredMarker">
+            <mat-label>Factor</mat-label>
+            <input [id]="'factor'" matInput type="text" name="factor" formControlName="factor"
+                (keyup.enter)="focusElement('factor','btnSave','text')">
+        </mat-form-field>
+    </div>
+    <div class="form-group-btn">
+        <button mat-flat-button color="primary" type="button" class="btn-small float-right"
+            (click)="onClear()">Clear</button>
+        <button [id]="'btnSave'" mat-flat-button color="primary" type="submit" class="btn-small float-right"
+            [disabled]="!patternForm.valid">Save</button>
+
+    </div>
+</form>

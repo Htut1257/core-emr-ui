@@ -1,7 +1,7 @@
 <div class="card card-border col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6">
     <form [formGroup]="registrationForm" class="form" role="form" #reactiveForm="ngForm"
         (ngSubmit)="saveRegis(registrationForm.value)" (keydown.enter)="handleEnter($event)">
-        <div class="row col-12">
+        <div class="row">
             <mat-form-field class="div-no-margin col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4" appearance="outline">
                 <mat-label>Registration-No</mat-label>
                 <input [id]="'regNo'" matInput type="text" name="regNo" formControlName="regNo"

@@ -1,38 +1,41 @@
-<div class="auth-wrapper">
+<!-- <div class="auth-wrapper">
     <div class="auth-content">
         <mat-card class="row">
             <mat-card-title>
                 <h4 class="mb-3 mt-3 f-w-400">User List</h4>
             </mat-card-title>
             <mat-card-content class="col-md-12">
-                <div class="classContainer">
-                    <!-- <ag-grid-angular style="width: 100%;height:500px;" class="ag-theme-alpine" [pagination]="false"
-                        [defaultColDef]="defaultColDef" [columnDefs]="columnDefs" [rowData]="rowData" [rowHeight]="30"
-                        (gridReady)="onGridReady($event)" (rowClicked)="onRowClicked($event)" (rowDoubleClicked)="onRowdblClicked($event)">
-                    </ag-grid-angular> -->
-                    <div class="table tableContainer">
-                        <table mat-table [dataSource]="dataSource">
-                            <ng-component matColumnDef="position">
-                                <th mat-header-cell class="td-number" *matHeaderCellDef>No</th>
-                                <td mat-cell class="td-number" *matCellDef="let element;let i=index">{{i+1}}</td>
-                            </ng-component>
-                            <ng-component matColumnDef="name">
-                                <th mat-header-cell class="td-text" *matHeaderCellDef>Name</th>
-                                <td mat-cell class="td-text" *matCellDef="let element">{{element.userName}}</td>
-                            </ng-component>
-                            <ng-component matColumnDef="short">
-                                <th mat-header-cell class="td-text" *matHeaderCellDef>Short Name</th>
-                                <td mat-cell class="td-text" *matCellDef="let element">{{element.userShortName}}</td>
-                            </ng-component>
-                            <tr mat-header-row *matHeaderRowDef="displayedColumn;sticky:true"></tr>
-                            <tr mat-row *matRowDef="let row;columns:displayedColumn" (dblclick)="onRowdblClicked(row)"></tr>
-                        </table>
-                    </div>
-                </div>
-                <div *ngIf="!isMobile" class="container">
-                    <app-user-setup ></app-user-setup>
-                </div>
+            
             </mat-card-content>
         </mat-card>
+    </div>
+</div> -->
+<div class="row">
+    <div class="container-list">
+        <!-- <ag-grid-angular style="width: 100%;height:500px;" class="ag-theme-alpine" [pagination]="false"
+            [defaultColDef]="defaultColDef" [columnDefs]="columnDefs" [rowData]="rowData" [rowHeight]="30"
+            (gridReady)="onGridReady($event)" (rowClicked)="onRowClicked($event)" (rowDoubleClicked)="onRowdblClicked($event)">
+        </ag-grid-angular> -->
+        <div class="table-container  large">
+            <table mat-table [dataSource]="dataSource">
+                <ng-component matColumnDef="position">
+                    <th mat-header-cell class="td-number" *matHeaderCellDef>No</th>
+                    <td mat-cell class="td-number" *matCellDef="let element;let i=index">{{i+1}}</td>
+                </ng-component>
+                <ng-component matColumnDef="name">
+                    <th mat-header-cell class="td-text" *matHeaderCellDef>Name</th>
+                    <td mat-cell class="td-text" *matCellDef="let element">{{element.userName}}</td>
+                </ng-component>
+                <ng-component matColumnDef="short">
+                    <th mat-header-cell class="td-text" *matHeaderCellDef>Short Name</th>
+                    <td mat-cell class="td-text" *matCellDef="let element">{{element.userShortName}}</td>
+                </ng-component>
+                <tr mat-header-row *matHeaderRowDef="displayedColumn;sticky:true"></tr>
+                <tr mat-row *matRowDef="let row;columns:displayedColumn" (dblclick)="onRowdblClicked(row)"></tr>
+            </table>
+        </div>
+    </div>
+    <div *ngIf="!isMobile" class="container-setup">
+        <app-user-setup></app-user-setup>
     </div>
 </div>

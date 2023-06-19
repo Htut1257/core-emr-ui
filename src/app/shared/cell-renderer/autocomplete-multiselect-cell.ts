@@ -16,7 +16,7 @@ import { PatternService } from 'src/app/core/services/pattern-service/pattern.se
 			[(ngModel)]="inputValue"
 			(ngModelChange)="processDataInput($event)"
 			style=" height: 28px; font-weight: 400; font-size: 12px;"
-			[style.width]="params.column.actualWidth + 'px'">
+			[style.width]="params.column.actualWidth + 'px'" autocomplete="off">
 		<ag-grid-angular
 			style="font-weight: 150;" 
 			[style.height]="gridHeight + 'px'"

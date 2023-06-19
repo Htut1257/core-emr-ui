@@ -1,17 +1,18 @@
 <form #reactiveForm="ngForm" class="form" role="form" [formGroup]="initialForm" (ngSubmit)="onSave(initialForm.value)">
     <div class="row">
-        <mat-form-field class="col-12" appearance="outline" hideRequiredMarker="hideRequiredmarker">
+        <mat-form-field class="div-no-margin col-12" appearance="outline" hideRequiredMarker="hideRequiredmarker">
             <mat-label>Code</mat-label>
             <input [id]="'code'" matInput  name="initialId" formControlName="initialId">
         </mat-form-field>
-        <mat-form-field class="col-12" appearance="outline" hideRequiredMarker="hideRequiredmarker">
+        <mat-form-field class="div-no-margin col-12" appearance="outline" hideRequiredMarker="hideRequiredmarker">
             <mat-label>Description</mat-label>
             <input [id]="'desc'" matInput  name="initialName" formControlName="initialName">
         </mat-form-field>
     </div>
-    <div class="example-button-row float-right">
-        <button mat-raised-button color="primary" type="button" (click)="onNew()">New</button>
-        <button mat-raised-button color="primary" type="submit">Save</button>
-        <button mat-raised-button color="primary" type="button" (click)="onClear()">Clear</button>
+    <div class="form-group-btn">
+        <button mat-flat-button color="primary" type="button" class="btn-small float-right" (click)="onClear()">Clear</button>
+        <button mat-flat-button color="primary" type="button" class="btn-small float-right" (click)="onNew()">New</button>
+        <button mat-flat-button color="primary" type="submit" class="btn-small float-right">Save</button>
+
     </div>
 </form>

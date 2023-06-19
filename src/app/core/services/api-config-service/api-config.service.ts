@@ -15,7 +15,6 @@ export class ApiConfigService {
   loadConfig() {
     this.http.get('assets/appConfig.json').subscribe(data => {
       this.config = data;
-      console.log(data)
       this.loaded = true;
     })
 
