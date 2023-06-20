@@ -1,0 +1,63 @@
+<div class="row">
+    <div class="container-list small">
+        <app-doctor-list></app-doctor-list>
+    </div>
+    <div class="container-setup large">
+        <form #reactiveForm="ngForm" class="form mb-2" role="form" [formGroup]="schForm"
+            (ngSubmit)="onSaveSchedule(this.schForm.value)" (keydown.enter)="handleEnter($event)">
+            <div class="row">
+                <mat-form-field class="div-no-margin col-12 col-lg-6" appearance="outline"
+                    hideRequiredMarker="hideRequiredMarker">
+                    <mat-label>Day</mat-label>
+                    <mat-select [id]="'day'" formControlName="day"
+                        (keyup.enter)="focusElement('day','fromTime','option')">
+                        <mat-option *ngFor="let item of weekDay" [value]="item">
+                            {{item.dayName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field class="div-no-margin col-12 col-lg-6" appearance="outline"
+                    hideRequiredMarker="hideRequiredMarker">
+                    <mat-label>Doctor</mat-label>
+                    <input matInput type="text" name="fromTime" formControlName="doctor">
+                </mat-form-field>
+                <mat-form-field class="div-no-margin col-12 col-lg-6" appearance="outline"
+                    hideRequiredMarker="hideRequiredMarker">
+                    <mat-label>From</mat-label>
+                    <input [id]="'fromTime'" matInput type="time" name="fromTime" formControlName="fromTime"
+                        (keyup.enter)="focusElement('fromTime','toTime','text')">
+                </mat-form-field>
+                <mat-form-field class="div-no-margin col-12 col-lg-6" appearance="outline"
+                    hideRequiredMarker="hideRequiredMarker">
+                    <mat-label>To</mat-label>
+                    <input [id]="'toTime'" matInput type="time" name="toTime" formControlName="toTime"
+                        (keyup.enter)="focusElement('toTime','btnSave','text')">
+                </mat-form-field>
+                <mat-form-field class="div-no-margin col-12 col-lg-6" appearance="outline"
+                    hideRequiredMarker="hideRequiredMarker">
+                    <mat-label>Limit</mat-label>
+                    <input matInput type="text" name="fromTime" formControlName="limitCount">
+                </mat-form-field>
+                <div class="col-12 col-lg-6 form-group-btn ">
+                    <mat-checkbox color="primary" formControlName="status">Active</mat-checkbox>
+                    <button [id]="'btnSave'" class="btn-small float-right" mat-flat-button color="primary"
+                        type="submit">Add</button>
+                </div>
+            </div>
+
+        </form>
+        <div class="row ">
+            <ag-grid-angular #schTemplateGrid class="ag-theme-balham mb-1" style="width:100%;height:30vh"
+                [gridOptions]="schGridOption" [frameworkComponents]="frameworkComponents"
+                (gridReady)="onGridReadySchedule($event)">
+            </ag-grid-angular>
+            <div class="form-group-btn ">
+                <button class="btn-small float-right" mat-flat-button color="primary" type="button">Generate</button>
+            </div>
+            <ag-grid-angular #schGrid class="ag-theme-balham mb-1" style="width:100%;height:30vh"
+                [gridOptions]="docSchGridOption" [frameworkComponents]="frameworkComponents"
+                (gridReady)="onGridReadyDoctorSchedule($event)">
+            </ag-grid-angular>
+        </div>
+    </div>
+</div>

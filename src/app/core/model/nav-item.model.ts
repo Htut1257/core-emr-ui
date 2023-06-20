@@ -53,7 +53,7 @@ export const navItems: any = [
                         route: 'main/opd/x-ray',
                         children: []
                     },
-                 
+
                 ]
             },
             {
@@ -63,7 +63,7 @@ export const navItems: any = [
                 children: []
             },
             {
-                displayName: 'Doctor Booking Status', 
+                displayName: 'Doctor Booking Status',
                 iconName: 'DoctorBooking Status',
                 route: 'main/opd/appointment/appointment-status',
                 children: []
@@ -80,7 +80,7 @@ export const navItems: any = [
         displayName: "Setup",
         iconName: "",
         route: "setup",
-        children:[
+        children: [
             {
                 displayName: 'Doctor Setup',
                 iconName: 'doctor-setup',
@@ -99,6 +99,12 @@ export const navItems: any = [
                 route: 'setup/pattern',
                 children: []
             },
+            {
+                displayName: 'Schedule Setup',
+                iconName: 'schedule-setup',
+                route: 'setup/schedule/doctor-schedule',
+                children: []
+            },
 
         ]
     },
@@ -106,7 +112,7 @@ export const navItems: any = [
         displayName: "System",
         iconName: "",
         route: "system",
-        children:[
+        children: [
             {
                 displayName: 'User',
                 iconName: 'user',
@@ -127,5 +133,5 @@ export const navItems: any = [
             },
         ]
     },
-    
+
 ]

@@ -28,10 +28,12 @@ export class ScheduleService {
     uri = `${this.apiService.getConfig().EmrEndPoint}`
   }
 
-  getDoctorSchedule(): Observable<DoctorSchedule[]> {
+  getDoctorSchedule(doctorId: string): Observable<DoctorSchedule[]> {
     return new Observable(observable => {
       let url = `${uri}/doctor/getDRScheduleTemplate`
-      let httpOption = { headers: httpHeaders }
+      let httpParams = new HttpParams()
+        .set("drId", doctorId)
+      let httpOption = { headers: httpHeaders, params: httpParams }
       return this.http.get<DoctorSchedule[]>(url, httpOption).subscribe(schedules => {
         this._docSchedules = schedules
         this.docScheduleSubject.next(schedules)

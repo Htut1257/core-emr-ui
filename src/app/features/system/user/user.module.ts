@@ -7,6 +7,7 @@ import { UserSetupComponent } from './user-setup/user-setup.component';
 import { UserContainerComponent } from './user-container/user-container.component';
 import { AutocompleteCell } from 'src/app/shared/cell-renderer/autocomplete-cell';
 import { AutocompleteCellMultiSelect } from 'src/app/shared/cell-renderer/autocomplete-multiselect-cell';
+import { CheckboxRenderer } from 'src/app/shared/cell-renderer/checkbox-cell';
 const components = [
   UserSetupComponent,
   UserListComponent
@@ -17,7 +18,7 @@ const components = [
     UserContainerComponent,
     AutocompleteCell,
     AutocompleteCellMultiSelect,
-
+    CheckboxRenderer
   ],
   imports: [
     CommonModule,

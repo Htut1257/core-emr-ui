@@ -45,6 +45,10 @@ const routes: Routes = [
   {
     path: 'customer',
     loadChildren: () => import('./customer-group/customer-group.module').then(module => module.CustomerGroupModule)
+  },
+  {
+    path: 'schedule',
+    loadChildren: () => import('./schedule/doctor-schedule/doctor-schedule.module').then(module => module.DoctorScheduleModule)
   }
 ];
 
