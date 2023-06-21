@@ -106,8 +106,8 @@ export class DoctorScheduleSetupComponent implements OnInit, OnDestroy {
     this.scheduleService.getDoctorSchedule(docId).pipe(
       map(item => {
         return item.filter((data: any) => {
-          data.fromTimeString = moment(data.fromTime).format('hh:mm A')
-          data.toTimeString = moment(data.toTime).format('hh:mm A')
+          data.fromTimeString = moment(this.todayDate + " " + data.fromTime).format('hh:mm A')
+          data.toTimeString = moment(this.todayDate + " " + data.toTime).format('hh:mm A')
           return data;
         })
       })
@@ -244,14 +244,13 @@ export class DoctorScheduleSetupComponent implements OnInit, OnDestroy {
     ]
   }
 
-
   onSaveSchedule(data) {
     this.docSch = data
     this.docSch.templateId = this.templateId
     this.docSch.dayId = data.day.dayId
     this.docSch.doctorId = this.doctor.doctorId
-    this.docSch.fromTime = this.todayDate + " " + data.fromTime + ":00"
-    this.docSch.toTime = this.todayDate + " " + data.toTime + ":00"
+    this.docSch.fromTime = data.fromTime + ":00"
+    this.docSch.toTime = data.toTime + ":00"
     this.docSch.actStatus = data.status
     console.log(this.docSch)
 
