@@ -800,6 +800,8 @@ export class DocEntryComponent implements OnInit {
 
   //save all data
   saveMedHistory() {
+    console.log( this.savetoDrExam())
+    return
     let docMedic = {
       id: this.medicalHisId,
       visitId: this.booking.bookingId,
@@ -821,6 +823,7 @@ export class DocEntryComponent implements OnInit {
 
     let booking: any = this.booking
     booking.bStatus = booking.bstatus
+    
     this.entryService.saveDoctorMedical(docMedic).subscribe({
       next: data => {
         this.appointService.updateAppointmentStatus(booking).subscribe({
