@@ -1,6 +1,6 @@
 .btn-small {
   margin-left: 5%;
-  padding: 0 5px 0 5px;
+  padding: 0 3px 0 3px;
   width: min-content;
   min-width: 25px;
   height: 26px;
@@ -20,9 +20,14 @@ div.form-btn-group.search {
   padding-left: 0%;
 }
 
-.form-btn-group {
-  display: block;
+.table-btn-group {
+  display: inline-flex;
   width: 100%;
+}
+
+.btn-table {
+  width: min-content;
+  padding: auto;
 }
 
 .mat-raised-button.mat-primary,

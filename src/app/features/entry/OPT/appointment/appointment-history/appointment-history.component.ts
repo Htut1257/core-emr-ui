@@ -79,8 +79,19 @@ export class AppointmentHistoryComponent implements OnInit {
       console.log(appoint)
       this.bookings = appoint
       this.dataSource = new MatTableDataSource(this.bookings)
+      this.sortBooking()
       this.filterBooking();
     })
+  }
+
+  sortBooking(){
+    this.dataSource.sortingDataAccessor=(item:any,property:any)=>{
+      switch(property){
+        case 'patient': return item.patientName
+        case 'doctor': return item.doctorName
+      }
+    }
+    this.dataSource.sort = this.sort
   }
 
   //filter table data

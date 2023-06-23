@@ -12,6 +12,7 @@ export interface Booking {
     createdBy: string
     actionStatus: string
     bStatus: string
+    statusLevel:number
     bkPatientStatus:string
 }
 

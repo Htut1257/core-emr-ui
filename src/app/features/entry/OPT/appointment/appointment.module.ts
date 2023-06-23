@@ -8,7 +8,7 @@ import { AppointmentComponent } from './appointment/appointment.component';
 import { AppointmentSearchDialogComponent } from './appointment-search-dialog/appointment-search-dialog.component';
 import { AppointmentPatientDialogComponent } from './appointment-patient-dialog/appointment-patient-dialog.component';
 import { AppointmentStatusComponent } from './appointment-status/appointment-status.component';
-
+import { BookingStatus } from 'src/app/shared/pipe/booking-status.pipe';
 const components=[
   AppointmentComponent,
   AppointmentRegistrationComponent,
@@ -20,6 +20,7 @@ const components=[
     components,
     AppointmentSearchDialogComponent,
     AppointmentPatientDialogComponent,
+    BookingStatus,
    
   ],
   imports: [

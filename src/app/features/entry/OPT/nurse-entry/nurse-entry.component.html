@@ -26,30 +26,30 @@
         </div>
     </div>
 
-    <div class="table-container">
-        <table mat-table [dataSource]="dataSource" matSort>
-            <ng-container matColumnDef="position">
-                <th mat-header-cell *matHeaderCellDef> No </th>
-                <td class="td-number" mat-cell *matCellDef="let element; let i = index">{{i+1}}</td>
-            </ng-container>
-            <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-                <td class="td-text" mat-cell *matCellDef="let element">{{element.patientName}}</td>
-            </ng-container>
-            <ng-container matColumnDef="status">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
-                <td mat-cell class="td-object" *matCellDef="let element">
-                    <div class="example-button-row">
-                        <button mat-raised-button color="primary" class="register-btn"
-                            (click)="consultPatient(element)">Consult</button>
-                    </div>
-                </td>
-            </ng-container>
-            <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky:true"></tr>
-            <tr mat-row *matRowDef="let row;columns:displayedColumns"></tr>
-        </table>
-    </div>
-    <div class="">
-        <button mat-raised-button class="col-12 " type="button" color="primary">Break</button>
-    </div>
+</div>
+<div class="table-container large fit">
+    <table mat-table [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="position">
+            <th mat-header-cell *matHeaderCellDef> No </th>
+            <td class="td-number" mat-cell *matCellDef="let element; let i = index">{{i+1}}</td>
+        </ng-container>
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+            <td class="td-text" mat-cell *matCellDef="let element">{{element.patientName}}</td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+            <td mat-cell class="td-object" *matCellDef="let element">
+                <div class="table-btn-group">
+                    <button mat-raised-button color="primary" class="btn-small btn-table"
+                        (click)="consultPatient(element)">Consult</button>
+                </div>
+            </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky:true"></tr>
+        <tr mat-row *matRowDef="let row;columns:displayedColumns"></tr>
+    </table>
+</div>
+<div class="">
+    <button mat-flat-button class="col-12 " type="button" color="primary">Break</button>
 </div>

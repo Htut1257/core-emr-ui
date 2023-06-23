@@ -6,11 +6,11 @@ import { ICellRendererParams } from 'ag-grid-community';
 @Component({
   selector: 'checkbox-renderer',
   template: `
-    <mat-checkbox
-      color="primary"
+      <input 
+      type="checkbox" 
       (click)="checkedHandler($event)"
-      [checked]="params.value">
-</mat-checkbox> 
+      [checked]="params.value"
+    /> 
 `,
 })
 export class CheckboxRenderer implements ICellRendererAngularComp {

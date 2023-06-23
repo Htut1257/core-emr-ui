@@ -3,9 +3,9 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 
 import { ApiSetting } from 'src/app/api/api-setting';
-import { relativeTimeThreshold } from 'moment';
+
 const httpHeader = new HttpHeaders({
-  'Content-Type': 'application/json',
+  'Content-Type': 'text/event-stream',// text/event-stream application/stream+json application/json
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'Content-Type',
   'Access-Control-Allow-Methods': 'GET,POST,OPTIONS,DELETE,PUT',
@@ -45,6 +45,7 @@ export class AutocompleteService {
         .set("desp", params)
       let httpOption = { headers: httpHeader,params:httpParams }
       this.http.get<any>(uri, httpOption).subscribe(data => {
+        console.log(data)
         observable.next(data)
         observable.complete()
       })

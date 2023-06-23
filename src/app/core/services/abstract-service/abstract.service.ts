@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, observable, Observable, of } from 'rxjs';
 const httpHeader = new HttpHeaders({
-  'Content-Type': 'application/json',
+  'Content-Type': 'text/event-stream',// text/event-stream application/stream+json application/json
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'Content-Type',
   'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,ORIGINS',

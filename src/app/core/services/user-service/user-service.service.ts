@@ -6,7 +6,7 @@ import { User } from '../../model/user.model';
 import { AbstractService } from '../abstract-service/abstract.service';
 import { ApiSetting } from 'src/app/api/api-setting';
 
-var api='../../../../assets/api.config.json';
+var api = '../../../../assets/api.config.json';
 const userApi = ApiSetting.UserApiEndPoint;
 var uri: any = `${ApiSetting.UserApiEndPoint}`
 @Injectable({
@@ -19,11 +19,10 @@ export class UserService extends AbstractService<User>{
   $user: Observable<User>
   userSubject$!: BehaviorSubject<User>
 
-  users:BehaviorSubject<User[]>=new BehaviorSubject<User[]>([])
-  users$:Observable<User[]>=this.users.asObservable();
+  users: BehaviorSubject<User[]> = new BehaviorSubject<User[]>([])
+  users$: Observable<User[]> = this.users.asObservable();
 
   constructor(@Inject(HttpClient) http: HttpClient, private route: Router) {
-    console.log(api)
     super(http, uri)
     this.userSubject$ = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('user')))
     this.$user = this.userSubject$
@@ -34,7 +33,7 @@ export class UserService extends AbstractService<User>{
     return this.userSubject$.value
   }
 
-  setUserValue(model:User){
+  setUserValue(model: User) {
     localStorage.setItem('user', JSON.stringify(model))
     this.userSubject$.next(model)
   }
@@ -51,9 +50,9 @@ export class UserService extends AbstractService<User>{
   //get user list
   getUser(): Observable<User[]> {
     this.baseURL = `${uri}/user/get-appuser`;
-    return new Observable(observable=>{
-      this.getAll().subscribe(users=>{
-        this.userList=users
+    return new Observable(observable => {
+      this.getAll().subscribe(users => {
+        this.userList = users
         this.users.next(users)
         observable.next(users)
         observable.complete()

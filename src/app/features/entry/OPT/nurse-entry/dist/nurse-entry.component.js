@@ -43,7 +43,9 @@ var NurseEntryComponent = /** @class */ (function () {
         };
         this.getBooking(filter);
         this.getServerSideData();
-        this.filteredDoc = this.docControl.valueChanges.pipe(rxjs_1.startWith(''), rxjs_1.map(function (name) { return (name ? _this._filterDoc(name) : _this.doctors.slice()); }));
+        this.filteredDoc = this.docControl.valueChanges.pipe(rxjs_1.startWith(''), rxjs_1.switchMap(function (name) {
+            return name ? _this._filterDoc(name) : [];
+        }));
     };
     NurseEntryComponent.prototype.getServerSideData = function () {
         var _this = this;
@@ -53,14 +55,14 @@ var NurseEntryComponent = /** @class */ (function () {
             console.log(serverData);
             if (serverData.actionStatus == "UPDATE") {
                 console.log("update");
-                var filter = {
+                var filter_1 = {
                     fromDate: _this.todayDate,
                     toDate: _this.todayDate,
                     doctorId: '-',
                     regNo: '-',
                     status: 'Doctor Waiting'
                 };
-                _this.getBooking(filter);
+                _this.getBooking(filter_1);
                 var targetIndex = _this.bookings.findIndex(function (data) { return data.bookingId == serverData.bookingId; });
                 _this.bookings[targetIndex] = serverData;
                 _this.appointService.bookings.next(_this.bookings);
@@ -77,15 +79,9 @@ var NurseEntryComponent = /** @class */ (function () {
         });
     };
     NurseEntryComponent.prototype.getDoctor = function (id) {
-        var _this = this;
-        this.docService.getDoctor(id).subscribe({
-            next: function (doctors) {
-                _this.doctors = doctors;
-            },
-            error: function (err) {
-                console.trace(err);
-            }
-        });
+        return this.docService.getDoctor().pipe(rxjs_1.filter(function (data) { return !!data; }), rxjs_1.map(function (item) {
+            return item.filter(function (option) { return option.doctorName.toLowerCase().includes(id); });
+        }));
     };
     NurseEntryComponent.prototype.DocDisplayFn = function (item) {
         return item ? item.doctorName : '';
@@ -93,14 +89,7 @@ var NurseEntryComponent = /** @class */ (function () {
     //filter data for autocomplete
     NurseEntryComponent.prototype._filterDoc = function (value) {
         var filterValue = value;
-        this.getDoctor(value);
-        if (value.doctorName != null) {
-            filterValue = value.doctorName.toLowerCase();
-        }
-        else {
-            filterValue = value.toLowerCase();
-        }
-        return this.doctors.filter(function (data) { return data.doctorName.toLowerCase().includes(filterValue); });
+        return this.getDoctor(filterValue);
     };
     NurseEntryComponent.prototype.getNurse = function () {
         this.nurseService.getNurse().subscribe(function (data) {
@@ -122,12 +111,12 @@ var NurseEntryComponent = /** @class */ (function () {
         var _this = this;
         this.dialog.open(appointment_search_dialog_component_1.AppointmentSearchDialogComponent, {
             disableClose: true,
-            width: '50%'
+            width: '50%',
+            data: { 'status': 'Doctor Waiting' }
         })
             .afterClosed()
             .subscribe(function (result) {
             if (result.dialogStatus) {
-                result.status = "Doctor Waiting";
                 _this.getBooking(result);
             }
         });

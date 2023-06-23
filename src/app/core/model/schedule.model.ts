@@ -7,3 +7,9 @@ export interface DoctorSchedule {
     limitCount: number
     actStatus: boolean
 }
+
+
+
+export function DoctorScheduleTable(item:any):any{
+    
+}

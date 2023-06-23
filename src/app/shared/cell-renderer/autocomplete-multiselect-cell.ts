@@ -96,6 +96,7 @@ export class AutocompleteCellMultiSelect implements ICellEditorAngularComp, Afte
             this.gridWidth = 200
         } else if (this.columnObject == "examinationObj") {
             this.gridWidth = 300
+            //  this.gridApi.setHeaderHeight(1)
         }
         this.cellValue = params.value[this.propertyName];
         this.returnObject = params.returnObject;
@@ -111,17 +112,17 @@ export class AutocompleteCellMultiSelect implements ICellEditorAngularComp, Afte
 
     getValue(): any {
         if (!this.returnObject) {
-            console.log(this.selectedObject[this.propertyName])
             return this.selectedObject[this.propertyName];
         }
-        console.log(this.cellValue)
         //this.selectedObject.desc
         this.selectedObject.desc = this.cellValue
         return this.selectedObject;
     }
+    
     isPopup(): boolean {
         return true;
     }
+
     isCancelAfterEnd(): boolean {
         return this.isCanceled
     }
@@ -131,6 +132,7 @@ export class AutocompleteCellMultiSelect implements ICellEditorAngularComp, Afte
         this.gridApi = params.api;
         this.gridApi.sizeColumnsToFit();
         this.columnFilter = this.gridApi.getFilterInstance(this.propertyName);
+        this.gridApi.setHeaderHeight(0)
     }
 
     // component functions
@@ -144,12 +146,7 @@ export class AutocompleteCellMultiSelect implements ICellEditorAngularComp, Afte
         if (this.gridApi.getSelectedRows()[0]) {
             this.selectedObject = this.gridApi.getSelectedRows()[0];
             this.isCanceled = false;
-
-            // this.inputValue += this.selectedObject.desc + " "
             this.getCellValue(this.cellValue, this.inputValue)
-            //if(this.cellValue)
-            // this.cellValue = this.inputValue
-
             this.cellValue += this.selectedObject.desc + " "
             this.inputValue = this.cellValue
         } else {
@@ -159,8 +156,10 @@ export class AutocompleteCellMultiSelect implements ICellEditorAngularComp, Afte
                 id: '',
                 desc: this.inputValue
             }
-            this.params.api.stopEditing();
         }
+        //
+        this.input.nativeElement.focus();
+       // this.params.api.stopEditing();
     }
 
     getCellValue(cell: any, input: any) {

@@ -20,6 +20,7 @@ export class DoctorListComponent implements OnInit {
   dataSource: MatTableDataSource<Doctor>
 
   isMobile: boolean = false
+  isSelected: boolean = false
   constructor(
     private route: Router,
     private doctorService: DoctorService,
@@ -51,11 +52,25 @@ export class DoctorListComponent implements OnInit {
     })
   }
 
-  getRowData(data: Doctor) {
-    this.doctorService._doctor=data
-    if(this.isMobile){
+  getselectedRowData(data: any) {
+    this.dataSource.data = this.dataSource.data.map((item: any) => {
+      item.isSelected = false
+      return item;
+    })
+    this.doctorService._doctor = data 
+    data.isSelected = !data.isSelected
+    if (this.isMobile) {
       this.commonService.getCurrentObject(true)
-    }else{
+    } else {
+      this.commonService.getCurrentObject(false)
+    }
+  }
+
+  getRowData(data: Doctor) {
+    this.doctorService._doctor = data
+    if (this.isMobile) {
+      this.commonService.getCurrentObject(true)
+    } else {
       this.commonService.getCurrentObject(false)
     }
   }

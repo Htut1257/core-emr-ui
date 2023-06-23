@@ -17,6 +17,8 @@
             <td mat-cell class="td-object" *matCellDef="let element">{{element.genderId}}</td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayedColumn;sticky:true"></tr>
-        <tr mat-row *matRowDef="let row;columns:displayedColumn" (dblclick)="getRowData(row)"></tr>
+        <tr mat-row *matRowDef="let row;columns:displayedColumn"
+        [ngClass]="{'selected-row':row.isSelected==true}"
+         (click)="getselectedRowData(row)" (dblclick)="getRowData(row)"></tr>
     </table>
 </div>

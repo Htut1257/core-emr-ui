@@ -4,6 +4,7 @@ import { ICellEditorAngularComp } from 'ag-grid-angular';
 import { AutocompleteService } from 'src/app/core/services/autocomplete-service/autocomplete.service';
 import { PatternService } from 'src/app/core/services/pattern-service/pattern.service';
 import { OpdService } from 'src/app/core/services/opd-service/opd.service';
+import { WeekDayService } from 'src/app/core/services/week-day-service/week-day.service';
 @Component({
     selector: 'auto-complete',
     encapsulation: ViewEncapsulation.None,
@@ -59,7 +60,7 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
 
     constructor(
         private autoService: AutocompleteService, private patternService: PatternService,
-        private opdService: OpdService,
+        private opdService: OpdService, private weekService: WeekDayService,
     ) {
 
     }
@@ -110,7 +111,6 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
         }
         this.getApiData(params.charPress).subscribe(data => {
             this.rowData = data;
-
         });
     }
 
@@ -170,7 +170,6 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
     }
 
     processDataInput(event) {
-
         if (this.useApi) {
             this.columnFilter = this.gridApi.getFilterInstance(this.propertyName);
             if (event.length == 0) this.gridApi.setRowData();
@@ -179,11 +178,6 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
                     this.rowData = data;
                 });
             };
-            // if (event.length > 2) {
-            //     this.getApiData(event).subscribe(data => {
-            //         this.rowData = data;
-            //     });
-            // }
         } else {
             this.updateFilter();
         }
@@ -216,6 +210,8 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
         }
         else if (this.columnObject == "opdFeeObj") {
             return this.opdService.getOpdServicebyFilter("serviceName", filter)
+        } else if (this.columnObject == "dayObj") {
+            return this.weekService.getWeekDay()
         }
         else {
             return this.autoService.getTreatmentData(filter)
