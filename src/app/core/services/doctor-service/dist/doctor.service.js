@@ -24,24 +24,38 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 exports.__esModule = true;
 exports.DoctorService = void 0;
 var core_1 = require("@angular/core");
+var rxjs_1 = require("rxjs");
 var http_1 = require("@angular/common/http");
 var abstract_service_1 = require("../abstract-service/abstract.service");
-var api_setting_1 = require("src/app/api/api-setting");
-var uri = "" + api_setting_1.ApiSetting.EmrEndPoint;
+var uri = "";
 var DoctorService = /** @class */ (function (_super) {
     __extends(DoctorService, _super);
-    function DoctorService(http) {
-        return _super.call(this, http, uri) || this;
+    function DoctorService(http, apiService) {
+        var _this = _super.call(this, http, uri) || this;
+        _this.apiService = apiService;
+        _this._doctors = [];
+        _this.doctorSubject = new rxjs_1.BehaviorSubject([]);
+        _this.doctor$ = _this.doctorSubject.asObservable();
+        _this.apiConfig = _this.apiService.getConfig();
+        uri = "" + _this.apiConfig.EmrEndPoint;
+        return _this;
     }
     DoctorService.prototype.getDoctorById = function (id) {
         this.baseURL = uri + "/doctor/getById";
         var httpParams = new http_1.HttpParams().set('id', id);
         return this.getByParams(httpParams);
     };
-    DoctorService.prototype.getDoctor = function (id) {
+    DoctorService.prototype.getDoctor = function () {
+        var _this = this;
         this.baseURL = uri + "/doctor/getAllActive";
-        var httpParams = new http_1.HttpParams().set('id', id);
-        return this.getByParams(httpParams);
+        return new rxjs_1.Observable(function (observable) {
+            return _this.getAll().subscribe(function (doctors) {
+                _this._doctors = doctors;
+                observable.next(doctors);
+                _this.doctorSubject.next(doctors);
+                observable.complete();
+            });
+        });
     };
     DoctorService.prototype.getInativeDoctor = function () {
         this.baseURL = uri + "/doctor/getAllInActive";

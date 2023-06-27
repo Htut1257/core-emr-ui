@@ -1,11 +1,17 @@
+<div class="row">
+    <mat-form-field class="div-no-margin col-12  " appearance="outline">
+        <mat-label>Search</mat-label>
+        <input matInput type="text" name="fromDate" (keyup)="applyFilter($event)">
+    </mat-form-field>
+</div>
 <div class="table-container large">
-    <table mat-table [dataSource]="dataSource">
+    <table mat-table [dataSource]="dataSource" matSort>
         <ng-container matColumnDef="position" class="position-column">
             <th mat-header-cell class="td-number position-column" *matHeaderCellDef>No</th>
             <td mat-cell class="td-number position-column" *matCellDef="let element;let i=index"> {{i+1}}</td>
         </ng-container>
         <ng-container matColumnDef="name">
-            <th mat-header-cell class="td-text" *matHeaderCellDef>Name</th>
+            <th mat-header-cell class="td-text" *matHeaderCellDef mat-sort-header>Name</th>
             <td mat-cell class="td-text" *matCellDef="let element"> {{element.doctorName}}</td>
         </ng-container>
         <ng-container matColumnDef="nrc">
@@ -17,8 +23,7 @@
             <td mat-cell class="td-object" *matCellDef="let element">{{element.genderId}}</td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayedColumn;sticky:true"></tr>
-        <tr mat-row *matRowDef="let row;columns:displayedColumn"
-        [ngClass]="{'selected-row':row.isSelected==true}"
-         (click)="getselectedRowData(row)" (dblclick)="getRowData(row)"></tr>
+        <tr mat-row *matRowDef="let row;columns:displayedColumn" [ngClass]="{'selected-row':row.isSelected==true}"
+            (click)="getselectedRowData(row)" (dblclick)="getRowData(row)"></tr>
     </table>
 </div>

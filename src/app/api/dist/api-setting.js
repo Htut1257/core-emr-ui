@@ -5,22 +5,24 @@ var ApiSetting = /** @class */ (function () {
     function ApiSetting() {
     }
     Object.defineProperty(ApiSetting, "UserApiEndPoint", {
+        //local DESKTOP-LV3P92S
+        //ng build --configuration production --base-href /coreemr/  
         get: function () {
-            return 'http://192.168.100.183:8079';
+            return 'http://localhost:8079';
         },
         enumerable: false,
         configurable: true
     });
     Object.defineProperty(ApiSetting, "AccountApiEndPoint", {
         get: function () {
-            return 'http://192.168.100.213:8079';
+            return 'http://localhost:8079';
         },
         enumerable: false,
         configurable: true
     });
     Object.defineProperty(ApiSetting, "InventoryApiEndPoint", {
         get: function () {
-            return 'http://192.168.100.213:8079';
+            return 'http://localhost:8079';
         },
         enumerable: false,
         configurable: true
@@ -34,14 +36,14 @@ var ApiSetting = /** @class */ (function () {
     });
     Object.defineProperty(ApiSetting, "EmrEndPoint", {
         get: function () {
-            return 'http://192.168.100.183:8080';
+            return 'http://localhost:8080';
         },
         enumerable: false,
         configurable: true
     });
     Object.defineProperty(ApiSetting, "EmrMongoEndPoint", {
         get: function () {
-            return 'http://192.168.100.183:8082';
+            return 'http://localhost:8082';
         },
         enumerable: false,
         configurable: true

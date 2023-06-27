@@ -17,7 +17,8 @@ import { PatternService } from 'src/app/core/services/pattern-service/pattern.se
 			(ngModelChange)="processDataInput($event)"
 			style=" height: 28px; font-weight: 400; font-size: 12px;"
 			[style.width]="params.column.actualWidth + 'px'" autocomplete="off">
-		<ag-grid-angular
+		<ag-grid-angular 
+        
 			style="font-weight: 150;" 
 			[style.height]="gridHeight + 'px'"
 			[style.width]="gridWidth + 'px'"
@@ -52,8 +53,10 @@ export class AutocompleteCellMultiSelect implements ICellEditorAngularComp, Afte
     public isCanceled: boolean = true;
     public selectedObject: any = {}
 
-    @ViewChild("input") input: ElementRef;
 
+    public isInput: boolean = false
+    @ViewChild("input") input: ElementRef;
+    inputElement = document.getElementById('input') as HTMLInputElement;
     constructor(
         private autoService: AutocompleteService, private patternService: PatternService,
     ) {
@@ -92,11 +95,8 @@ export class AutocompleteCellMultiSelect implements ICellEditorAngularComp, Afte
         this.columnDefs = params.columnDefs;
 
         this.propertyName = params.propertyRendered;
-        if (this.columnObject == "patternObj") {
-            this.gridWidth = 200
-        } else if (this.columnObject == "examinationObj") {
+        if (this.columnObject == "examinationObj") {
             this.gridWidth = 300
-            //  this.gridApi.setHeaderHeight(1)
         }
         this.cellValue = params.value[this.propertyName];
         this.returnObject = params.returnObject;
@@ -114,11 +114,10 @@ export class AutocompleteCellMultiSelect implements ICellEditorAngularComp, Afte
         if (!this.returnObject) {
             return this.selectedObject[this.propertyName];
         }
-        //this.selectedObject.desc
         this.selectedObject.desc = this.cellValue
         return this.selectedObject;
     }
-    
+
     isPopup(): boolean {
         return true;
     }
@@ -147,7 +146,7 @@ export class AutocompleteCellMultiSelect implements ICellEditorAngularComp, Afte
             this.selectedObject = this.gridApi.getSelectedRows()[0];
             this.isCanceled = false;
             this.getCellValue(this.cellValue, this.inputValue)
-            this.cellValue += this.selectedObject.desc + " "
+        //    this.cellValue += this.selectedObject.desc + " "
             this.inputValue = this.cellValue
         } else {
             this.isCanceled = false;
@@ -157,21 +156,37 @@ export class AutocompleteCellMultiSelect implements ICellEditorAngularComp, Afte
                 desc: this.inputValue
             }
         }
-        //
+         this.gridApi.setFocusedCell(this.gridApi.getDisplayedRowAtIndex(0).rowIndex, this.propertyName);
+         this.gridApi.getDisplayedRowAtIndex(this.gridApi.getFocusedCell().rowIndex).setSelected(true);
+
         this.input.nativeElement.focus();
-       // this.params.api.stopEditing();
+        this.isInput = false
     }
 
     getCellValue(cell: any, input: any) {
         let cellArr = cell.split(" ")
         let inputArr = input.split(" ")
         let strCell = ""
-        if (cellArr.length > inputArr.length) {
-            for (let i = 0; i < inputArr.length - 1; i++) {
-                strCell += inputArr[i] + " "
+        console.log(cellArr)
+        console.log(inputArr)
+        for (let i = 0; i < inputArr.length; i++) {
+            if (inputArr[i] !== cellArr[i]) {
+                inputArr[i] = this.selectedObject.desc
             }
-            this.cellValue = strCell
+            console.log(inputArr[i]=="")
+            if(inputArr[i]==" "){
+                inputArr[i] = this.selectedObject.desc
+            }
+            strCell += inputArr[i] + " "
         }
+        this.cellValue = strCell
+        // if (cellArr.length != inputArr.length) {
+        //     for (let i = 0; i <= inputArr.length - 1; i++) {
+        //         strCell += inputArr[i] + " "
+        //     }
+        //     this.cellValue = strCell
+        // }
+
     }
 
     @HostListener('keydown', ['$event'])
@@ -195,8 +210,30 @@ export class AutocompleteCellMultiSelect implements ICellEditorAngularComp, Afte
         return true
     }
 
+    //splitting string and re 
+    splitStringBySpace(value) {
+        const inputValue = value;
+        let cursorPosition = this.input.nativeElement.selectionStart
+        for (let i = 0; i < inputValue.length; i++) {
+            while (cursorPosition > 0 && inputValue[cursorPosition - 1] !== ' ' && cursorPosition < i) {
+                cursorPosition++;
+            }
+        }
+        let newArr = ''
+        newArr = inputValue.substring(0, cursorPosition)
+        if (inputValue.length > 1 && cursorPosition != inputValue.length) {
+            newArr = inputValue.substring(0, cursorPosition - 1)
+        }
+        //console.log(newArr)
+        return newArr
+    }
+
     processDataInput(event) {
-        let Arr = event.split(" ")
+        this.isInput = true
+        //let Arr = event.split(" ")
+        //let value = Arr[Arr.length - 1]
+        let spliValue = this.splitStringBySpace(event)
+        let Arr = spliValue.split(" ")
         let value = Arr[Arr.length - 1]
         if (this.useApi) {
             this.columnFilter = this.gridApi.getFilterInstance(this.propertyName);
@@ -217,17 +254,22 @@ export class AutocompleteCellMultiSelect implements ICellEditorAngularComp, Afte
     }
 
     getApiData(filter) {
-        if (this.columnObject == "cityObject") {
-            return this.autoService.getTreatmentData(filter)
-        } else if (this.columnObject == "examinationObj") {
+        if (this.columnObject == "examinationObj") {
             return this.autoService.getExaminationData(filter)
-        } else if (this.columnObject == "patternObj") {
-            return this.patternService.getPattern()
-        }
-        else {
+        } else {
             return this.autoService.getTreatmentData(filter)
         }
-        // return this.httpClient.get(this.apiEndpoint + this.toQueryString(filter));
+        //     if (this.columnObject == "cityObject") {
+        //         return this.autoService.getTreatmentData(filter)
+        //     } else if (this.columnObject == "examinationObj") {
+        //         return this.autoService.getExaminationData(filter)
+        //     } else if (this.columnObject == "patternObj") {
+        //         return this.patternService.getPattern()
+        //     }
+        //     else {
+        //         return this.autoService.getTreatmentData(filter)
+        //     }
+        //     // return this.httpClient.get(this.apiEndpoint + this.toQueryString(filter));
     }
 
     toQueryString(filter) {

@@ -27,13 +27,15 @@ var core_1 = require("@angular/core");
 var http_1 = require("@angular/common/http");
 var rxjs_1 = require("rxjs");
 var abstract_service_1 = require("../abstract-service/abstract.service");
-var api_setting_1 = require("src/app/api/api-setting");
-var uri = "" + api_setting_1.ApiSetting.EmrMongoEndPoint;
+var uri = "";
 var OpdVisitDateService = /** @class */ (function (_super) {
     __extends(OpdVisitDateService, _super);
-    function OpdVisitDateService(http) {
+    function OpdVisitDateService(http, apiService) {
         var _this = _super.call(this, http, uri) || this;
+        _this.apiService = apiService;
         _this._opdVisits = [];
+        _this.apiConfig = _this.apiService.getConfig();
+        uri = "" + _this.apiConfig.EmrMongoEndPoint;
         return _this;
     }
     OpdVisitDateService.prototype.getReVisitDate = function () {

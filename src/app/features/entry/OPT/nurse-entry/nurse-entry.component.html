@@ -13,16 +13,16 @@
     <div class="row mb-2">
         <div class="col-4">
             <mat-label>Total Reg: </mat-label>
-            <mat-label>0</mat-label>
+            <mat-label>{{lstTotal}}</mat-label>
 
         </div>
         <div class="col-4">
             <mat-label>WL: </mat-label>
-            <mat-label>0</mat-label>
+            <mat-label>{{lstWaiting}}</mat-label>
         </div>
         <div class="col-4">
             <mat-label>CL: </mat-label>
-            <mat-label>0</mat-label>
+            <mat-label>{{lstClose}}</mat-label>
         </div>
     </div>
 
@@ -39,7 +39,7 @@
         </ng-container>
         <ng-container matColumnDef="status">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
-            <td mat-cell class="td-object" *matCellDef="let element">
+            <td mat-cell *matCellDef="let element">
                 <div class="table-btn-group">
                     <button mat-raised-button color="primary" class="btn-small btn-table"
                         (click)="consultPatient(element)">Consult</button>

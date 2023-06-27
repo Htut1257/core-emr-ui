@@ -25,6 +25,9 @@ var NurseEntryComponent = /** @class */ (function () {
         this.dialog = dialog;
         this.doctors = [];
         this.docControl = new forms_1.FormControl();
+        this.lstTotal = 0;
+        this.lstWaiting = 0;
+        this.lstClose = 0;
         this.todayDate = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD');
         this.displayedColumns = ["position", "name", "status"];
         this.dataSource = new table_1.MatTableDataSource(this.bookings);
@@ -78,6 +81,19 @@ var NurseEntryComponent = /** @class */ (function () {
             _this.dataSource = new table_1.MatTableDataSource(_this.bookings);
         });
     };
+    //get Booking status
+    NurseEntryComponent.prototype.getDoctorBookingStatus = function (id, date) {
+        var _this = this;
+        this.appointService.getDoctorBookingStatus(id, date).subscribe({
+            next: function (docBookings) {
+                var data = docBookings[0];
+                console.log(data);
+                _this.lstTotal = data.cntRegistered;
+                _this.lstWaiting = data.cntDoctorWaiting;
+                _this.lstClose = data.cntBilling;
+            }
+        });
+    };
     NurseEntryComponent.prototype.getDoctor = function (id) {
         return this.docService.getDoctor().pipe(rxjs_1.filter(function (data) { return !!data; }), rxjs_1.map(function (item) {
             return item.filter(function (option) { return option.doctorName.toLowerCase().includes(id); });
@@ -121,6 +137,7 @@ var NurseEntryComponent = /** @class */ (function () {
             }
         });
     };
+    //on selectin change
     NurseEntryComponent.prototype.getDoctorData = function (event) {
         var doc = event.option.value;
         var filter = {
@@ -130,6 +147,7 @@ var NurseEntryComponent = /** @class */ (function () {
             regNo: '-',
             status: 'Doctor Waiting'
         };
+        this.getDoctorBookingStatus(doc.doctorId, this.todayDate);
         this.getBooking(filter);
     };
     __decorate([

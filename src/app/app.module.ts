@@ -38,7 +38,6 @@ export function initConfig(appConfig: ApiConfigService) {
 
   ],
   providers: [
-    ApiConfigService,
     {
       provide: APP_INITIALIZER,
       useFactory: initConfig,

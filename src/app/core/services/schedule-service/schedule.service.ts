@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { DoctorSchedule } from '../../model/schedule.model';
+import { apiEndPoint } from '../../model/api-endpoint.model';
 import { ApiConfigService } from '../api-config-service/api-config.service';
 import { ApiSetting } from 'src/app/api/api-setting';
 var uri = `${ApiSetting.EmrEndPoint}`
@@ -21,11 +22,12 @@ export class ScheduleService {
 
   docScheduleSubject: BehaviorSubject<DoctorSchedule[]> = new BehaviorSubject<DoctorSchedule[]>([])
   docSchedule$: Observable<DoctorSchedule[]> = this.docScheduleSubject.asObservable()
-
+  apiConfig: apiEndPoint
   constructor(
     private http: HttpClient, private apiService: ApiConfigService
   ) {
-    uri = `${this.apiService.getConfig().EmrEndPoint}`
+    this.apiConfig = this.apiService.getConfig()
+    uri = `${this.apiConfig.EmrEndPoint}`
   }
 
   getDoctorSchedule(doctorId: string): Observable<DoctorSchedule[]> {

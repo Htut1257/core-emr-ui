@@ -121,15 +121,15 @@ export class DocEntryComponent implements OnInit {
   ) {
     this.frameworkComponents = {
       autoComplete: AutocompleteCell,
-      autoCompletemulti:AutocompleteCellMultiSelect,
+      autoCompletemulti: AutocompleteCellMultiSelect,
       checkboxRenderer: CheckboxRenderer
     };
     this.examObj = {} as DrExamination
-    // this.vitalSign = {} as VitalSign
     this.user = this.userService.getUserValue()
     if (this.user) {
       this.doctorId = this.user.doctorId
       this.getDoctorCfFee(this.doctorId)
+      this.getDoctorBookingStatus(this.doctorId, this.todayDate)
     }
   }
 
@@ -162,6 +162,15 @@ export class DocEntryComponent implements OnInit {
 
           this.onInitData(this.booking)
         }
+      }
+    })
+  }
+
+  //get Booking status
+  getDoctorBookingStatus(id: string, date: string) {
+    this.appointService.getDoctorBookingStatus(id, date).subscribe({
+      next: docBookings => {
+        console.log(docBookings)
       }
     })
   }
@@ -311,6 +320,7 @@ export class DocEntryComponent implements OnInit {
       columnDefs: this.examinationColumnDef,
       rowData: this.examinationRow,
       suppressScrollOnNewData: false,
+      stopEditingWhenCellsLoseFocus: true,
     }
 
     this.treatmentGridOption = {
@@ -319,14 +329,17 @@ export class DocEntryComponent implements OnInit {
       suppressScrollOnNewData: false,
       defaultColDef: {
         resizable: true
-      }
+      },
+      stopEditingWhenCellsLoseFocus: true,
     }
 
     this.noteGridOption = {
       columnDefs: this.noteColumnDef,
       rowData: this.noteRow,
-      suppressScrollOnNewData: false
+      suppressScrollOnNewData: false,
+      stopEditingWhenCellsLoseFocus: true,
     }
+
   }
 
   //table for diagnosis 
@@ -358,7 +371,7 @@ export class DocEntryComponent implements OnInit {
         headerName: "Examination",
         field: "examinationObj",
         editable: true,
-        cellEditor: 'autoCompletemulti',
+        cellEditor: 'autoCompletemulti',// autoCompletemulti autoComplete
         cellEditorParams: {
           'propertyRendered': 'desc',
           'returnObject': true,
@@ -372,7 +385,9 @@ export class DocEntryComponent implements OnInit {
           }
           return params.value;
         },
-      }
+       
+      },
+     
     ]
 
     this.examinationRow = [
@@ -392,9 +407,9 @@ export class DocEntryComponent implements OnInit {
           'propertyRendered': 'itemName',
           'returnObject': true,
           'columnDefs': [
-            { headerName: 'Name', field: 'itemName',width:100},
-            { headerName: 'Option', field: 'itemOption',width:50},
-            { headerName: 'Type', field: 'itemType',width:50 }
+            { headerName: 'Name', field: 'itemName', width: 100 },
+            { headerName: 'Option', field: 'itemOption', width: 50 },
+            { headerName: 'Type', field: 'itemType', width: 50 }
           ]
         },
         valueFormatter: params => {
@@ -618,9 +633,8 @@ export class DocEntryComponent implements OnInit {
         this.examinationApi.setFocusedCell(row, columnField);
         return
       }
-
       this.addNewRowtoTable(row, firstEditCol, this.examinationApi, rowData, this.drExamination, this.emptyExamination())
-      this.focusTableCell(row + 1, firstEditCol, this.examinationApi)
+      this.focusTableCell(row, firstEditCol, this.examinationApi)
     }
 
     if (this.treatmentApi.getFocusedCell()) {
@@ -800,7 +814,7 @@ export class DocEntryComponent implements OnInit {
 
   //save all data
   saveMedHistory() {
-    console.log( this.savetoDrExam())
+    console.log(this.savetoDrExam())
     let docMedic = {
       id: this.medicalHisId,
       visitId: this.booking.bookingId,
@@ -850,9 +864,9 @@ export class DocEntryComponent implements OnInit {
     this.treatmentGridOption.api.setRowData(this.treatmentRow)
     this.noteGridOption.api.setRowData(this.noteRow)
 
-    this.drExamination=[]
-    this.drTreatment=[]
-    this.drNote=[]
+    this.drExamination = []
+    this.drTreatment = []
+    this.drNote = []
 
     this.bookingId = ''
     this.bookingDate = ''

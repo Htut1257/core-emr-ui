@@ -2,9 +2,10 @@ import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs'
 import { Initial } from '../../model/doctor.model';
-import { ApiSetting } from 'src/app/api/api-setting';
+import { apiEndPoint } from '../../model/api-endpoint.model';
+import { ApiConfigService } from '../api-config-service/api-config.service';
 import { AbstractService } from '../abstract-service/abstract.service';
-const uri = `${ApiSetting.EmrEndPoint}/opdSetup`
+var uri = ``
 @Injectable({
   providedIn: 'root'
 })
@@ -15,9 +16,12 @@ export class InitialService extends AbstractService<Initial>{
 
   initialSubject: BehaviorSubject<Initial[]> = new BehaviorSubject<Initial[]>([])
   initial$: Observable<Initial[]> = this.initialSubject.asObservable()
+  apiConfig: apiEndPoint
 
-  constructor(@Inject(HttpClient) http: HttpClient) {
+  constructor(@Inject(HttpClient) http: HttpClient, private apiService: ApiConfigService) {
     super(http, uri)
+    this.apiConfig = this.apiService.getConfig()
+    uri = `${this.apiConfig.EmrEndPoint}/opdSetup`
   }
 
   getInitial(): Observable<Initial[]> {

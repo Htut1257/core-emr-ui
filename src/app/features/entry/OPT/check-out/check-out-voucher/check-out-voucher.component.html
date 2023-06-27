@@ -49,12 +49,11 @@
                     (keypress)="numberLimit($event)">
             </mat-form-field>
         </div>
-        <div class="col-12 ">
-            <ag-grid-angular #checkOutGrid class="ag-theme-balham" style="width:100%;height:315px"
-                [gridOptions]="checkOutGridOption" [frameworkComponents]="frameworkComponents"
-                (gridReady)="onGridReadyCheckOut($event)" (cellValueChanged)="cellValueChanged($event)"
-                (cellEditingStopped)="cellEditingStopped($event)"> </ag-grid-angular>
-        </div>
+        <ag-grid-angular #checkOutGrid class="ag-theme-balham" style="width:100%;height:54vh"
+            [gridOptions]="checkOutGridOption" [frameworkComponents]="frameworkComponents"
+            (gridReady)="onGridReadyCheckOut($event)" (cellValueChanged)="cellValueChanged($event)"
+            (cellEditingStopped)="cellEditingStopped($event)">
+        </ag-grid-angular>
         <div class="row">
             <mat-form-field class="col-2" appearance="outline">
                 <mat-label>Total Amount</mat-label>

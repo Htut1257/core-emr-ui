@@ -2,9 +2,10 @@ import { Injectable, Inject } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Speciality } from '../../model/doctor.model';
-import { ApiSetting } from 'src/app/api/api-setting';
+import { apiEndPoint } from '../../model/api-endpoint.model';
 import { AbstractService } from '../abstract-service/abstract.service';
-const uri = `${ApiSetting.EmrEndPoint}`
+import { ApiConfigService } from '../api-config-service/api-config.service';
+var uri = ``
 @Injectable({
   providedIn: 'root'
 })
@@ -15,9 +16,11 @@ export class SpecialityService extends AbstractService<Speciality>{
 
   specialSubject: BehaviorSubject<Speciality[]> = new BehaviorSubject<Speciality[]>([])
   special$: Observable<Speciality[]> = this.specialSubject.asObservable()
-
-  constructor(@Inject(HttpClient) http: HttpClient) {
+  apiConfig: apiEndPoint
+  constructor(@Inject(HttpClient) http: HttpClient, private apiService: ApiConfigService) {
     super(http, uri)
+    this.apiConfig = this.apiService.getConfig()
+    uri = `${this.apiConfig.EmrEndPoint}`
   }
 
   getAllSpeciality(): Observable<Speciality[]> {

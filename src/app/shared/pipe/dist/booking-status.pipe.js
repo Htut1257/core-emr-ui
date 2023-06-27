@@ -22,7 +22,7 @@ var BookingStatus = /** @class */ (function () {
                 break;
             }
             case 2: {
-                status = "Register";
+                status = "Arrival";
                 break;
             }
             case 3: {
@@ -30,7 +30,7 @@ var BookingStatus = /** @class */ (function () {
                 break;
             }
             case 4: {
-                status = "booking Status 4";
+                status = "Vital Sign";
                 break;
             }
             case 5: {

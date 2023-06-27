@@ -2,9 +2,11 @@ import { Injectable, Inject } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { PaymentType } from '../../model/payment.model';
-import { ApiSetting } from 'src/app/api/api-setting';
+import { apiEndPoint } from '../../model/api-endpoint.model';
+import { ApiConfigService } from '../api-config-service/api-config.service';
 import { AbstractService } from '../abstract-service/abstract.service';
-var uri = `${ApiSetting.EmrEndPoint}`
+
+var uri = ``
 @Injectable({
   providedIn: 'root'
 })
@@ -15,8 +17,11 @@ export class PaymentService extends AbstractService<PaymentType>{
   payments: BehaviorSubject<PaymentType[]> = new BehaviorSubject<PaymentType[]>([])
   payments$: Observable<PaymentType[]> = this.payments.asObservable()
 
-  constructor(@Inject(HttpClient) http: HttpClient) {
+  apiConfig: apiEndPoint
+  constructor(@Inject(HttpClient) http: HttpClient, private apiService: ApiConfigService) {
     super(http, uri)
+    this.apiConfig = this.apiService.getConfig()
+    uri = `${this.apiConfig.EmrEndPoint}`
   }
 
   getPayment(): Observable<PaymentType[]> {

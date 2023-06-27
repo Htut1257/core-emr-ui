@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs'
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Role,RoleMenu } from '../../model/role.model';
-import { ApiSetting } from 'src/app/api/api-setting';
-const userApi = ApiSetting.UserApiEndPoint
+import { Role, RoleMenu } from '../../model/role.model';
+import { apiEndPoint } from '../../model/api-endpoint.model';
+import { ApiConfigService } from '../api-config-service/api-config.service';
+
+var userApi = ``
 const httpHeaders = new HttpHeaders({
   'Content-Type': 'application/json',
   'Access-Control-Allow-Origin': '*',
@@ -16,7 +18,10 @@ const httpHeaders = new HttpHeaders({
 export class RoleService {
   role: Role
   roleList: Role[]
-  constructor(private http: HttpClient) {
+  apiConfig: apiEndPoint
+  constructor(private http: HttpClient, private apiService: ApiConfigService) {
+    this.apiConfig = this.apiService.getConfig()
+    userApi = `${this.apiConfig.UserApiEndPoint}`
     this.roleList = []
   }
 
@@ -44,23 +49,23 @@ export class RoleService {
     return this.http.post<Role>(uri, data, httpOption)
   }
 
-    //get role menu setting for specific role
-    getMenuTree():Observable<RoleMenu[]>{
-      let uri=`${userApi}/user/get-menu-tree`
-      let httpOption={headers:httpHeaders}
-      return this.http.get<RoleMenu[]>(uri,httpOption)
-    }
+  //get role menu setting for specific role
+  getMenuTree(): Observable<RoleMenu[]> {
+    let uri = `${userApi}/user/get-menu-tree`
+    let httpOption = { headers: httpHeaders }
+    return this.http.get<RoleMenu[]>(uri, httpOption)
+  }
 
   //get role menu setting for specific role
-  getRoleMenu(roleCode:string):Observable<RoleMenu[]>{
-    let uri=`${userApi}/user/get-role-menu-tree`
-    let httpParams=new HttpParams().set('roleCode',roleCode)
-    let httpOption={headers:httpHeaders,params:httpParams}
-    return this.http.get<RoleMenu[]>(uri,httpOption)
+  getRoleMenu(roleCode: string): Observable<RoleMenu[]> {
+    let uri = `${userApi}/user/get-role-menu-tree`
+    let httpParams = new HttpParams().set('roleCode', roleCode)
+    let httpOption = { headers: httpHeaders, params: httpParams }
+    return this.http.get<RoleMenu[]>(uri, httpOption)
   }
 
   //add or edit menu data with role 
-  saveRoleMenu(data:any):Observable<RoleMenu>{
+  saveRoleMenu(data: any): Observable<RoleMenu> {
     let uri = `${userApi}/user/save-role-menu`
     let httpOption = { headers: httpHeaders }
     return this.http.post<RoleMenu>(uri, data, httpOption)

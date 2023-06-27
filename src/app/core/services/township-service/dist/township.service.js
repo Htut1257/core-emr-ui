@@ -24,29 +24,44 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 exports.__esModule = true;
 exports.TownshipService = void 0;
 var core_1 = require("@angular/core");
+var rxjs_1 = require("rxjs");
 var http_1 = require("@angular/common/http");
 var abstract_service_1 = require("../abstract-service/abstract.service");
-var api_setting_1 = require("src/app/api/api-setting");
+var uri = "";
 var httpHeader = new http_1.HttpHeaders({
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,ORIGINS'
 });
-var uri = "" + api_setting_1.ApiSetting.EmrEndPoint;
 var TownshipService = /** @class */ (function (_super) {
     __extends(TownshipService, _super);
-    function TownshipService(http) {
-        return _super.call(this, http, uri) || this;
+    function TownshipService(http, apiService) {
+        var _this = _super.call(this, http, uri) || this;
+        _this.apiService = apiService;
+        _this._towns = [];
+        _this.townSubject = new rxjs_1.BehaviorSubject([]);
+        _this.town$ = _this.townSubject.asObservable();
+        _this.apiConfig = _this.apiService.getConfig();
+        uri = "" + _this.apiConfig.EmrEndPoint;
+        return _this;
     }
     TownshipService.prototype.getTown = function () {
-        var uri = "http://192.168.100.213:8080/township/getAll";
+        this.baseURL = uri + "/township/getAll";
         var httpOption = { headers: httpHeader };
         return this.http.get(uri, httpOption);
     };
     TownshipService.prototype.getAllTownship = function () {
+        var _this = this;
         this.baseURL = uri + "/township/getAll";
-        return this.getAll();
+        return new rxjs_1.Observable(function (observable) {
+            _this.getAll().subscribe(function (towns) {
+                _this._towns = towns;
+                observable.next(towns);
+                _this.townSubject.next(towns);
+                observable.complete();
+            });
+        });
     };
     TownshipService.prototype.getTownshipByName = function (name) {
         this.baseURL = uri + "/township/getByName";
@@ -57,6 +72,10 @@ var TownshipService = /** @class */ (function (_super) {
         this.baseURL = uri + "/township/getByParent";
         var httpParams = new http_1.HttpParams().set('parentId', id);
         return this.getByParams(httpParams);
+    };
+    TownshipService.prototype.saveTownShip = function (data) {
+        this.baseURL = uri + "/township/save";
+        return this.save(data);
     };
     TownshipService.prototype.removeTownship = function (id) {
         this.baseURL = uri + "/township/delete";

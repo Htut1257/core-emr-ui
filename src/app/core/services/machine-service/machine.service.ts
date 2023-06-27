@@ -1,11 +1,12 @@
 import { Injectable, Inject } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs'; 'rxjs';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
- import { ApiSetting } from 'src/app/api/api-setting';
-//import { ApiSetting } from 'src/assets/api/api-setting';
-import { AbstractService } from '../abstract-service/abstract.service';
 import { MachineInfo } from '../../model/machine-info.model';
-var uri = `${ApiSetting.EmrEndPoint}`
+import { apiEndPoint } from '../../model/api-endpoint.model';
+import { ApiConfigService } from '../api-config-service/api-config.service';
+import { AbstractService } from '../abstract-service/abstract.service';
+
+var uri = ``
 @Injectable({
   providedIn: 'root'
 })
@@ -14,16 +15,20 @@ export class MachineService extends AbstractService<MachineInfo>{
   machine: BehaviorSubject<MachineInfo> = new BehaviorSubject<MachineInfo>({} as MachineInfo)
   machine$: Observable<MachineInfo> = this.machine.asObservable()
 
-  constructor(@Inject(HttpClient) http: HttpClient) {
+  apiConfig: apiEndPoint
+
+  constructor(@Inject(HttpClient) http: HttpClient, private apiService: ApiConfigService) {
     super(http, uri)
     this.machine = new BehaviorSubject<MachineInfo>(JSON.parse(localStorage.getItem('machine')))
+    this.apiConfig = this.apiService.getConfig()
+    uri = `${this.apiConfig.EmrEndPoint}`
   }
 
-  getMachineValue():MachineInfo{
-   return  this.machine.value
+  getMachineValue(): MachineInfo {
+    return this.machine.value
   }
 
-  setMachineValue(model:MachineInfo){
+  setMachineValue(model: MachineInfo) {
     localStorage.setItem('machine', JSON.stringify(model))
     this.machine.next(model)
   }
@@ -35,7 +40,7 @@ export class MachineService extends AbstractService<MachineInfo>{
 
   getMachine(model: MachineInfo) {
     this.baseURL = `${uri}/machine/get-machine`
-    let httpParams = new HttpParams() 
+    let httpParams = new HttpParams()
       .set('machineIp', model.machineIp)
       .set('machineName', model.machineName)
     return this.getById(httpParams)

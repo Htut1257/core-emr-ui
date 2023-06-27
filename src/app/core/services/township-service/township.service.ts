@@ -1,11 +1,13 @@
 import { Injectable, Inject } from '@angular/core';
 import { Observable, BehaviorSubject, observable } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Township } from '../../model/township.model';
+import { apiEndPoint } from '../../model/api-endpoint.model';
+import { ApiConfigService } from '../api-config-service/api-config.service';
 import { AbstractService } from '../abstract-service/abstract.service';
 import { ApiSetting } from 'src/app/api/api-setting';
-import { Township } from '../../model/township.model';
 
-const uri = `${ApiSetting.EmrEndPoint}`
+var uri = ``
 const httpHeader = new HttpHeaders({
   'Content-Type': 'application/json',
   'Access-Control-Allow-Origin': '*',
@@ -23,11 +25,12 @@ export class TownshipService extends AbstractService<Township>{
 
   townSubject: BehaviorSubject<Township[]> = new BehaviorSubject<Township[]>([])
   town$: Observable<Township[]> = this.townSubject.asObservable()
-
-  constructor(@Inject(HttpClient) http: HttpClient) {
+  apiConfig: apiEndPoint
+  constructor(@Inject(HttpClient) http: HttpClient, private apiService: ApiConfigService) {
     super(http, uri)
+    this.apiConfig = this.apiService.getConfig()
+    uri = `${this.apiConfig.EmrEndPoint}`
   }
-
 
   getTown(): Observable<any[]> {
     this.baseURL = `${uri}/township/getAll`

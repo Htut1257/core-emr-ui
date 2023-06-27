@@ -1,134 +1,144 @@
 <div class="card card-border col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6">
-    <form [formGroup]="registrationForm" class="form" role="form" #reactiveForm="ngForm"
-        (ngSubmit)="saveRegis(registrationForm.value)" (keydown.enter)="handleEnter($event)">
-        <div class="row">
-            <mat-form-field class="div-no-margin col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4" appearance="outline">
-                <mat-label>Registration-No</mat-label>
-                <input [id]="'regNo'" matInput type="text" name="regNo" formControlName="regNo"
-                    (keyup.enter)="focusElement('regNo','regDate','text')">
-            </mat-form-field>
-            <mat-form-field class='div-no-margin col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4' appearance="outline" hideRequiredMarker="hideRequiredMarker">
-                <mat-label>Registration Date</mat-label>
-                <input [id]="'regDate'" matInput [matDatepicker]="picker1" type="text" name="regDate" placeHolder="MM/DD/YYYY"
-                    formControlName="regDate" (keyup.enter)="focusElement('regDate','contactNo','text')">
-                <mat-hint></mat-hint>
-                <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-                <mat-datepicker #picker1></mat-datepicker>
-            </mat-form-field>
-            <mat-form-field class='div-no-margin col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4' appearance="outline">
-                <mat-label>Contact No </mat-label>
-                <input [id]="'contactNo'" matInput type="text" name="contactNo" formControlName="contactNo"
-                    (keyup.enter)="focusElement('contactNo','patientName','text')">
-            </mat-form-field>
-            <mat-form-field class='div-no-margin col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4' appearance="outline" hideRequiredMarker="hideRequiredMarker">
-                <mat-label>Name</mat-label>
-                <input [id]="'patientName'" matInput type="text" name="patientName" formControlName="patientName"
-                    (keyup.enter)="focusElement('patientName','fatherName','text')">
-                <mat-error *ngIf="!registrationForm.value.patientName">Please Enter Ptient Name</mat-error>
-            </mat-form-field>
-            <mat-form-field class='div-no-margin col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4' appearance="outline">
-                <mat-label>Father Name</mat-label>
-                <input [id]="'fatherName'" matInput type="text" name="fatherName" formControlName="fatherName"
-                    (keyup.enter)="focusElement('fatherName','sex','text')">
-            </mat-form-field>
-            <mat-form-field class='div-no-margin col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4' appearance="outline" hideRequiredMarker="hideRequiredMarker">
-                <mat-label>Gender</mat-label>
-                <mat-select [id]="'sex'" name="sex" formControlName="sex"
-                    (keyup.enter)="focusElement('sex','dob','option')">
-                    <mat-option *ngFor="let item of gender" [value]="item">
-                        {{item.description}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-            <mat-form-field class='div-no-margin col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4' appearance="outline">
-                <mat-label>DOB</mat-label>
-                <input [id]="'dob'" matInput [matDatepicker]="picker2" type="text" name="dob" formControlName="dob" placeholder="MM/DD/YYYY"
-                    (keyup.enter)="focusElement('dob','year','text')">
-            
-                <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-                <mat-datepicker #picker2></mat-datepicker>
-            </mat-form-field>
-            <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
-                <div class="row">
-                    <mat-form-field class='div-no-margin col-4 group-text-field-left' appearance="outline">
-                        <mat-label>Year</mat-label>
-                        <input [id]="'year'" matInput type="text" name="year" formControlName="year"
-                            (keyup.enter)="focusElement('year','nirc','text')">
-                    </mat-form-field>
-                    <mat-form-field class='div-no-margin col-4 group-text-field-left' appearance="outline">
-                        <mat-label>Month</mat-label>
-                        <input [id]="'month'" matInput type="ptext" name="month" formControlName="month">
-                    </mat-form-field>
-                    <mat-form-field class='div-no-margin col-4 group-text-field-left' appearance="outline">
-                        <mat-label>Day</mat-label>
-                        <input [id]="'day'" matInput type="text" name="day" formControlName="day">
-                    </mat-form-field>
+    <div class="card-body">
+        <form [formGroup]="registrationForm" class="form" role="form" #reactiveForm="ngForm"
+            (ngSubmit)="saveRegis(registrationForm.value)" (keydown.enter)="handleEnter($event)">
+            <div class="row">
+                <mat-form-field class="div-no-margin col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4" appearance="outline">
+                    <mat-label>Registration-No</mat-label>
+                    <input [id]="'regNo'" matInput type="text" name="regNo" formControlName="regNo"
+                        (keyup.enter)="focusElement('regNo','regDate','text')">
+                </mat-form-field>
+                <mat-form-field class='div-no-margin col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4' appearance="outline"
+                    hideRequiredMarker="hideRequiredMarker">
+                    <mat-label>Registration Date</mat-label>
+                    <input [id]="'regDate'" matInput [matDatepicker]="picker1" type="text" name="regDate"
+                        placeHolder="MM/DD/YYYY" formControlName="regDate"
+                        (keyup.enter)="focusElement('regDate','contactNo','text')">
+                    <mat-hint></mat-hint>
+                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                    <mat-datepicker #picker1></mat-datepicker>
+                </mat-form-field>
+                <mat-form-field class='div-no-margin col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4' appearance="outline">
+                    <mat-label>Contact No </mat-label>
+                    <input [id]="'contactNo'" matInput type="text" name="contactNo" formControlName="contactNo"
+                        (keyup.enter)="focusElement('contactNo','patientName','text')">
+                </mat-form-field>
+                <mat-form-field class='div-no-margin col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4' appearance="outline"
+                    hideRequiredMarker="hideRequiredMarker">
+                    <mat-label>Name</mat-label>
+                    <input [id]="'patientName'" matInput type="text" name="patientName" formControlName="patientName"
+                        (keyup.enter)="focusElement('patientName','fatherName','text')">
+                    <mat-error *ngIf="!registrationForm.value.patientName">Please Enter Ptient Name</mat-error>
+                </mat-form-field>
+                <mat-form-field class='div-no-margin col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4' appearance="outline">
+                    <mat-label>Father Name</mat-label>
+                    <input [id]="'fatherName'" matInput type="text" name="fatherName" formControlName="fatherName"
+                        (keyup.enter)="focusElement('fatherName','sex','text')">
+                </mat-form-field>
+                <mat-form-field class='div-no-margin col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4' appearance="outline"
+                    hideRequiredMarker="hideRequiredMarker">
+                    <mat-label>Gender</mat-label>
+                    <mat-select [id]="'sex'" name="sex" formControlName="sex"
+                        (keyup.enter)="focusElement('sex','dob','option')">
+                        <mat-option *ngFor="let item of gender" [value]="item">
+                            {{item.description}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field class='div-no-margin col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4' appearance="outline">
+                    <mat-label>DOB</mat-label>
+                    <input [id]="'dob'" matInput [matDatepicker]="picker2" type="text" name="dob" formControlName="dob"
+                        placeholder="MM/DD/YYYY" (keyup.enter)="focusElement('dob','year','text')">
+
+                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                    <mat-datepicker #picker2></mat-datepicker>
+                </mat-form-field>
+                <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                    <div class="row">
+                        <mat-form-field class='div-no-margin col-4 group-text-field-left' appearance="outline">
+                            <mat-label>Year</mat-label>
+                            <input [id]="'year'" matInput type="text" name="year" formControlName="year"
+                                (keyup.enter)="focusElement('year','nirc','text')">
+                        </mat-form-field>
+                        <mat-form-field class='div-no-margin col-4 group-text-field-left' appearance="outline">
+                            <mat-label>Month</mat-label>
+                            <input [id]="'month'" matInput type="ptext" name="month" formControlName="month">
+                        </mat-form-field>
+                        <mat-form-field class='div-no-margin col-4 group-text-field-left' appearance="outline">
+                            <mat-label>Day</mat-label>
+                            <input [id]="'day'" matInput type="text" name="day" formControlName="day">
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                    Age:
+                </div>
+                <mat-form-field class='div-no-margin col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4' appearance="outline">
+                    <mat-label>NIRC</mat-label>
+                    <input [id]="'nirc'" matInput type="text" name="nirc" formControlName="nirc"
+                        (keyup.enter)="focusElement('nirc','nationality','text')">
+                </mat-form-field>
+                <mat-form-field class='div-no-margin col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4' appearance="outline">
+                    <mat-label>Nationality</mat-label>
+                    <input [id]="'nationality'" matInput type="text" name="nationality" formControlName="nationality"
+                        (keyup.enter)="focusElement('nationality','religion','text')">
+                </mat-form-field>
+                <mat-form-field class='div-no-margin col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4' appearance="outline">
+                    <mat-label>Regilion</mat-label>
+                    <input [id]="'religion'" matInput type="text" name="religion" formControlName="religion"
+                        (keyup.enter)="focusElement('religion','doctor','text')">
+                </mat-form-field>
+                <mat-form-field class='div-no-margin col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4' appearance="outline"
+                    hideRequiredMarker="hideRequiredMarker">
+                    <mat-label>Doctor</mat-label>
+                    <input [id]="'doctor'" matInput [matAutocomplete]="auto" type="text" name="doctor"
+                        formControlName="doctor" (keyup.enter)="focusElement('doctor','township','autocomplete')">
+                    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="DocDisplayFn">
+                        <mat-option *ngFor="let item of filteredDoc|async " [value]="item"
+                            (onSelectionChange)="changed()">
+                            {{item.doctorName}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+                <mat-form-field class='div-no-margin col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4' appearance="outline"
+                    hideRequiredMarker="hideRequiredMarker">
+                    <mat-label>Township</mat-label>
+                    <input [id]="'township'" matInput [matAutocomplete]="auto1" type="text" name="township"
+                        formControlName="township" (keyup.enter)="focusElement('township','address','autocomplete')">
+                    <mat-autocomplete autoActiveFirstOption #auto1="matAutocomplete" [displayWith]="TownDisplayFn">
+                        <mat-option *ngFor="let item of filteredTown|async " [value]="item">
+                            {{item.townshipName}}
+                        </mat-option>
+                    </mat-autocomplete>
+
+                </mat-form-field>
+                <mat-form-field class='div-no-margin col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4' appearance="outline">
+                    <mat-label>Address</mat-label>
+                    <textarea matInput placeholder="Ex. It makes me feel..." name="address"
+                        formControlName="address"></textarea>
+                </mat-form-field>
+                <mat-form-field class='div-no-margin col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4' appearance="outline">
+                    <mat-label>Type</mat-label>
+                    <input [id]="'ptType'" matInput type="text" name="ptType" formControlName="ptType">
+                </mat-form-field>
+                <mat-form-field class='div-no-margin col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4' appearance="outline">
+                    <mat-label>Admission No</mat-label>
+                    <input [id]="'admissionNo'" matInput type="text" name="admissionNo">
+                </mat-form-field>
+                <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+
                 </div>
             </div>
-            <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
-                Age:
+            <div class="form-btn-group">
+                <button mat-flat-button type="button" color="primary" class="btn-small float-right"
+                    (click)="onClear()">Clear</button>
+                <button [id]="'btnSave'" mat-flat-button type="submit" color="primary" class="btn-small float-right"
+                    [disabled]="!registrationForm.valid || isLoading">Save</button>
+                <button mat-flat-button type="button" color="primary" class="btn-small float-right" *ngIf="booking"
+                    (click)="onBacktoList()">Back to
+                    Booking</button>
             </div>
-            <mat-form-field class='div-no-margin col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4' appearance="outline">
-                <mat-label>NIRC</mat-label>
-                <input [id]="'nirc'" matInput type="text" name="nirc" formControlName="nirc"
-                    (keyup.enter)="focusElement('nirc','nationality','text')">
-            </mat-form-field>
-            <mat-form-field class='div-no-margin col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4' appearance="outline">
-                <mat-label>Nationality</mat-label>
-                <input [id]="'nationality'" matInput type="text" name="nationality" formControlName="nationality"
-                    (keyup.enter)="focusElement('nationality','religion','text')">
-            </mat-form-field>
-            <mat-form-field class='div-no-margin col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4' appearance="outline">
-                <mat-label>Regilion</mat-label>
-                <input [id]="'religion'" matInput type="text" name="religion" formControlName="religion"
-                    (keyup.enter)="focusElement('religion','doctor','text')">
-            </mat-form-field>
-            <mat-form-field class='div-no-margin col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4' appearance="outline" hideRequiredMarker="hideRequiredMarker">
-                <mat-label>Doctor</mat-label>
-                <input [id]="'doctor'" matInput [matAutocomplete]="auto" type="text" name="doctor"
-                    formControlName="doctor" (keyup.enter)="focusElement('doctor','township','autocomplete')">
-                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="DocDisplayFn">
-                    <mat-option *ngFor="let item of filteredDoc|async " [value]="item" (onSelectionChange)="changed()">
-                        {{item.doctorName}}
-                    </mat-option>
-                </mat-autocomplete>
-            </mat-form-field>
-            <mat-form-field class='div-no-margin col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4' appearance="outline" hideRequiredMarker="hideRequiredMarker">
-                <mat-label>Township</mat-label>
-                <input [id]="'township'" matInput [matAutocomplete]="auto1" type="text" name="township"
-                    formControlName="township" (keyup.enter)="focusElement('township','address','autocomplete')">
-                <mat-autocomplete autoActiveFirstOption #auto1="matAutocomplete" [displayWith]="TownDisplayFn">
-                    <mat-option *ngFor="let item of filteredTown|async " [value]="item">
-                        {{item.townshipName}}
-                    </mat-option>
-                </mat-autocomplete>
-    
-            </mat-form-field>
-            <mat-form-field class='div-no-margin col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4' appearance="outline">
-                <mat-label>Address</mat-label>
-                <textarea matInput placeholder="Ex. It makes me feel..." name="address"
-                    formControlName="address"></textarea>
-            </mat-form-field>
-            <mat-form-field class='div-no-margin col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4' appearance="outline">
-                <mat-label>Type</mat-label>
-                <input [id]="'ptType'" matInput type="text" name="ptType" formControlName="ptType">
-            </mat-form-field>
-            <mat-form-field class='div-no-margin col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4' appearance="outline">
-                <mat-label>Admission No</mat-label>
-                <input [id]="'admissionNo'" matInput type="text" name="admissionNo">
-            </mat-form-field>
-            <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
 
-            </div>
-        </div>
-        <div class="form-btn-group">
-            <button mat-flat-button type="button" color="primary" class="btn-small float-right" (click)="onClear()">Clear</button>
-            <button [id]="'btnSave'" mat-flat-button type="submit" color="primary" class="btn-small float-right"
-                [disabled]="!registrationForm.valid || isLoading">Save</button>
-            <button mat-flat-button type="button" color="primary" class="btn-small float-right" *ngIf="booking" (click)="onBacktoList()">Back to
-                Booking</button>
-        </div>
-
-    </form>
-
+        </form>
+    </div>
 </div>

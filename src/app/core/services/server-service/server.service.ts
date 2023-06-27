@@ -1,18 +1,21 @@
 import { Injectable, NgZone } from '@angular/core';
 import { Observable } from 'rxjs';
 import { SseService } from './sse.service';
-import { ApiSetting } from 'src/app/api/api-setting';
-var uri=`${ApiSetting.EmrEndPoint}`
+import { apiEndPoint } from '../../model/api-endpoint.model';
+import { ApiConfigService } from '../api-config-service/api-config.service';
+var uri = ``
 
 @Injectable({
   providedIn: 'root'
 })
 export class ServerService {
-
-  constructor(private _zone: NgZone,private sseService:SseService) { }
+  apiConfig: apiEndPoint
+  constructor(private _zone: NgZone, private sseService: SseService, private apiService: ApiConfigService) {
+    this.apiConfig = this.apiService.getConfig()
+  }
 
   getServerSource(url: string) {
-    uri=`${ApiSetting.EmrEndPoint}${url}`;
+    uri = `${this.apiConfig.EmrEndPoint}${url}`;
     return Observable.create(observer => {
       let eventsource = this.sseService.getEventSource(uri)
       eventsource.onmessage = event => {

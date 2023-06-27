@@ -2,8 +2,10 @@ import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Location } from '../../model/location.model';
-import { ApiSetting } from 'src/app/api/api-setting';
-var url = `${ApiSetting.EmrEndPoint}`
+import { apiEndPoint } from '../../model/api-endpoint.model';
+import { ApiConfigService } from '../api-config-service/api-config.service';
+
+var url = ``
 const httpHeaders = new HttpHeaders({
   'Content-Type': 'application/json',
   'Access-Control-Allow-Origin': '*',
@@ -20,8 +22,11 @@ export class LocationService {
 
   locations: BehaviorSubject<Location[]> = new BehaviorSubject<Location[]>([])
   locations$: Observable<Location[]> = this.locations.asObservable()
-  constructor(private http: HttpClient) {
 
+  apiConfig: apiEndPoint
+  constructor(private http: HttpClient, private apiService: ApiConfigService) {
+    this.apiConfig = this.apiService.getConfig()
+    url = `${this.apiConfig.EmrEndPoint}`
   }
 
   getLocation(): Observable<Location[]> {

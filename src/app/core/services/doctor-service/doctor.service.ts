@@ -1,11 +1,12 @@
 import { Injectable, Inject } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { AbstractService } from '../abstract-service/abstract.service';
-import { ApiSetting } from 'src/app/api/api-setting';
 import { Doctor } from '../../model/doctor.model';
-var uri: any = `${ApiSetting.EmrEndPoint}`
+import { apiEndPoint } from '../../model/api-endpoint.model';
+import { ApiConfigService } from '../api-config-service/api-config.service';
+import { AbstractService } from '../abstract-service/abstract.service';
 
+var uri: any = ``
 @Injectable({
   providedIn: 'root'
 })
@@ -17,8 +18,12 @@ export class DoctorService extends AbstractService<Doctor>{
   doctorSubject: BehaviorSubject<Doctor[]> = new BehaviorSubject<Doctor[]>([])
   doctor$: Observable<Doctor[]> = this.doctorSubject.asObservable();
 
-  constructor(@Inject(HttpClient) http: HttpClient) {
+  apiConfig: apiEndPoint
+
+  constructor(@Inject(HttpClient) http: HttpClient, private apiService: ApiConfigService) {
     super(http, uri)
+    this.apiConfig = this.apiService.getConfig()
+    uri = `${this.apiConfig.EmrEndPoint}`
   }
 
   getDoctorById(id: string): Observable<Doctor[]> {
@@ -29,7 +34,6 @@ export class DoctorService extends AbstractService<Doctor>{
 
   getDoctor(): Observable<Doctor[]> {
     this.baseURL = `${uri}/doctor/getAllActive`
-    // let httpParams = new HttpParams().set('id', id);
     return new Observable(observable => {
       return this.getAll().subscribe(doctors => {
         this._doctors = doctors

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild,ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -57,7 +57,7 @@ export class AppointmentHistoryComponent implements OnInit {
     this.serverService.getServerSource(uri).subscribe(data => {
       let serverData = JSON.parse(data.data)
       console.log(serverData)
-      if (serverData.actionStatus =="ADD") {
+      if (serverData.actionStatus == "ADD") {
         console.log("add")
         this.bookings.push(serverData);
         this.appointService.bookings.next(this.bookings)
@@ -84,9 +84,9 @@ export class AppointmentHistoryComponent implements OnInit {
     })
   }
 
-  sortBooking(){
-    this.dataSource.sortingDataAccessor=(item:any,property:any)=>{
-      switch(property){
+  sortBooking() {
+    this.dataSource.sortingDataAccessor = (item: any, property: any) => {
+      switch (property) {
         case 'patient': return item.patientName
         case 'doctor': return item.doctorName
       }
@@ -98,9 +98,9 @@ export class AppointmentHistoryComponent implements OnInit {
   filterBooking() {
     this.dataSource.filterPredicate = (data: any, filter: string) => {
       return data.bookingId.toString().toLowerCase().includes(filter) ||
-        data.doctorName.toLowerCase().includes(filter)
-        // data.patientName.toLowerCase().includes(filter)
-        ;
+       // data.regNo.toLowerCase().includes(filter) ||
+        data.doctorName.toLowerCase().includes(filter) ||
+        data.patientName.toLowerCase().includes(filter);
     }
   }
 
@@ -113,9 +113,9 @@ export class AppointmentHistoryComponent implements OnInit {
     this.dialog.open(AppointmentSearchDialogComponent, {
       disableClose: true,
       width: '40%',
-      data:{
-        'title':'Appointment Search',
-        'status':'-'
+      data: {
+        'title': 'Appointment Search',
+        'status': '-'
       }
     })
       .afterClosed()
@@ -137,7 +137,7 @@ export class AppointmentHistoryComponent implements OnInit {
     model.bStatus = model.bstatus
     this.appointService.updateAppointmentStatus(model).subscribe({
       next: appoint => {
-       
+
       },
       error: err => {
         console.trace(err)

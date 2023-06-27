@@ -10,8 +10,6 @@ exports.CfFeeService = void 0;
 var core_1 = require("@angular/core");
 var http_1 = require("@angular/common/http");
 var rxjs_1 = require("rxjs");
-var api_setting_1 = require("src/app/api/api-setting");
-var apiEndPoint = "" + api_setting_1.ApiSetting.EmrEndPoint;
 var httpHeader = new http_1.HttpHeaders({
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
@@ -19,13 +17,15 @@ var httpHeader = new http_1.HttpHeaders({
     'Access-Control-Allow-Headers': 'Content-Type'
 });
 var CfFeeService = /** @class */ (function () {
-    function CfFeeService(http) {
+    function CfFeeService(http, apiService) {
         this.http = http;
+        this.apiService = apiService;
         this._opdFees = [];
+        this.apiConfig = this.apiService.getConfig();
     }
     CfFeeService.prototype.getOpdCfFee = function () {
         var _this = this;
-        var uri = apiEndPoint + "/opdSetup/getOPDDoctorCFFees";
+        var uri = this.apiConfig.EmrEndPoint + "/opdSetup/getOPDDoctorCFFees";
         var httpOption = { headers: httpHeader };
         return new rxjs_1.Observable(function (obervable) {
             return _this.http.get(uri, httpOption).subscribe(function (cfFee) {
@@ -37,7 +37,7 @@ var CfFeeService = /** @class */ (function () {
     };
     CfFeeService.prototype.getOpdCfFeeByDoctor = function (id) {
         var _this = this;
-        var uri = apiEndPoint + "/opdSetup/getOPDDoctorCFFees";
+        var uri = this.apiConfig.EmrEndPoint + "/opdSetup/getOPDDoctorCFFees";
         var httpParams = new http_1.HttpParams()
             .set('drId', id);
         var httpOption = { headers: httpHeader, params: httpParams };
@@ -50,12 +50,12 @@ var CfFeeService = /** @class */ (function () {
         });
     };
     CfFeeService.prototype.saveOpdCfFee = function (data) {
-        var uri = apiEndPoint + "/opdSetup/getOPDDoctorCFFees";
+        var uri = this.apiConfig.EmrEndPoint + "/opdSetup/getOPDDoctorCFFees";
         var httpOption = { headers: httpHeader };
         return this.http.post(uri, data, httpOption);
     };
     CfFeeService.prototype.deleteOpdCfFee = function () {
-        var uri = apiEndPoint + "/opdSetup/getOPDDoctorCFFees";
+        var uri = this.apiConfig.EmrEndPoint + "/opdSetup/getOPDDoctorCFFees";
         var httpOption = { headers: httpHeader };
         return this.http["delete"](uri, httpOption);
     };

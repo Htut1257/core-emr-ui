@@ -1,10 +1,14 @@
 <div class="row ">
-    <div class="col-12 form-group-btn">
+    <mat-form-field class="div-no-margin col-12 col-lg-10 " appearance="outline">
+        <mat-label>Search</mat-label>
+        <input matInput type="text" name="fromDate" (keyup)="applyFilter($event)">
+    </mat-form-field>
+    <div class="col-12 col-lg-2 form-group-btn">
         <button mat-flat-button class="btn-small float-right" color="primary" (click)="searchBooking()"> Filter</button>
     </div>
 </div>
 <div class="table-container large">
-    <table mat-table [dataSource]="dataSource">
+    <table mat-table [dataSource]="dataSource" matSort>
         <ng-component matColumnDef="no">
             <th mat-header-cell class="td-number" *matHeaderCellDef="">No</th>
             <td mat-cell class="td-number" *matCellDef="let i=index">{{i+1}}</td>
@@ -22,11 +26,11 @@
             <td mat-cell class="td-text" *matCellDef="let element">{{element.regNo}}</td>
         </ng-component>
         <ng-component matColumnDef="patient">
-            <th mat-header-cell class="td-text" *matHeaderCellDef="">Patient</th>
+            <th mat-header-cell class="td-text" *matHeaderCellDef="" mat-sort-header>Patient</th>
             <td mat-cell class="td-text" *matCellDef="let element">{{element.patientName}}</td>
         </ng-component>
         <ng-component matColumnDef="doctor">
-            <th mat-header-cell class="td-text" *matHeaderCellDef="">Doctor</th>
+            <th mat-header-cell class="td-text" *matHeaderCellDef="" mat-sort-header>Doctor</th>
             <td mat-cell class="td-text" *matCellDef="let element">{{element.doctorName}}</td>
         </ng-component>
         <!-- <ng-component matColumnDef="phone">

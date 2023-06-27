@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
 import { Router } from '@angular/router';
 import { Observable, map } from 'rxjs';
 import { Booking } from 'src/app/core/model/booking.model';
@@ -22,6 +23,7 @@ export class VitalSignComponent implements OnInit {
 
   displayedColumn: string[] = ["no", "date", "regno", "patient", "doctor", "wl", "reg"]
   dataSource!: MatTableDataSource<Booking>
+  @ViewChild(MatSort, { static: true }) sort: MatSort
   isMobile: boolean = false
   constructor(
     private route: Router, private appointService: AppointmentService,
@@ -36,7 +38,7 @@ export class VitalSignComponent implements OnInit {
     this.appointService.bookings.subscribe(data => {
       this.dataSource.data = data
     })
-    
+
   }
 
   ngOnInit(): void {
@@ -81,8 +83,33 @@ export class VitalSignComponent implements OnInit {
     this.appointService.getAppointment(filter).subscribe(appoint => {
       this.bookings = appoint//.filter((data: any) => data.bstatus === "Confirm")
       this.dataSource = new MatTableDataSource(this.bookings)
+      this.filterBooking()
+      this.sortBooking()
     })
+  }
 
+  filterBooking() {
+    this.dataSource.filterPredicate = (data: any, filter: string) => {
+      return data.bookingId.toString().toLowerCase().includes(filter) ||
+        // data.regNo.toLowerCase().includes(filter) ||
+        data.doctorName.toLowerCase().includes(filter) ||
+        data.patientName.toLowerCase().includes(filter);
+    }
+  }
+
+  sortBooking() {
+    this.dataSource.sortingDataAccessor = (item: any, property: any) => {
+      switch (property) {
+        case 'patient': return item.patientName
+        case 'doctor': return item.doctorName
+      }
+    }
+    this.dataSource.sort = this.sort
+  }
+
+  applyFilter(event: any) {
+    let filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   vitalBooking(model) {
@@ -99,9 +126,9 @@ export class VitalSignComponent implements OnInit {
     this.dialog.open(AppointmentSearchDialogComponent, {
       disableClose: true,
       width: '40%',
-      data:{
-        'title':'Vital Sign Search',
-        'status':'Vital Sign'
+      data: {
+        'title': 'Vital Sign Search',
+        'status': 'Vital Sign'
       }
     })
       .afterClosed()

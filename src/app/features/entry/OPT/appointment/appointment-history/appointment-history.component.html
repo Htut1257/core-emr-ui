@@ -1,9 +1,9 @@
 <div class="row">
-    <mat-form-field class="div-no-margin col-12 col-lg-9 " appearance="outline">
+    <mat-form-field class="div-no-margin col-12 col-lg-10" appearance="outline">
         <mat-label>Search</mat-label>
         <input matInput type="text" name="fromDate" (keyup)="applyFilter($event)">
     </mat-form-field>
-    <div class="col-12 col-lg-3 form-btn-group ">
+    <div class="col-12 col-lg-2 form-btn-group ">
         <button mat-flat-button color="primary" type="button" class="col-12 col-lg-5 btn-small float-right">
             Print</button>
         <button mat-flat-button color="primary" type="button" class="col-12 col-lg-5 btn-small  float-right"
@@ -49,15 +49,16 @@
             <th mat-header-cell class="td-text action-column" *matHeaderCellDef="">Action</th>
             <td mat-cell class="td-text action-column" *matCellDef="let element">
                 <div class="table-btn-group">
-                    <button mat-flat-button color="primary" class=" btn-small btn-table " *ngIf="element.statusLevel==2"
-                        (click)="registerBooking(element)">
+                    <button mat-flat-button color="primary" class=" btn-small btn-table "
+                        *ngIf="element.statusLevel==3 && !element.regNo" (click)="registerBooking(element)">
                         Register
                     </button>
                     <button mat-flat-button color="primary" class=" btn-small btn-table "
-                        *ngIf="element.statusLevel<=3 && element.statusLevel!=2" (click)="confirmBooking(element)">
+                        *ngIf="(element.statusLevel<4 &&!(element.statusLevel==3 && !element.regNo))"
+                        (click)="confirmBooking(element)">
                         {{element|bookingStatus}}
                     </button>
-                    <button mat-flat-button color="warn" class=" btn-small btn-table " *ngIf="element.statusLevel<=5">
+                    <button mat-flat-button color="warn" class=" btn-small btn-table " *ngIf="element.statusLevel<=5 ">
                         Cancel
                     </button>
                 </div>

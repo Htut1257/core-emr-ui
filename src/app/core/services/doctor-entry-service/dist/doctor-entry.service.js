@@ -25,17 +25,32 @@ exports.__esModule = true;
 exports.DoctorEntryService = void 0;
 var core_1 = require("@angular/core");
 var http_1 = require("@angular/common/http");
-var api_setting_1 = require("src/app/api/api-setting");
 var abstract_service_1 = require("../abstract-service/abstract.service");
-var uri = "" + api_setting_1.ApiSetting.EmrMongoEndPoint;
+var uri = "";
 var DoctorEntryService = /** @class */ (function (_super) {
     __extends(DoctorEntryService, _super);
-    function DoctorEntryService(http) {
-        return _super.call(this, http, uri) || this;
+    function DoctorEntryService(http, apiService) {
+        var _this = _super.call(this, http, uri) || this;
+        _this.apiService = apiService;
+        _this.apiConfig = _this.apiService.getConfig();
+        uri = "" + _this.apiConfig.EmrMongoEndPoint;
+        return _this;
     }
+    DoctorEntryService.prototype.getDoctorMedical = function () {
+        this.baseURL = uri + "/opdMedical/get-opdMedicalHis";
+        console.log(this.baseURL);
+        // return this.http.post<VitalSign>(uri, data)
+        return this.getAll();
+    }; //getOPDMedicalHisCashier
+    DoctorEntryService.prototype.getDoctorMedicalByVisitId = function (visitId) {
+        this.baseURL = uri + "/opdMedical/find-opdMedicalHis";
+        // return this.http.post<VitalSign>(uri, data)
+        var httpParams = new http_1.HttpParams()
+            .set('visitId', visitId);
+        return this.getByParams(httpParams);
+    }; //
     DoctorEntryService.prototype.saveDoctorMedical = function (data) {
         this.baseURL = uri + "/opdMedical/save-opdMedicalHis";
-        console.log(this.baseURL);
         // return this.http.post<VitalSign>(uri, data)
         return this.save(data);
     };

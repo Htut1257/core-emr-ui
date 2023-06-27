@@ -64,16 +64,29 @@ var AppointmentHistoryComponent = /** @class */ (function () {
     AppointmentHistoryComponent.prototype.getBooking = function (filter) {
         var _this = this;
         this.appointService.getAppointment(filter).subscribe(function (appoint) {
+            console.log(appoint);
             _this.bookings = appoint;
             _this.dataSource = new table_1.MatTableDataSource(_this.bookings);
+            _this.sortBooking();
             _this.filterBooking();
         });
+    };
+    AppointmentHistoryComponent.prototype.sortBooking = function () {
+        this.dataSource.sortingDataAccessor = function (item, property) {
+            switch (property) {
+                case 'patient': return item.patientName;
+                case 'doctor': return item.doctorName;
+            }
+        };
+        this.dataSource.sort = this.sort;
     };
     //filter table data
     AppointmentHistoryComponent.prototype.filterBooking = function () {
         this.dataSource.filterPredicate = function (data, filter) {
             return data.bookingId.toString().toLowerCase().includes(filter) ||
-                data.doctorName.toLowerCase().includes(filter);
+                // data.regNo.toLowerCase().includes(filter) ||
+                data.doctorName.toLowerCase().includes(filter) ||
+                data.patientName.toLowerCase().includes(filter);
         };
     };
     AppointmentHistoryComponent.prototype.applyFilter = function (event) {
@@ -84,7 +97,11 @@ var AppointmentHistoryComponent = /** @class */ (function () {
         var _this = this;
         this.dialog.open(appointment_search_dialog_component_1.AppointmentSearchDialogComponent, {
             disableClose: true,
-            width: '50%'
+            width: '40%',
+            data: {
+                'title': 'Appointment Search',
+                'status': '-'
+            }
         })
             .afterClosed()
             .subscribe(function (result) {
@@ -116,7 +133,8 @@ var AppointmentHistoryComponent = /** @class */ (function () {
         core_1.Component({
             selector: 'app-appointment-history',
             templateUrl: './appointment-history.component.html',
-            styleUrls: ['./appointment-history.component.css']
+            styleUrls: ['./appointment-history.component.css'],
+            encapsulation: core_1.ViewEncapsulation.None
         })
     ], AppointmentHistoryComponent);
     return AppointmentHistoryComponent;

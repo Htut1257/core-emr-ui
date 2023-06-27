@@ -3,12 +3,12 @@ import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, observable, Observable, of } from 'rxjs';
 import { User } from '../../model/user.model';
+import { apiEndPoint } from '../../model/api-endpoint.model';
+import { ApiConfigService } from '../api-config-service/api-config.service';
 import { AbstractService } from '../abstract-service/abstract.service';
 import { ApiSetting } from 'src/app/api/api-setting';
 
-var api = '../../../../assets/api.config.json';
-const userApi = ApiSetting.UserApiEndPoint;
-var uri: any = `${ApiSetting.UserApiEndPoint}`
+var uri: any = ``
 @Injectable({
   providedIn: 'root'
 })
@@ -21,11 +21,16 @@ export class UserService extends AbstractService<User>{
 
   users: BehaviorSubject<User[]> = new BehaviorSubject<User[]>([])
   users$: Observable<User[]> = this.users.asObservable();
-
-  constructor(@Inject(HttpClient) http: HttpClient, private route: Router) {
+  apiConfig: apiEndPoint
+  constructor(
+    @Inject(HttpClient) http: HttpClient, private route: Router,
+    private apiService: ApiConfigService
+  ) {
     super(http, uri)
     this.userSubject$ = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('user')))
     this.$user = this.userSubject$
+    this.apiConfig = this.apiService.getConfig()
+    uri = `${this.apiConfig.UserApiEndPoint}`
   }
 
   //get current User

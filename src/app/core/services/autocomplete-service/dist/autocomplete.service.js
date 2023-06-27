@@ -10,24 +10,26 @@ exports.AutocompleteService = void 0;
 var core_1 = require("@angular/core");
 var rxjs_1 = require("rxjs");
 var http_1 = require("@angular/common/http");
-var api_setting_1 = require("src/app/api/api-setting");
 var httpHeader = new http_1.HttpHeaders({
-    'Content-Type': 'application/json',
+    'Content-Type': 'text/event-stream',
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Allow-Methods': 'GET,POST,OPTIONS,DELETE,PUT'
 });
 var AutocompleteService = /** @class */ (function () {
-    function AutocompleteService(http) {
+    function AutocompleteService(http, apiService) {
         this.http = http;
+        this.apiService = apiService;
+        this.apiConfig = this.apiService.getConfig();
     }
     AutocompleteService.prototype.getAutoTableSize = function (width) {
         this.tableSizeSubject$.next(width);
     };
+    //get med term for examination :database mongo
     AutocompleteService.prototype.getExaminationData = function (params) {
         var _this = this;
         return new rxjs_1.Observable(function (observable) {
-            var uri = api_setting_1.ApiSetting.EmrMongoEndPoint + "/autoComplete/medTermsAutoComplete";
+            var uri = _this.apiConfig.EmrMongoEndPoint + "/autoComplete/medTermsAutoComplete";
             var httpParams = new http_1.HttpParams()
                 .set("medDesc", params);
             var httpOption = { headers: httpHeader, params: httpParams };
@@ -37,14 +39,16 @@ var AutocompleteService = /** @class */ (function () {
             });
         });
     };
+    //get med item for pharmacy and OPD :database maria
     AutocompleteService.prototype.getTreatmentData = function (params) {
         var _this = this;
         return new rxjs_1.Observable(function (observable) {
-            var uri = api_setting_1.ApiSetting.EmrEndPoint + "/common/getDrAutoCompleteItem";
+            var uri = _this.apiConfig.EmrEndPoint + "/common/getDrAutoCompleteItem";
             var httpParams = new http_1.HttpParams()
                 .set("desp", params);
             var httpOption = { headers: httpHeader, params: httpParams };
             _this.http.get(uri, httpOption).subscribe(function (data) {
+                console.log(data);
                 observable.next(data);
                 observable.complete();
             });

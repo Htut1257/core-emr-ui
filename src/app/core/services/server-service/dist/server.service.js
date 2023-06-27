@@ -9,16 +9,17 @@ exports.__esModule = true;
 exports.ServerService = void 0;
 var core_1 = require("@angular/core");
 var rxjs_1 = require("rxjs");
-var api_setting_1 = require("src/app/api/api-setting");
-var uri = "" + api_setting_1.ApiSetting.EmrEndPoint;
+var uri = "";
 var ServerService = /** @class */ (function () {
-    function ServerService(_zone, sseService) {
+    function ServerService(_zone, sseService, apiService) {
         this._zone = _zone;
         this.sseService = sseService;
+        this.apiService = apiService;
+        this.apiConfig = this.apiService.getConfig();
     }
     ServerService.prototype.getServerSource = function (url) {
         var _this = this;
-        uri = uri + url;
+        uri = "" + this.apiConfig.EmrEndPoint + url;
         return rxjs_1.Observable.create(function (observer) {
             var eventsource = _this.sseService.getEventSource(uri);
             eventsource.onmessage = function (event) {

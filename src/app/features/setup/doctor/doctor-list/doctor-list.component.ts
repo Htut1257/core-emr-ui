@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit ,ViewChild} from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Doctor } from 'src/app/core/model/doctor.model';
 import { DoctorService } from 'src/app/core/services/doctor-service/doctor.service';
@@ -18,6 +19,8 @@ export class DoctorListComponent implements OnInit {
 
   displayedColumn: string[] = ["position", "name", "nrc", "gender"]
   dataSource: MatTableDataSource<Doctor>
+  @ViewChild(MatSort,{static:true})sort:MatSort
+
 
   isMobile: boolean = false
   isSelected: boolean = false
@@ -45,6 +48,8 @@ export class DoctorListComponent implements OnInit {
       next: doctors => {
         this.doctors = doctors
         this.dataSource.data = this.doctors
+        this.filterDctor()
+        this.sortDctor()
       },
       error: err => {
         console.trace(err)
@@ -52,12 +57,36 @@ export class DoctorListComponent implements OnInit {
     })
   }
 
+  filterDctor() {
+    this.dataSource.filterPredicate = (data: any, filter: string) => {
+      return   data.doctorName.toLowerCase().includes(filter) 
+      //data.bookingId.toString().toLowerCase().includes(filter) ||
+        // data.regNo.toLowerCase().includes(filter) ||
+      
+        //data.patientName.toLowerCase().includes(filter);
+    }
+  }
+
+  sortDctor() {
+    this.dataSource.sortingDataAccessor = (item: any, property: any) => {
+      switch (property) {
+        case 'name': return item.doctorName
+      }
+    }
+    this.dataSource.sort = this.sort
+  }
+
+  applyFilter(event: any) {
+    let filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
   getselectedRowData(data: any) {
     this.dataSource.data = this.dataSource.data.map((item: any) => {
       item.isSelected = false
       return item;
     })
-    this.doctorService._doctor = data 
+    this.doctorService._doctor = data
     data.isSelected = !data.isSelected
     if (this.isMobile) {
       this.commonService.getCurrentObject(true)

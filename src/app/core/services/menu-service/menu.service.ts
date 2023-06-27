@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Observable, of,BehaviorSubject } from 'rxjs'
+import { Observable, of, BehaviorSubject } from 'rxjs'
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { RoleMenu } from '../../model/role.model';
-import { ApiSetting } from 'src/app/api/api-setting';
-const userApi = ApiSetting.UserApiEndPoint
+import { apiEndPoint } from '../../model/api-endpoint.model';
+import { ApiConfigService } from '../api-config-service/api-config.service';
+
+var userApi = ``
 const httpHeaders = new HttpHeaders({
   'Content-Type': 'application/json',
   'Access-Control-Allow-Origin': '*',
@@ -15,10 +17,13 @@ const httpHeaders = new HttpHeaders({
 })
 export class MenuService {
 
-  menu:RoleMenu
-  
+  menu: RoleMenu
+  apiConfig: apiEndPoint
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private apiService: ApiConfigService) {
+    this.apiConfig = this.apiService.getConfig()
+    userApi = `${this.apiConfig.UserApiEndPoint}`
+  }
 
   //get role menu setting for specific role
   getMenuTree(): Observable<RoleMenu[]> {

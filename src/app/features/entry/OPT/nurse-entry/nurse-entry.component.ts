@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
-import { Observable, startWith, map, filter,switchMap } from 'rxjs'
+import { Observable, startWith, map, filter, switchMap } from 'rxjs'
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -22,6 +22,11 @@ export class NurseEntryComponent implements OnInit {
   doctors: Doctor[] = []
   filteredDoc: Observable<Doctor[]>;
   docControl = new FormControl()
+
+  lstTotal: number = 0
+  lstWaiting: number = 0
+  lstClose: number = 0
+
   bookings: Booking[]
   todayDate = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD')
   displayedColumns: string[] = ["position", "name", "status"]
@@ -50,6 +55,7 @@ export class NurseEntryComponent implements OnInit {
     }
     this.getBooking(filter);
     this.getServerSideData();
+
     this.filteredDoc = this.docControl.valueChanges.pipe(
       startWith(''),
       switchMap(name => {
@@ -92,8 +98,21 @@ export class NurseEntryComponent implements OnInit {
     })
   }
 
+  //get Booking status
+  getDoctorBookingStatus(id: string, date: string) {
+    this.appointService.getDoctorBookingStatus(id, date).subscribe({
+      next: docBookings => {
+        let data: any = docBookings[0]
+        console.log(data)
+        this.lstTotal = data.cntRegistered
+        this.lstWaiting = data.cntDoctorWaiting
+        this.lstClose = data.cntBilling
+      }
+    })
+  }
+
   getDoctor(id: string) {
-   return  this.docService.getDoctor().pipe(
+    return this.docService.getDoctor().pipe(
       filter(data => !!data),
       map(item => {
         return item.filter(option => option.doctorName.toLowerCase().includes(id))
@@ -143,6 +162,7 @@ export class NurseEntryComponent implements OnInit {
       })
   }
 
+  //on selectin change
   getDoctorData(event: any) {
     let doc = event.option.value
     let filter = {
@@ -152,6 +172,7 @@ export class NurseEntryComponent implements OnInit {
       regNo: '-',
       status: 'Doctor Waiting'
     }
+    this.getDoctorBookingStatus(doc.doctorId, this.todayDate)
     this.getBooking(filter);
   }
 

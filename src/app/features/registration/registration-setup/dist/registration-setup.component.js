@@ -48,15 +48,18 @@ var RegistrationSetupComponent = /** @class */ (function () {
     RegistrationSetupComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.initializeForm();
-        this.getTownship();
         this.getGender();
         if (this.appintService._booking != undefined) {
             this.booking = this.appintService._booking;
             console.log(this.booking);
             this.initializeFormData(this.booking);
         }
-        this.filteredDoc = this.registrationForm.controls['doctor'].valueChanges.pipe(rxjs_1.startWith(''), rxjs_1.map(function (name) { return (name ? _this._filterDoc(name) : _this.doctors.slice()); }));
-        this.filteredTown = this.registrationForm.controls['township'].valueChanges.pipe(rxjs_1.startWith(''), rxjs_1.map(function (name) { return (name ? _this._filterTown(name) : _this.towns.slice()); }));
+        this.filteredDoc = this.registrationForm.controls['doctor'].valueChanges.pipe(rxjs_1.startWith(''), rxjs_1.switchMap(function (name) {
+            return name ? _this._filterDoc(name) : [];
+        }));
+        this.filteredTown = this.registrationForm.controls['township'].valueChanges.pipe(rxjs_1.startWith(''), rxjs_1.switchMap(function (name) {
+            return name ? _this._filterTown(name) : [];
+        }));
     };
     //initialize form with interface model
     RegistrationSetupComponent.prototype.initializeForm = function () {
@@ -101,27 +104,15 @@ var RegistrationSetupComponent = /** @class */ (function () {
         };
         this.registrationForm.get('doctor').patchValue(doc);
     };
-    RegistrationSetupComponent.prototype.getDoctor = function (id) {
-        var _this = this;
-        this.docService.getDoctor(id).subscribe({
-            next: function (doctors) {
-                _this.doctors = doctors;
-            },
-            error: function (err) {
-                console.trace(err);
-            }
-        });
+    RegistrationSetupComponent.prototype.getDoctor = function (name) {
+        return this.docService.getDoctorActiveByName(name).pipe(rxjs_1.filter(function (data) { return !!data; }), rxjs_1.map(function (item) {
+            return item.filter(function (option) { return option.doctorName.toLowerCase().includes(name); });
+        }));
     };
-    RegistrationSetupComponent.prototype.getTownship = function () {
-        var _this = this;
-        this.townService.getAllTownship().subscribe({
-            next: function (towns) {
-                _this.towns = towns;
-            },
-            error: function (err) {
-                console.trace(err);
-            }
-        });
+    RegistrationSetupComponent.prototype.getTownship = function (name) {
+        return this.townService.getTownshipByName(name).pipe(rxjs_1.filter(function (data) { return !!data; }), rxjs_1.map(function (item) {
+            return item.filter(function (option) { return option.townshipName.toLowerCase().includes(name); });
+        }));
     };
     RegistrationSetupComponent.prototype.getGender = function () {
         var _this = this;
@@ -143,14 +134,7 @@ var RegistrationSetupComponent = /** @class */ (function () {
     //filter data for autocomplete
     RegistrationSetupComponent.prototype._filterDoc = function (value) {
         var filterValue = value;
-        this.getDoctor(value);
-        if (value.doctorName != null) {
-            filterValue = value.doctorName.toLowerCase();
-        }
-        else {
-            filterValue = value.toLowerCase();
-        }
-        return this.doctors.filter(function (data) { return data.doctorName.toLowerCase().includes(filterValue); });
+        return this.getDoctor(filterValue);
     };
     RegistrationSetupComponent.prototype.changed = function () {
         console.log("changed");
@@ -158,14 +142,17 @@ var RegistrationSetupComponent = /** @class */ (function () {
     //filter data for autocomplete
     RegistrationSetupComponent.prototype._filterTown = function (value) {
         var filterValue = value;
-        this.getDoctor(value);
-        if (value.townshipName != null) {
-            filterValue = value.townshipName.toLowerCase();
-        }
-        else {
-            filterValue = value.toLowerCase();
-        }
-        return this.towns.filter(function (data) { return data.townshipName.toLowerCase().includes(filterValue); });
+        return this.getTownship(filterValue);
+    };
+    RegistrationSetupComponent.prototype.confirmBooking = function (model) {
+        model.bStatus = model.bstatus;
+        this.appintService.updateAppointmentStatus(model).subscribe({
+            next: function (appoint) {
+            },
+            error: function (err) {
+                console.trace(err);
+            }
+        });
     };
     //save regis
     RegistrationSetupComponent.prototype.saveRegis = function (data) {
@@ -184,11 +171,12 @@ var RegistrationSetupComponent = /** @class */ (function () {
             next: function (registration) {
                 _this.toastService.showSuccessToast("Registrations", "Success adding new Registration");
                 if (_this.booking != undefined) {
-                    var bookings_1;
-                    _this.appintService.bookings.subscribe(function (data) {
-                        bookings_1 = data;
-                    });
-                    var targetIndex = bookings_1.findIndex(function (data) { return data.bookingId == _this.booking.bookingId; });
+                    var bookings = void 0;
+                    _this.confirmBooking(_this.booking);
+                    // this.appintService.bookings.subscribe(data => {
+                    //   bookings = data
+                    // })
+                    //let targetIndex = bookings.findIndex(data => data.bookingId == this.booking.bookingId)
                     // this.bookings[targetIndex] = serverData
                     // this.appointService.bookings.next(this.bookings)
                 }

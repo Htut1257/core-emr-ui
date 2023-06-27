@@ -1,21 +1,26 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs'
 import { apiEndPoint } from '../../model/api-endpoint.model';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiConfigService {
-  config: any
-  loaded = false
+  config: apiEndPoint
+
   constructor(private http: HttpClient) {
-    //  this.loadConfig()
+
   }
 
-  loadConfig() {
-    this.http.get('assets/appConfig.json').subscribe(data => {
-      this.config = data;
-      this.loaded = true;
+  loadConfig(): Observable<apiEndPoint> {
+    return new Observable(observable => {
+      return this.http.get<apiEndPoint>('assets/appConfig.json').subscribe(data => {
+        this.config = data;
+        observable.next(data)
+        observable.complete()
+      })
     })
 
   }

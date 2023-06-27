@@ -1,17 +1,22 @@
 import { Injectable, Inject, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { AbstractService } from '../abstract-service/abstract.service';
-import { ApiSetting } from 'src/app/api/api-setting';
 import { Patient } from '../../model/patient.model';
-var uri: any = `${ApiSetting.EmrEndPoint}`
+import { apiEndPoint } from '../../model/api-endpoint.model';
+import { ApiConfigService } from '../api-config-service/api-config.service';
+import { AbstractService } from '../abstract-service/abstract.service';
+
+var uri: any = ``
 @Injectable({
   providedIn: 'root'
 })
 export class PatientService extends AbstractService<Patient>{
 
-  constructor(@Inject(HttpClient) http: HttpClient) {
+  apiConfig:apiEndPoint
+  constructor(@Inject(HttpClient) http: HttpClient,private apiService:ApiConfigService) {
     super(http, uri)
+    this.apiConfig=this.apiService.getConfig()
+    uri=`${this.apiConfig.EmrEndPoint}`
   }
 
   getPatientByName(name: string) {

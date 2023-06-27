@@ -1,16 +1,17 @@
 import { Injectable, Inject } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
+
 import { Booking, DoctorBooking } from '../../model/booking.model';
+import { apiEndPoint } from '../../model/api-endpoint.model';
+
 import { AbstractService } from '../abstract-service/abstract.service';
 import { ApiConfigService } from '../api-config-service/api-config.service';
 
-import { ApiSetting } from 'src/app/api/api-setting';
-
-var uri: any = `${ApiSetting.EmrEndPoint}`
+var uri: any = ``
 
 const httpHeaders = new HttpHeaders({
-  'Content-Type': 'application/x-www-form-urlencoded',
+  'Content-Type': 'application/json',
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token',
   'Access-Control-Allow-Methods': 'GET,POST,OPTIONS,DELETE,PUT',
@@ -19,18 +20,21 @@ const httpHeaders = new HttpHeaders({
   providedIn: 'root'
 })
 export class AppointmentService extends AbstractService<Booking>{
-
-  constructor(
-    @Inject(HttpClient) http: HttpClient, private apiService: ApiConfigService
-  ) {
-    super(http, uri)
-    uri = `${this.apiService.getConfig().EmrEndPoint}`
-  }
   _booking: Booking
   _bookings: Booking[] = []
 
   public bookings: BehaviorSubject<Booking[]> = new BehaviorSubject<Booking[]>([])
   public bookings$: Observable<Booking[]> = this.bookings.asObservable()
+
+  apiConfig:apiEndPoint
+
+  constructor(
+    @Inject(HttpClient) http: HttpClient, private apiService: ApiConfigService
+  ) {
+    super(http, uri)
+    this.apiConfig=this.apiService.getConfig()
+    uri = `${this.apiConfig.EmrEndPoint}`
+  }
 
   getAppointment(filter: any): Observable<Booking[]> {
     this.baseURL = `${uri}/patient/searchBooking`
@@ -62,12 +66,13 @@ export class AppointmentService extends AbstractService<Booking>{
     let httpParams = new HttpParams()
       .set("bkId", appoint.bookingId)
       .set("bkStatus", appoint.bStatus)
+      .set("regNo", appoint.regNo)
     let httpOption = { headers: httpHeaders, params: httpParams }
     return this.http.post<Booking>(this.baseURL, appoint, httpOption)
   }
 
   deleteAppointment(id: string) {
-    this.baseURL = `${uri}/setup/delete-Bonus`
+    this.baseURL = `${uri}/`
     let httpParams = new HttpParams().set('id', id);
     this.delete(httpParams);
   }

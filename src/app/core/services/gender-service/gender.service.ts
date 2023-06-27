@@ -2,9 +2,10 @@ import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, BehaviorSubject, observable } from 'rxjs';
 import { Gender } from '../../model/gender.model';
+import { apiEndPoint } from '../../model/api-endpoint.model';
 import { AbstractService } from '../abstract-service/abstract.service';
-import { ApiSetting } from 'src/app/api/api-setting';
-var uri: any = `${ApiSetting.EmrEndPoint}`
+import { ApiConfigService } from '../api-config-service/api-config.service';
+var uri: any = ``
 @Injectable({
   providedIn: 'root'
 })
@@ -16,8 +17,12 @@ export class GenderService extends AbstractService<Gender>{
   genderSubject: BehaviorSubject<Gender[]> = new BehaviorSubject<Gender[]>([])
   gender$: Observable<Gender[]> = this.genderSubject.asObservable()
 
-  constructor(@Inject(HttpClient) http: HttpClient) {
+  apiConfig: apiEndPoint
+
+  constructor(@Inject(HttpClient) http: HttpClient, private apIService: ApiConfigService) {
     super(http, uri)
+    this.apiConfig = this.apIService.getConfig()
+    uri = `${this.apiConfig.EmrEndPoint}`
   }
 
   getGender(): Observable<Gender[]> {

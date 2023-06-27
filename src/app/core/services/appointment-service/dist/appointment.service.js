@@ -27,27 +27,23 @@ var core_1 = require("@angular/core");
 var rxjs_1 = require("rxjs");
 var http_1 = require("@angular/common/http");
 var abstract_service_1 = require("../abstract-service/abstract.service");
-var api_setting_1 = require("src/app/api/api-setting");
-var uri = "" + api_setting_1.ApiSetting.EmrEndPoint;
+var uri = "";
 var httpHeaders = new http_1.HttpHeaders({
     'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Allow-Methods': 'GET,POST,OPTIONS,DELETE,PUT'
-});
-var httpHeaderparams = new http_1.HttpHeaders({
-    'Content-Type': 'application/x-www-form-urlencoded',
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token',
     'Access-Control-Allow-Methods': 'GET,POST,OPTIONS,DELETE,PUT'
 });
 var AppointmentService = /** @class */ (function (_super) {
     __extends(AppointmentService, _super);
-    function AppointmentService(http) {
+    function AppointmentService(http, apiService) {
         var _this = _super.call(this, http, uri) || this;
+        _this.apiService = apiService;
         _this._bookings = [];
         _this.bookings = new rxjs_1.BehaviorSubject([]);
         _this.bookings$ = _this.bookings.asObservable();
+        _this.apiConfig = _this.apiService.getConfig();
+        uri = "" + _this.apiConfig.EmrEndPoint;
         return _this;
     }
     AppointmentService.prototype.getAppointment = function (filter) {
@@ -78,14 +74,23 @@ var AppointmentService = /** @class */ (function (_super) {
         this.baseURL = uri + "/patient/updateBookingStatus";
         var httpParams = new http_1.HttpParams()
             .set("bkId", appoint.bookingId)
-            .set("bkStatus", appoint.bStatus);
+            .set("bkStatus", appoint.bStatus)
+            .set("regNo", appoint.regNo);
         var httpOption = { headers: httpHeaders, params: httpParams };
         return this.http.post(this.baseURL, appoint, httpOption);
     };
     AppointmentService.prototype.deleteAppointment = function (id) {
-        this.baseURL = uri + "/setup/delete-Bonus";
+        this.baseURL = uri + "/";
         var httpParams = new http_1.HttpParams().set('id', id);
         this["delete"](httpParams);
+    };
+    AppointmentService.prototype.getDoctorBookingStatus = function (drId, tranDate) {
+        var url = uri + "/patient/getDoctorStatusColumn";
+        var httpParams = new http_1.HttpParams()
+            .set("drId", drId)
+            .set("tranDate", tranDate);
+        var httpOption = { headers: httpHeaders, params: httpParams };
+        return this.http.get(url, httpOption);
     };
     AppointmentService = __decorate([
         core_1.Injectable({

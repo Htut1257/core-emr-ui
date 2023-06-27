@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { OpdGroup, OpdCategory, OpdServiceModel } from '../../model/opd.model';
-import { ApiSetting } from 'src/app/api/api-setting';
-var EmrEndPoint = ApiSetting.EmrEndPoint
+import { apiEndPoint } from '../../model/api-endpoint.model';
+import { ApiConfigService } from '../api-config-service/api-config.service';
+var EmrEndPoint = ``
 const httpHeaders = new HttpHeaders({
   'Content-Type': 'application/json',
   'Access-Control-Allow-Origin': '*',
@@ -21,10 +22,12 @@ export class OpdService {
   public opdGroups: BehaviorSubject<OpdGroup[]> = new BehaviorSubject<OpdGroup[]>([])
   public opdGroups$: Observable<OpdGroup[]> = this.opdGroups.asObservable()
 
+  apiConfig:apiEndPoint
   constructor(
-    private http: HttpClient
+    private http: HttpClient,private apiService:ApiConfigService
   ) {
-
+    this.apiConfig=this.apiService.getConfig()
+    EmrEndPoint=`${this.apiConfig.EmrEndPoint}`
   }
 
   //#region  opd setup

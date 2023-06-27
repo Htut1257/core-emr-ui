@@ -87,13 +87,13 @@
 </div>
 <div class="row">
     <div class="col-3">
-        <ag-grid-angular id="examinationGrid" class="ag-theme-balham" style="height:60vh;width:100%;"
+        <ag-grid-angular id="examinationGrid" class="ag-theme-balham" style="height:72.5vh;width:100%;"
             [gridOptions]="examinationGridOption" (gridReady)="onGriReadyExamination($event)"
             [frameworkComponents]="frameworkComponents" (cellEditingStopped)="cellEditingStopped($event)">
         </ag-grid-angular>
     </div>
     <div class="col-6">
-        <ag-grid-angular id="treatmentGrid" class="ag-theme-balham" style="height:60vh;width:100%;"
+        <ag-grid-angular id="treatmentGrid" class="ag-theme-balham" style="height:72.5vh;width:100%;"
             [gridOptions]="treatmentGridOption" (gridReady)="onGridReadyTreatment($event)"
             [frameworkComponents]="frameworkComponents" (cellEditingStopped)="cellEditingStopped($event)">
         </ag-grid-angular>
@@ -104,7 +104,7 @@
             <textarea style="height:15vh" matInput placeholder="Ex. It makes me feel..." [(ngModel)]="doctorNote"
                 name="doctorNote"></textarea>
         </mat-form-field>
-        <ag-grid-angular id="noteGrid" class="ag-theme-balham" style="height:39vh;width:100%;"
+        <ag-grid-angular id="noteGrid" class="ag-theme-balham" style="height:51.6vh;width:100%;"
             [gridOptions]="noteGridOption" (gridReady)="onGridReadyNote($event)"
             (cellEditingStopped)="cellEditingStopped($event)">
         </ag-grid-angular>

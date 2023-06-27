@@ -27,25 +27,29 @@ var core_1 = require("@angular/core");
 var http_1 = require("@angular/common/http");
 var rxjs_1 = require("rxjs");
 var abstract_service_1 = require("../abstract-service/abstract.service");
-var api_setting_1 = require("src/app/api/api-setting");
-var userApi = api_setting_1.ApiSetting.UserApiEndPoint;
-var uri = "" + api_setting_1.ApiSetting.UserApiEndPoint;
+var uri = "";
 var UserService = /** @class */ (function (_super) {
     __extends(UserService, _super);
-    function UserService(http, route) {
+    function UserService(http, route, apiService) {
         var _this = _super.call(this, http, uri) || this;
         _this.route = route;
+        _this.apiService = apiService;
         _this.userList = [];
         _this.users = new rxjs_1.BehaviorSubject([]);
         _this.users$ = _this.users.asObservable();
         _this.userSubject$ = new rxjs_1.BehaviorSubject(JSON.parse(localStorage.getItem('user')));
         _this.$user = _this.userSubject$;
+        _this.apiConfig = _this.apiService.getConfig();
+        uri = "" + _this.apiConfig.UserApiEndPoint;
         return _this;
-        //  this.user = {} as User
     }
     //get current User
     UserService.prototype.getUserValue = function () {
         return this.userSubject$.value;
+    };
+    UserService.prototype.setUserValue = function (model) {
+        localStorage.setItem('user', JSON.stringify(model));
+        this.userSubject$.next(model);
     };
     //User Login
     UserService.prototype.loginUser = function (name, password) {
@@ -76,6 +80,7 @@ var UserService = /** @class */ (function (_super) {
     //logOut current user and remove it
     UserService.prototype.logOutUser = function () {
         localStorage.removeItem('user');
+        localStorage.removeItem('machine');
         this.userSubject$.next(null);
         this.route.navigate(['/login']);
     };

@@ -9,6 +9,7 @@ exports.__esModule = true;
 exports.VitalSignComponent = void 0;
 var core_1 = require("@angular/core");
 var table_1 = require("@angular/material/table");
+var sort_1 = require("@angular/material/sort");
 var appointment_search_dialog_component_1 = require("../../OPT/appointment/appointment-search-dialog/appointment-search-dialog.component");
 var moment = require("moment");
 var VitalSignComponent = /** @class */ (function () {
@@ -30,15 +31,6 @@ var VitalSignComponent = /** @class */ (function () {
         this.appointService.bookings.subscribe(function (data) {
             _this.dataSource.data = data;
         });
-        // this.appointService.bookings.pipe(
-        //   map((data:any)=>{
-        //     return data.filter(appoint=>{
-        //       return appoint.bstatus=="Confirm"
-        //     })
-        //   })
-        // ).subscribe(data=>{
-        //   this.dataSource.data = data
-        // })
     }
     VitalSignComponent.prototype.ngOnInit = function () {
         var filter = {
@@ -76,10 +68,34 @@ var VitalSignComponent = /** @class */ (function () {
     };
     VitalSignComponent.prototype.getBooking = function (filter) {
         var _this = this;
+        console.log(filter);
         this.appointService.getAppointment(filter).subscribe(function (appoint) {
-            _this.bookings = appoint.filter(function (data) { return data.bstatus === "Confirm"; });
+            _this.bookings = appoint; //.filter((data: any) => data.bstatus === "Confirm")
             _this.dataSource = new table_1.MatTableDataSource(_this.bookings);
+            _this.filterBooking();
+            _this.sortBooking();
         });
+    };
+    VitalSignComponent.prototype.filterBooking = function () {
+        this.dataSource.filterPredicate = function (data, filter) {
+            return data.bookingId.toString().toLowerCase().includes(filter) ||
+                // data.regNo.toLowerCase().includes(filter) ||
+                data.doctorName.toLowerCase().includes(filter) ||
+                data.patientName.toLowerCase().includes(filter);
+        };
+    };
+    VitalSignComponent.prototype.sortBooking = function () {
+        this.dataSource.sortingDataAccessor = function (item, property) {
+            switch (property) {
+                case 'patient': return item.patientName;
+                case 'doctor': return item.doctorName;
+            }
+        };
+        this.dataSource.sort = this.sort;
+    };
+    VitalSignComponent.prototype.applyFilter = function (event) {
+        var filterValue = event.target.value;
+        this.dataSource.filter = filterValue.trim().toLowerCase();
     };
     VitalSignComponent.prototype.vitalBooking = function (model) {
         this.appointService._booking = model;
@@ -95,7 +111,11 @@ var VitalSignComponent = /** @class */ (function () {
         var _this = this;
         this.dialog.open(appointment_search_dialog_component_1.AppointmentSearchDialogComponent, {
             disableClose: true,
-            width: '50%'
+            width: '40%',
+            data: {
+                'title': 'Vital Sign Search',
+                'status': 'Vital Sign'
+            }
         })
             .afterClosed()
             .subscribe(function (result) {
@@ -104,6 +124,9 @@ var VitalSignComponent = /** @class */ (function () {
             }
         });
     };
+    __decorate([
+        core_1.ViewChild(sort_1.MatSort, { static: true })
+    ], VitalSignComponent.prototype, "sort");
     VitalSignComponent = __decorate([
         core_1.Component({
             selector: 'app-vital-sign',

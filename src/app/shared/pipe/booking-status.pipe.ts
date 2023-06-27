@@ -19,7 +19,7 @@ export class BookingStatus implements PipeTransform {
                 break
             }
             case 2: {
-                status = "Register"
+                status = "Arrival"
                 break
             }
             case 3: {
@@ -27,7 +27,7 @@ export class BookingStatus implements PipeTransform {
                 break
             }
             case 4: {
-                status = "booking Status 4"
+                status = "Vital Sign"
                 break
             }
             case 5: {

@@ -6,8 +6,8 @@ import { bookingType } from 'src/app/core/model/booking.model';
 import { Doctor } from 'src/app/core/model/doctor.model';
 import { Gender } from 'src/app/core/model/gender.model';
 import { Patient } from 'src/app/core/model/patient.model';
-import { AppointmentService } from 'src/app/core/services/appointment-service/appointment.service';
 
+import { AppointmentService } from 'src/app/core/services/appointment-service/appointment.service';
 import { DoctorService } from 'src/app/core/services/doctor-service/doctor.service';
 import { GenderService } from 'src/app/core/services/gender-service/gender.service';
 import { PatientService } from 'src/app/core/services/patient-service/patient.service';
@@ -92,7 +92,7 @@ export class AppointmentRegistrationComponent implements OnInit {
       bkPhone: [''],
       bkType: [null],
     });
-    console.log(this.bookingTypes[0])
+  
     this.appointForm.get('bkDate').patchValue(this.todayDate)
     this.appointForm.get('bkType').patchValue(this.bookingTypes[0].description)
   }
@@ -120,7 +120,7 @@ export class AppointmentRegistrationComponent implements OnInit {
     return this.patientService.getPatientByName(name).pipe(
       filter(data => !!data),
       map(item => {
-        console.log(item)
+        
         return item.filter(option => option.patientName.toLowerCase().includes(name))
       })
     )
@@ -159,6 +159,7 @@ export class AppointmentRegistrationComponent implements OnInit {
     booking.patientName = data.patient.patientName != undefined ? data.patient.patientName : data.patient
     booking.doctorId = data.doctor.doctorId
     booking.bkDate = moment(data.bkDate).format("yyyy-MM-DD")
+    console.log(booking)
     this.appointService.saveAppointment(booking).subscribe(data => {
       this.toastService.showSuccessToast("", "Success Adding new Appointment")
       this.onClear()

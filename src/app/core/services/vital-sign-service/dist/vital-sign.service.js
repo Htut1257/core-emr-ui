@@ -25,14 +25,17 @@ exports.__esModule = true;
 exports.VitalSignService = void 0;
 var core_1 = require("@angular/core");
 var http_1 = require("@angular/common/http");
-var api_setting_1 = require("src/app/api/api-setting");
 var abstract_service_1 = require("../abstract-service/abstract.service");
 var rxjs_1 = require("rxjs");
-var uri = api_setting_1.ApiSetting.EmrMongoEndPoint;
+var uri = "";
 var VitalSignService = /** @class */ (function (_super) {
     __extends(VitalSignService, _super);
-    function VitalSignService(http) {
-        return _super.call(this, http, uri) || this;
+    function VitalSignService(http, apiService) {
+        var _this = _super.call(this, http, uri) || this;
+        _this.apiService = apiService;
+        _this.apiConfig = _this.apiService.getConfig();
+        uri = "" + _this.apiConfig.EmrMongoEndPoint;
+        return _this;
     }
     VitalSignService.prototype.getVitalSignByPatient = function (Id) {
         var _this = this;
@@ -50,8 +53,6 @@ var VitalSignService = /** @class */ (function (_super) {
     };
     VitalSignService.prototype.saveVitalSign = function (data) {
         this.baseURL = uri + "/patient/saveVitalSign";
-        console.log(this.baseURL);
-        // return this.http.post<VitalSign>(uri, data)
         return this.save(data);
     };
     VitalSignService = __decorate([

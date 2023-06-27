@@ -104,3 +104,6 @@ body {
     flex: 10%;
 }
 
+.card-header{
+    background-color: #F5F7F7 !important;
+}

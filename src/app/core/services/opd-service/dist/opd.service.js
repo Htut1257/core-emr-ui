@@ -10,8 +10,7 @@ exports.OpdService = void 0;
 var core_1 = require("@angular/core");
 var http_1 = require("@angular/common/http");
 var rxjs_1 = require("rxjs");
-var api_setting_1 = require("src/app/api/api-setting");
-var EmrEndPoint = api_setting_1.ApiSetting.EmrEndPoint;
+var EmrEndPoint = "";
 var httpHeaders = new http_1.HttpHeaders({
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
@@ -19,11 +18,14 @@ var httpHeaders = new http_1.HttpHeaders({
     'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS'
 });
 var OpdService = /** @class */ (function () {
-    function OpdService(http) {
+    function OpdService(http, apiService) {
         this.http = http;
+        this.apiService = apiService;
         this._opdGroups = [];
         this.opdGroups = new rxjs_1.BehaviorSubject([]);
         this.opdGroups$ = this.opdGroups.asObservable();
+        this.apiConfig = this.apiService.getConfig();
+        EmrEndPoint = "" + this.apiConfig.EmrEndPoint;
     }
     //#region  opd setup
     OpdService.prototype.getOpdGroup = function () {
@@ -58,12 +60,20 @@ var OpdService = /** @class */ (function () {
     //#endregion opd setup
     //#region  opd category
     OpdService.prototype.getOpdCategory = function () {
-        var uri = '';
+        var uri = EmrEndPoint + "/opdSetup/getAllOPDCategory";
         var httpOption = { headers: httpHeaders };
         return this.http.get(uri, httpOption);
     };
+    OpdService.prototype.getOpdCategorybyFilter = function (type, value) {
+        var uri = EmrEndPoint + "/opdSetup/getAllOPDCategoryByFilter";
+        var httpParams = new http_1.HttpParams()
+            .set('columnName', type)
+            .set('value', value);
+        var httpOption = { headers: httpHeaders, params: httpParams };
+        return this.http.get(uri, httpOption);
+    };
     OpdService.prototype.saveOpdCategory = function (data) {
-        var uri = '';
+        var uri = EmrEndPoint + "/opdSetup/saveOPDCategory";
         var httpOption = { headers: httpHeaders };
         return this.http.post(uri, data, httpOption);
     };
@@ -77,19 +87,27 @@ var OpdService = /** @class */ (function () {
     //#endregion opd Category
     //#region  opd service
     OpdService.prototype.getOpdService = function () {
-        var uri = '';
+        var uri = EmrEndPoint + "/opdSetup/getAllOPDService";
         var httpOption = { headers: httpHeaders };
         return this.http.get(uri, httpOption);
     };
+    OpdService.prototype.getOpdServicebyFilter = function (type, value) {
+        var uri = EmrEndPoint + "/opdSetup/getAllOPDServiceByFilter";
+        var httpParams = new http_1.HttpParams()
+            .set('columnName', type)
+            .set('value', value);
+        var httpOption = { headers: httpHeaders, params: httpParams };
+        return this.http.get(uri, httpOption);
+    };
     OpdService.prototype.saveOpdService = function (data) {
-        var uri = '';
+        var uri = EmrEndPoint + "/opdSetup/saveOPDService";
         var httpOption = { headers: httpHeaders };
         return this.http.post(uri, data, httpOption);
     };
     OpdService.prototype.deleteOpdService = function (id) {
-        var uri = '';
+        var uri = EmrEndPoint + "/opdSetup/deleteOPDService";
         var httpParams = new http_1.HttpParams()
-            .set('id', id);
+            .set('serId', id);
         var httpOption = { headers: httpHeaders, params: httpParams };
         return this.http["delete"](uri, httpOption);
     };

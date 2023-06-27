@@ -25,17 +25,42 @@ exports.__esModule = true;
 exports.GenderService = void 0;
 var core_1 = require("@angular/core");
 var http_1 = require("@angular/common/http");
+var rxjs_1 = require("rxjs");
 var abstract_service_1 = require("../abstract-service/abstract.service");
-var api_setting_1 = require("src/app/api/api-setting");
-var uri = "" + api_setting_1.ApiSetting.EmrEndPoint;
+var uri = "";
 var GenderService = /** @class */ (function (_super) {
     __extends(GenderService, _super);
-    function GenderService(http) {
-        return _super.call(this, http, uri) || this;
+    function GenderService(http, apIService) {
+        var _this = _super.call(this, http, uri) || this;
+        _this.apIService = apIService;
+        _this._genders = [];
+        _this.genderSubject = new rxjs_1.BehaviorSubject([]);
+        _this.gender$ = _this.genderSubject.asObservable();
+        _this.apiConfig = _this.apIService.getConfig();
+        uri = "" + _this.apiConfig.EmrEndPoint;
+        return _this;
     }
     GenderService.prototype.getGender = function () {
+        var _this = this;
         this.baseURL = uri + "/opdSetup/getAllGender";
-        return this.getAll();
+        return new rxjs_1.Observable(function (observable) {
+            return _this.getAll().subscribe(function (genders) {
+                _this._genders = genders;
+                observable.next(genders);
+                _this.genderSubject.next(genders);
+                observable.complete();
+            });
+        });
+    };
+    GenderService.prototype.saveGender = function (model) {
+        this.baseURL = uri + "/opdSetup/saveGender";
+        return this.save(model);
+    };
+    GenderService.prototype.deleteGender = function (id) {
+        this.baseURL = uri + "/opdSetup/deleteGender";
+        var httpParmas = new http_1.HttpParams()
+            .set('id', id);
+        return this["delete"](httpParmas);
     };
     GenderService = __decorate([
         core_1.Injectable({

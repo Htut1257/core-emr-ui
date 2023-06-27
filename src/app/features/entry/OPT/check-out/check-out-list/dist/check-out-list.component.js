@@ -8,6 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 exports.__esModule = true;
 exports.CheckOutListComponent = void 0;
 var core_1 = require("@angular/core");
+var sort_1 = require("@angular/material/sort");
 var table_1 = require("@angular/material/table");
 var appointment_search_dialog_component_1 = require("../../appointment/appointment-search-dialog/appointment-search-dialog.component");
 var moment = require("moment");
@@ -23,7 +24,7 @@ var CheckOutListComponent = /** @class */ (function () {
         this.bookings = [];
         this.todayDate = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD');
         this.isMobile = false;
-        this.displayedColumns = ["reg", "adm", "name"];
+        this.displayedColumns = ["reg", "adm", "name", "date"];
         this.commonService.isMobile$.subscribe(function (data) {
             _this.isMobile = data;
         });
@@ -51,9 +52,31 @@ var CheckOutListComponent = /** @class */ (function () {
         var _this = this;
         this.appointService.getAppointment(filter).subscribe(function (appoint) {
             _this.bookings = appoint;
-            console.log(_this.bookings);
             _this.dataSource = new table_1.MatTableDataSource(_this.bookings);
+            _this.filterBooking();
+            _this.sortBooking();
         });
+    };
+    CheckOutListComponent.prototype.filterBooking = function () {
+        this.dataSource.filterPredicate = function (data, filter) {
+            return data.bookingId.toString().toLowerCase().includes(filter) ||
+                // data.regNo.toLowerCase().includes(filter) ||
+                data.doctorName.toLowerCase().includes(filter) ||
+                data.patientName.toLowerCase().includes(filter);
+        };
+    };
+    CheckOutListComponent.prototype.sortBooking = function () {
+        this.dataSource.sortingDataAccessor = function (item, property) {
+            console.log(property);
+            switch (property) {
+                case 'name': return item.patientName;
+            }
+        };
+        this.dataSource.sort = this.sort;
+    };
+    CheckOutListComponent.prototype.applyFilter = function (event) {
+        var filterValue = event.target.value;
+        this.dataSource.filter = filterValue.trim().toLowerCase();
     };
     //get all checkout
     CheckOutListComponent.prototype.getCheckOut = function (id) {
@@ -90,8 +113,11 @@ var CheckOutListComponent = /** @class */ (function () {
         var _this = this;
         this.dialog.open(appointment_search_dialog_component_1.AppointmentSearchDialogComponent, {
             disableClose: true,
-            width: '50%',
-            data: { 'status': 'Billing' }
+            width: '40%',
+            data: {
+                'title': 'Check Out Search',
+                'status': '-'
+            }
         })
             .afterClosed()
             .subscribe(function (result) {
@@ -100,6 +126,9 @@ var CheckOutListComponent = /** @class */ (function () {
             }
         });
     };
+    __decorate([
+        core_1.ViewChild(sort_1.MatSort, { static: true })
+    ], CheckOutListComponent.prototype, "sort");
     CheckOutListComponent = __decorate([
         core_1.Component({
             selector: 'app-check-out-list',

@@ -190,6 +190,18 @@ export class RegistrationSetupComponent implements OnInit {
     return this.getTownship(filterValue)
   }
 
+  confirmBooking(model) {
+    model.bStatus = model.bstatus
+    this.appintService.updateAppointmentStatus(model).subscribe({
+      next: appoint => {
+
+      },
+      error: err => {
+        console.trace(err)
+      }
+    })
+  }
+
   //save regis
   saveRegis(data: any) {
     console.log(data)
@@ -207,10 +219,11 @@ export class RegistrationSetupComponent implements OnInit {
         this.toastService.showSuccessToast("Registrations", "Success adding new Registration")
         if (this.booking != undefined) {
           let bookings
-          this.appintService.bookings.subscribe(data => {
-            bookings = data
-          })
-          let targetIndex = bookings.findIndex(data => data.bookingId == this.booking.bookingId)
+          this.confirmBooking(this.booking)
+          // this.appintService.bookings.subscribe(data => {
+          //   bookings = data
+          // })
+          //let targetIndex = bookings.findIndex(data => data.bookingId == this.booking.bookingId)
           // this.bookings[targetIndex] = serverData
           // this.appointService.bookings.next(this.bookings)
         }

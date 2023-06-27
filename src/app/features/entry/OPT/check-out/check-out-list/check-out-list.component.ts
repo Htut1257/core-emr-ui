@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs'
 import { MatDialog } from '@angular/material/dialog';
+import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Booking } from 'src/app/core/model/booking.model';
 import { Cashier } from 'src/app/core/model/checkout.model';
@@ -24,8 +25,8 @@ export class CheckOutListComponent implements OnInit {
   todayDate = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD')
   isMobile: boolean = false
   dataSource: MatTableDataSource<Booking>
-  displayedColumns: string[] = ["reg", "adm", "name","date"]
-
+  displayedColumns: string[] = ["reg", "adm", "name", "date"]
+  @ViewChild(MatSort, { static: true }) sort: MatSort
   constructor(
     private route: Router, private serverService: ServerService,
     private appointService: AppointmentService, private checkService: CheckOutService,
@@ -61,7 +62,33 @@ export class CheckOutListComponent implements OnInit {
     this.appointService.getAppointment(filter).subscribe(appoint => {
       this.bookings = appoint
       this.dataSource = new MatTableDataSource(this.bookings)
+      this.filterBooking()
+      this.sortBooking()
     })
+  }
+
+  filterBooking() {
+    this.dataSource.filterPredicate = (data: any, filter: string) => {
+      return data.bookingId.toString().toLowerCase().includes(filter) ||
+        // data.regNo.toLowerCase().includes(filter) ||
+        data.doctorName.toLowerCase().includes(filter) ||
+        data.patientName.toLowerCase().includes(filter);
+    }
+  }
+
+  sortBooking() {
+    this.dataSource.sortingDataAccessor = (item: any, property: any) => {
+      console.log(property)
+      switch (property) {
+        case 'name': return item.patientName
+      }
+    }
+    this.dataSource.sort = this.sort
+  }
+
+  applyFilter(event: any) {
+    let filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   //get all checkout
@@ -72,7 +99,7 @@ export class CheckOutListComponent implements OnInit {
         if (this.isMobile) {
           this.commonService.getCurrentObject(true)
           this.route.navigate(['/main/opd/check-out/voucher'])
-        }else{
+        } else {
           this.commonService.getCurrentObject(false)
         }
       },
@@ -93,16 +120,16 @@ export class CheckOutListComponent implements OnInit {
     // }else{
     //   this.commonService.getCurrentObject(false)
     // }
-  } 
+  }
 
   searchBooking() {
     this.dialog.open(AppointmentSearchDialogComponent, {
       disableClose: true,
       width: '40%',
-      data: { 
+      data: {
         'title': 'Check Out Search',
         'status': '-'
-       }
+      }
     })
       .afterClosed()
       .subscribe(result => {
