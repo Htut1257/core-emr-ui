@@ -1,22 +1,42 @@
 <form #reactiveForm="ngForm" class="form" [formGroup]="appointForm" (ngSubmit)="saveAppointment(appointForm.value)"
     (keydown.enter)="handleEnter($event)">
     <div class="row">
-        <mat-form-field class='div-no-margin col-12' appearance="outline">
-            <mat-label>Registration-No (optional)</mat-label>
-            <input [id]="'regNo'" matInput type="text" name="regNo" formControlName="regNo"
-                (keyup.enter)="focusElement('regNo','bkDate','text')">
-        </mat-form-field>
         <mat-form-field class='div-no-margin col-12' appearance="outline" hideRequiredMarker="hideRequiredMarker">
+            <mat-label>Doctor</mat-label>
+            <input [id]="'doctor'" matInput [matAutocomplete]="auto" type="text" name="doctor" formControlName="doctor"
+                (keyup.enter)="focusElement('doctor','bkDate','autocomplete')">
+            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="DocDisplayFn"
+                (optionSelected)="getDoctorData($event)">
+                <mat-option *ngFor="let item of filteredDoc|async " [value]="item">
+                    {{item.doctorName}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+        <mat-form-field class='div-no-margin col-12' appearance="outline">
+            <mat-label>Booking Date</mat-label>
+            <mat-select [id]="'bkDate'" name="bkDate" formControlName="bkDate"
+                (keyup.enter)="focusElement('bkDate','patient','option')">
+                <mat-option *ngFor="let item of schedules" [value]="item.schDate">
+                    {{item.schDate }}&nbsp;(&nbsp;{{item.fromTime }}&nbsp;to&nbsp;{{item.toTime }}&nbsp;)&nbsp;
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <!-- <mat-form-field class='div-no-margin col-12' appearance="outline" hideRequiredMarker="hideRequiredMarker">
             <mat-label>Booking Date</mat-label>
             <input [id]="'bkDate'" matInput [matDatepicker]="picker1" type="text" name="bkDate" placeholder="DD/MM/YYYY"
                 formControlName="bkDate" (keyup.enter)="focusElement('bkDate','patient','text')">
             <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
             <mat-datepicker #picker1></mat-datepicker>
+        </mat-form-field> -->
+        <mat-form-field class='div-no-margin col-12' appearance="outline">
+            <mat-label>Registration-No (optional)</mat-label>
+            <input [id]="'regNo'" matInput type="text" name="regNo" formControlName="regNo"
+                (keyup.enter)="focusElement('regNo','patient','text')">
         </mat-form-field>
         <mat-form-field class='div-no-margin col-12' appearance="outline" hideRequiredMarker="hideRequiredMarker">
             <mat-label>Name</mat-label>
             <input [id]="'patient'" matInput [matAutocomplete]="auto1" type="text" name="patient"
-                formControlName="patient" (keyup.enter)="focusElement('patient','doctor','autocomplete')">
+                formControlName="patient" (keyup.enter)="focusElement('patient','bkPhone','autocomplete')">
             <mat-autocomplete autoActiveFirstOption #auto1="matAutocomplete" [displayWith]="patientDisplayFn"
                 (optionSelected)="getpatientData($event)">
                 <mat-option *ngFor="let item of filteredPatient|async " [value]="item">
@@ -24,25 +44,15 @@
                 </mat-option>
             </mat-autocomplete>
         </mat-form-field>
-        <mat-form-field class='div-no-margin col-12' appearance="outline" hideRequiredMarker="hideRequiredMarker">
-            <mat-label>Doctor</mat-label>
-            <input [id]="'doctor'" matInput [matAutocomplete]="auto" type="text" name="doctor" formControlName="doctor"
-                (keyup.enter)="focusElement('doctor','bkPhone','autocomplete')">
-            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="DocDisplayFn">
-                <mat-option *ngFor="let item of filteredDoc|async " [value]="item">
-                    {{item.doctorName}}
-                </mat-option>
-            </mat-autocomplete>
-        </mat-form-field>
+
         <mat-form-field class='div-no-margin col-12' appearance="outline">
             <mat-label>Phone (optional)</mat-label>
             <input [id]="'bkPhone'" matInput type="text" name="bkPhone" formControlName="bkPhone"
-                (keyup.enter)="focusElement('bkPhone','bkType','text')">
+                (keyup.enter)="focusElement('bkPhone','btnSave','text')">
         </mat-form-field>
         <mat-form-field class='div-no-margin col-12' appearance="outline">
             <mat-label>Type</mat-label>
-            <mat-select [id]="'bkType'" name="bkType" formControlName="bkType"
-                (keyup.enter)="focusElement('bkType','btnSave','autocomplete')">
+            <mat-select [id]="'bkType'" name="bkType" formControlName="bkType">
                 <mat-option *ngFor="let item of bookingTypes" [value]="item.description">
                     {{item.description}}
                 </mat-option>

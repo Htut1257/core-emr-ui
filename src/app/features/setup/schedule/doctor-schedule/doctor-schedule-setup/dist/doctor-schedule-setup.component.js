@@ -38,12 +38,13 @@ var DoctorScheduleSetupComponent = /** @class */ (function () {
                     _this.doctor = _this.docService._doctor;
                     // this.initializeFormData(this.doctor)
                     _this.getDoctorSchedule(_this.doctor.doctorId);
+                    _this.getGeneratedSchedule();
                 }
             }
         });
     }
     DoctorScheduleSetupComponent.prototype.ngOnInit = function () {
-        //this.initializeForm()
+        this.initializeForm();
         this.getScheduleTemplateData();
         //  this.getDoctorScheduleTemplateData()
         this.initializeGrid();
@@ -53,12 +54,8 @@ var DoctorScheduleSetupComponent = /** @class */ (function () {
     };
     DoctorScheduleSetupComponent.prototype.initializeForm = function () {
         this.schForm = this.fb.group({
-            day: [null],
-            doctor: [''],
-            fromTime: [this.todayTime, forms_1.Validators.required],
-            toTime: [this.todayTime, forms_1.Validators.required],
-            limitCount: [0],
-            status: [true]
+            fromDate: [this.todayDate, forms_1.Validators.required],
+            toDate: [this.todayDate, forms_1.Validators.required]
         });
     };
     DoctorScheduleSetupComponent.prototype.initializeFormData = function (data) {
@@ -81,6 +78,16 @@ var DoctorScheduleSetupComponent = /** @class */ (function () {
                 _this.renderScheduleTemplate(_this.docSchedules);
                 // this.schRow = this.docSchedules
                 // this.schApi.setRowData(this.schRow)
+            },
+            error: function (err) {
+                console.trace(err);
+            }
+        });
+    };
+    DoctorScheduleSetupComponent.prototype.getGeneratedSchedule = function () {
+        this.scheduleService.searchDoctorSchedule(this.todayDate, this.doctor.doctorId).subscribe({
+            next: function (schedules) {
+                console.log(schedules);
             },
             error: function (err) {
                 console.trace(err);
@@ -355,8 +362,18 @@ var DoctorScheduleSetupComponent = /** @class */ (function () {
             }
         });
     };
-    DoctorScheduleSetupComponent.prototype.generateSchedule = function () {
-        console.log(this.schRow);
+    DoctorScheduleSetupComponent.prototype.generateSchedule = function (data) {
+        var fromDate = moment(data.fromDate).format("YYYY-MM-DD");
+        var toDate = moment(data.toDate).format("YYYY-MM-DD");
+        this.scheduleService.generateDoctorSchedule(fromDate, toDate, this.doctor.doctorId).subscribe({
+            next: function (schedule) {
+                console.log("schedule generated");
+                console.log(schedule);
+            },
+            error: function (err) {
+                console.trace(err);
+            }
+        });
     };
     DoctorScheduleSetupComponent = __decorate([
         core_1.Component({

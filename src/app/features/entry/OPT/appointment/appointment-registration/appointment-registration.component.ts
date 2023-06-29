@@ -9,6 +9,7 @@ import { Patient } from 'src/app/core/model/patient.model';
 
 import { AppointmentService } from 'src/app/core/services/appointment-service/appointment.service';
 import { DoctorService } from 'src/app/core/services/doctor-service/doctor.service';
+import { ScheduleService } from 'src/app/core/services/schedule-service/schedule.service';
 import { GenderService } from 'src/app/core/services/gender-service/gender.service';
 import { PatientService } from 'src/app/core/services/patient-service/patient.service';
 import { CommonServiceService } from 'src/app/core/services/common-service/common-service.service';
@@ -17,6 +18,7 @@ import { ToastService } from 'src/app/core/services/toast-service/toast-service.
 import * as moment from 'moment';
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { MAT_DATE_FORMATS, MAT_DATE_LOCALE, DateAdapter } from '@angular/material/core';
+import { DoctorSchedule } from 'src/app/core/model/schedule.model';
 
 const MY_DATE_FORMAT = {
   parse: {
@@ -50,14 +52,15 @@ export class AppointmentRegistrationComponent implements OnInit {
   patient: Patient[] = []
   filteredPatient: Observable<Patient[]>
   gender: Gender[]
+  schedules: any[] = []
   bookingTypes: any[] = bookingType
   todayDate = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD')
   isLoading: boolean = false
 
   constructor(
     private appointService: AppointmentService, private patientService: PatientService,
-    private docService: DoctorService, private genderService: GenderService,
-    private toastService: ToastService,
+    private docService: DoctorService, private scheduleServcie: ScheduleService,
+    private genderService: GenderService, private toastService: ToastService,
     private dateAdapter: DateAdapter<Date>,
     private fb: FormBuilder
   ) {
@@ -73,27 +76,24 @@ export class AppointmentRegistrationComponent implements OnInit {
         return name ? this._filterDoc(name) : []
       })
     );
-
     this.filteredPatient = this.appointForm.controls['patient'].valueChanges.pipe(
       startWith(''),
       switchMap(name => {
         return name ? this._filterPatient(name) : []
       })
     )
-
   }
 
   initializeForm() {
     this.appointForm = this.fb.group({
       regNo: [null],
-      bkDate: ['', Validators.required],
+      bkDate: [null, Validators.required],
       patient: ['', Validators.required],
       doctor: [null, Validators.required],
       bkPhone: [''],
       bkType: [null],
     });
-  
-    this.appointForm.get('bkDate').patchValue(this.todayDate)
+    //this.appointForm.get('bkDate').patchValue(this.todayDate)
     this.appointForm.get('bkType').patchValue(this.bookingTypes[0].description)
   }
 
@@ -116,11 +116,31 @@ export class AppointmentRegistrationComponent implements OnInit {
     return this.getDoctor(filterValue)
   }
 
+  getDoctorData(event) {
+    let doctor = event.option.value
+    this.getDoctorSchedule(this.todayDate, doctor.doctorId)
+  }
+
+  getDoctorSchedule(date: string, doctorId: string) {
+    this.scheduleServcie.searchDoctorSchedule(date, doctorId).subscribe({
+      next: schedules => {
+        console.log(schedules)
+        this.schedules = schedules.map(item => {
+          item.fromTime = moment(this.todayDate + ' ' + item.fromTime).format('hh:mm a')
+          item.toTime = moment(this.todayDate + ' ' + item.toTime).format('hh:mm a')
+          return item;
+        })
+      },
+      error: err => {
+        console.trace(err)
+      }
+    })
+  }
+
   getPatient(name: string) {
     return this.patientService.getPatientByName(name).pipe(
       filter(data => !!data),
       map(item => {
-        
         return item.filter(option => option.patientName.toLowerCase().includes(name))
       })
     )
@@ -151,8 +171,6 @@ export class AppointmentRegistrationComponent implements OnInit {
   compareGender(b1: Gender, b2: Gender) {
     return b1 && b2 ? b1.genderId === b2.genderId : b1 === b2
   }
-
-
 
   saveAppointment(data: any) {
     let booking = data
@@ -188,7 +206,7 @@ export class AppointmentRegistrationComponent implements OnInit {
   clearForm() {
     this.appointForm.reset()
     this.reactiveForm.resetForm()
-    this.appointForm.get('bkDate').patchValue(this.todayDate)
+    //  this.appointForm.get('bkDate').patchValue(this.todayDate)
     this.appointForm.get('bkType').patchValue(this.bookingTypes[0].description)
 
   }

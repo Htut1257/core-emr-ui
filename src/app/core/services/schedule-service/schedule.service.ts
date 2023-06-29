@@ -45,10 +45,29 @@ export class ScheduleService {
     })
   }
 
+  searchDoctorSchedule(date: string, doctorId: string): Observable<DoctorSchedule[]> {
+    let url = `${uri}/doctor/searchDoctorSchedule`
+    let httpParams = new HttpParams()
+      .set("tranDate", date)
+      .set("drId", doctorId)
+    let httpOption = { headers: httpHeaders, params: httpParams }
+    return this.http.get<DoctorSchedule[]>(url, httpOption);
+  }
+
   saveDoctorSchedule(data: DoctorSchedule): Observable<DoctorSchedule> {
     let url = `${uri}/doctor/saveDoctorScheduleTemplate`
     let httpOption = { headers: httpHeaders }
     return this.http.post<DoctorSchedule>(url, data, httpOption)
+  }
+
+  generateDoctorSchedule(fromDate: string, toDate: string, doctorId: string): Observable<DoctorSchedule[]> {
+    let url = `${uri}/doctor/generateDoctorSchedule`
+    let httpParams = new HttpParams()
+      .set("from", fromDate)
+      .set("to", toDate)
+      .set("doctorId", doctorId)
+    let httpOption = { headers: httpHeaders, params: httpParams }
+    return this.http.get<DoctorSchedule[]>(url, httpOption);
   }
 
 }

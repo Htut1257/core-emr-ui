@@ -26,16 +26,18 @@ var MY_DATE_FORMAT = {
     }
 };
 var AppointmentRegistrationComponent = /** @class */ (function () {
-    function AppointmentRegistrationComponent(appointService, patientService, docService, genderService, toastService, dateAdapter, fb) {
+    function AppointmentRegistrationComponent(appointService, patientService, docService, scheduleServcie, genderService, toastService, dateAdapter, fb) {
         this.appointService = appointService;
         this.patientService = patientService;
         this.docService = docService;
+        this.scheduleServcie = scheduleServcie;
         this.genderService = genderService;
         this.toastService = toastService;
         this.dateAdapter = dateAdapter;
         this.fb = fb;
         this.doctors = [];
         this.patient = [];
+        this.schedules = [];
         this.bookingTypes = booking_model_1.bookingType;
         this.todayDate = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD');
         this.isLoading = false;
@@ -55,13 +57,13 @@ var AppointmentRegistrationComponent = /** @class */ (function () {
     AppointmentRegistrationComponent.prototype.initializeForm = function () {
         this.appointForm = this.fb.group({
             regNo: [null],
-            bkDate: ['', forms_1.Validators.required],
+            bkDate: [null, forms_1.Validators.required],
             patient: ['', forms_1.Validators.required],
             doctor: [null, forms_1.Validators.required],
             bkPhone: [''],
             bkType: [null]
         });
-        this.appointForm.get('bkDate').patchValue(this.todayDate);
+        //this.appointForm.get('bkDate').patchValue(this.todayDate)
         this.appointForm.get('bkType').patchValue(this.bookingTypes[0].description);
     };
     AppointmentRegistrationComponent.prototype.getDoctor = function (name) {
@@ -76,6 +78,26 @@ var AppointmentRegistrationComponent = /** @class */ (function () {
     AppointmentRegistrationComponent.prototype._filterDoc = function (value) {
         var filterValue = value;
         return this.getDoctor(filterValue);
+    };
+    AppointmentRegistrationComponent.prototype.getDoctorData = function (event) {
+        var doctor = event.option.value;
+        this.getDoctorSchedule(this.todayDate, doctor.doctorId);
+    };
+    AppointmentRegistrationComponent.prototype.getDoctorSchedule = function (date, doctorId) {
+        var _this = this;
+        this.scheduleServcie.searchDoctorSchedule(date, doctorId).subscribe({
+            next: function (schedules) {
+                console.log(schedules);
+                _this.schedules = schedules.map(function (item) {
+                    item.fromTime = moment(_this.todayDate + ' ' + item.fromTime).format('hh:mm a');
+                    item.toTime = moment(_this.todayDate + ' ' + item.toTime).format('hh:mm a');
+                    return item;
+                });
+            },
+            error: function (err) {
+                console.trace(err);
+            }
+        });
     };
     AppointmentRegistrationComponent.prototype.getPatient = function (name) {
         return this.patientService.getPatientByName(name).pipe(rxjs_1.filter(function (data) { return !!data; }), rxjs_1.map(function (item) {
@@ -133,7 +155,7 @@ var AppointmentRegistrationComponent = /** @class */ (function () {
     AppointmentRegistrationComponent.prototype.clearForm = function () {
         this.appointForm.reset();
         this.reactiveForm.resetForm();
-        this.appointForm.get('bkDate').patchValue(this.todayDate);
+        //  this.appointForm.get('bkDate').patchValue(this.todayDate)
         this.appointForm.get('bkType').patchValue(this.bookingTypes[0].description);
     };
     AppointmentRegistrationComponent.prototype.focusElement = function (eleString, nextString, type) {

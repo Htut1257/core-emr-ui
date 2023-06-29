@@ -41,7 +41,7 @@ export class DoctorScheduleSetupComponent implements OnInit, OnDestroy {
   public frameworkComponents
 
   docSchedules: any[] = []
-  docSchs:any
+  docSchs: any
   //#endregion grid variables
 
   templateId: string = null
@@ -71,17 +71,19 @@ export class DoctorScheduleSetupComponent implements OnInit, OnDestroy {
           this.doctor = this.docService._doctor
           // this.initializeFormData(this.doctor)
           this.getDoctorSchedule(this.doctor.doctorId)
+          this.getGeneratedSchedule()
         }
       }
     })
   }
 
   ngOnInit(): void {
-    //this.initializeForm()
+    this.initializeForm()
     this.getScheduleTemplateData()
     //  this.getDoctorScheduleTemplateData()
     this.initializeGrid()
     //this.getWeekDay()
+    
   }
 
   ngOnDestroy(): void {
@@ -90,12 +92,8 @@ export class DoctorScheduleSetupComponent implements OnInit, OnDestroy {
 
   initializeForm() {
     this.schForm = this.fb.group({
-      day: [null],
-      doctor: [''],
-      fromTime: [this.todayTime, Validators.required],
-      toTime: [this.todayTime, Validators.required],
-      limitCount: [0],
-      status: [true]
+      fromDate: [this.todayDate, Validators.required],
+      toDate: [this.todayDate, Validators.required],
     })
   }
 
@@ -110,8 +108,8 @@ export class DoctorScheduleSetupComponent implements OnInit, OnDestroy {
       map(item => {
         console.log(item)
         return item.filter((data: any) => {
-          data.fromTimeString = moment(this.todayDate+" "+data.fromTime).format('hh:mm A')
-          data.toTimeString = moment(this.todayDate+" "+data.toTime).format('hh:mm A')
+          data.fromTimeString = moment(this.todayDate + " " + data.fromTime).format('hh:mm A')
+          data.toTimeString = moment(this.todayDate + " " + data.toTime).format('hh:mm A')
           return data;
         })
       })
@@ -128,8 +126,18 @@ export class DoctorScheduleSetupComponent implements OnInit, OnDestroy {
     })
   }
 
-  renderScheduleTemplate(data) {
+  getGeneratedSchedule() {
+    this.scheduleService.searchDoctorSchedule(this.todayDate, this.doctor.doctorId).subscribe({
+      next: schedules => {
+        console.log(schedules)
+      },
+      error: err => {
+        console.trace(err)
+      }
+    })
+  }
 
+  renderScheduleTemplate(data) {
     this.schRow = data.reduce(function (filter, option) {
       let someValue = {
         templateId: option.templateId,
@@ -286,7 +294,7 @@ export class DoctorScheduleSetupComponent implements OnInit, OnDestroy {
       },
     ]
     this.docSchRow = [
-    
+
     ]
   }
 
@@ -312,7 +320,7 @@ export class DoctorScheduleSetupComponent implements OnInit, OnDestroy {
     var firstEditCol = event.columnApi.getAllDisplayedColumns()[0];
     if (this.schApi.getFocusedCell()) {
       this.scheduleCellEvent(row, firstEditCol, columnField, this.schApi, rowData, [])
-      
+
     }
   }
 
@@ -356,10 +364,10 @@ export class DoctorScheduleSetupComponent implements OnInit, OnDestroy {
       this.focusTableCell(rowIndex, "limitCount", gridApi)
     }
     if (columnField == "limitCount") {
-     
-     
+
+
       this.onSaveSchedule(rowData)
-     
+
       this.addNewRowtoTable(rowIndex, firstColumn, gridApi, data, lstRow, this.emptySchedule())
       this.focusTableCell(rowIndex + 1, "dayObj", gridApi)
       return
@@ -421,8 +429,8 @@ export class DoctorScheduleSetupComponent implements OnInit, OnDestroy {
 
     this.scheduleService.saveDoctorSchedule(this.docSch).subscribe({
       next: schedule => {
-       data.templateId=schedule.templateId
-        
+        data.templateId = schedule.templateId
+
       },
       error: err => {
         console.trace(err)
@@ -430,8 +438,18 @@ export class DoctorScheduleSetupComponent implements OnInit, OnDestroy {
     })
   }
 
-  generateSchedule(){
-    console.log(this.schRow)
+  generateSchedule(data: any) {
+    let fromDate = moment(data.fromDate).format("YYYY-MM-DD")
+    let toDate = moment(data.toDate).format("YYYY-MM-DD")
+    this.scheduleService.generateDoctorSchedule(fromDate, toDate, this.doctor.doctorId).subscribe({
+      next: schedule => {
+        console.log("schedule generated")
+        console.log(schedule)
+      },
+      error: err => {
+        console.trace(err)
+      }
+    })
   }
 
 } 

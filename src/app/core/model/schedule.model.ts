@@ -6,6 +6,7 @@ export interface DoctorSchedule {
     toTime: string
     limitCount: number
     actStatus: boolean
+    dayName?:string
 }
 
 

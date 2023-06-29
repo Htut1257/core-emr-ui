@@ -43,10 +43,27 @@ var ScheduleService = /** @class */ (function () {
             });
         });
     };
+    ScheduleService.prototype.searchDoctorSchedule = function (date, doctorId) {
+        var url = uri + "/doctor/searchDoctorSchedule";
+        var httpParams = new http_1.HttpParams()
+            .set("tranDate", date)
+            .set("drId", doctorId);
+        var httpOption = { headers: httpHeaders, params: httpParams };
+        return this.http.get(url, httpOption);
+    };
     ScheduleService.prototype.saveDoctorSchedule = function (data) {
         var url = uri + "/doctor/saveDoctorScheduleTemplate";
         var httpOption = { headers: httpHeaders };
         return this.http.post(url, data, httpOption);
+    };
+    ScheduleService.prototype.generateDoctorSchedule = function (fromDate, toDate, doctorId) {
+        var url = uri + "/doctor/generateDoctorSchedule";
+        var httpParams = new http_1.HttpParams()
+            .set("from", fromDate)
+            .set("to", toDate)
+            .set("doctorId", doctorId);
+        var httpOption = { headers: httpHeaders, params: httpParams };
+        return this.http.get(url, httpOption);
     };
     ScheduleService = __decorate([
         core_1.Injectable({

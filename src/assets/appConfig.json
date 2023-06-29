@@ -1,5 +1,5 @@
 {
-  "EmrEndPoint": "http://localhost:8080",
-  "EmrMongoEndPoint": "http://localhost:8082",
-  "UserApiEndPoint": "http://localhost:8079"
+  "EmrEndPoint": "http://192.168.100.67:8080",
+  "EmrMongoEndPoint": "http://192.168.100.67:8082",
+  "UserApiEndPoint": "http://192.168.100.67:8079"
 }
