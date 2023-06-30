@@ -48,7 +48,7 @@ export class NurseEntryComponent implements OnInit {
   ngOnInit(): void {
     let filter = {
       fromDate: this.todayDate,
-      toDate: this.todayDate,
+      toDate: '2024-01-01',
       doctorId: '-',
       regNo: '-',
       status: 'Doctor Waiting'

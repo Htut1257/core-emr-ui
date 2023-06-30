@@ -46,7 +46,7 @@ var DoctorScheduleSetupComponent = /** @class */ (function () {
     DoctorScheduleSetupComponent.prototype.ngOnInit = function () {
         this.initializeForm();
         this.getScheduleTemplateData();
-        //  this.getDoctorScheduleTemplateData()
+        this.getDoctorScheduleTemplateData();
         this.initializeGrid();
         //this.getWeekDay()
     };
@@ -66,7 +66,6 @@ var DoctorScheduleSetupComponent = /** @class */ (function () {
     DoctorScheduleSetupComponent.prototype.getDoctorSchedule = function (docId) {
         var _this = this;
         this.scheduleService.getDoctorSchedule(docId).pipe(rxjs_1.map(function (item) {
-            console.log(item);
             return item.filter(function (data) {
                 data.fromTimeString = moment(_this.todayDate + " " + data.fromTime).format('hh:mm A');
                 data.toTimeString = moment(_this.todayDate + " " + data.toTime).format('hh:mm A');
@@ -85,9 +84,20 @@ var DoctorScheduleSetupComponent = /** @class */ (function () {
         });
     };
     DoctorScheduleSetupComponent.prototype.getGeneratedSchedule = function () {
-        this.scheduleService.searchDoctorSchedule(this.todayDate, this.doctor.doctorId).subscribe({
+        var _this = this;
+        this.scheduleService.searchDoctorSchedule(this.todayDate, this.doctor.doctorId).pipe(rxjs_1.map(function (item) {
+            return item.filter(function (data) {
+                data.schDateString = moment(data.schDate).format('DD/MM/YYYY');
+                data.fromTimeString = moment(_this.todayDate + " " + data.fromTime).format('hh:mm A');
+                data.toTimeString = moment(_this.todayDate + " " + data.toTime).format('hh:mm A');
+                return data;
+            });
+        }))
+            .subscribe({
             next: function (schedules) {
                 console.log(schedules);
+                _this.docSchRow = schedules;
+                _this.docSchApi.setRowData(_this.docSchRow);
             },
             error: function (err) {
                 console.trace(err);
@@ -127,12 +137,20 @@ var DoctorScheduleSetupComponent = /** @class */ (function () {
         this.schGridOption = {
             columnDefs: this.schColumnDef,
             rowData: this.schRow,
-            suppressScrollOnNewData: false
+            suppressScrollOnNewData: false,
+            suppressHorizontalScroll: true,
+            defaultColDef: {
+                resizable: true
+            }
         };
         this.docSchGridOption = {
             columnDefs: this.docSchColumnDef,
             rowData: this.docSchRow,
-            suppressScrollOnNewData: false
+            suppressScrollOnNewData: false,
+            suppressHorizontalScroll: true,
+            defaultColDef: {
+                resizable: true
+            }
         };
     };
     DoctorScheduleSetupComponent.prototype.onGridReadySchedule = function (params) {
@@ -212,31 +230,30 @@ var DoctorScheduleSetupComponent = /** @class */ (function () {
     DoctorScheduleSetupComponent.prototype.getDoctorScheduleTemplateData = function () {
         this.docSchColumnDef = [
             {
-                headerName: "Days",
-                field: "day",
+                headerName: "Date",
+                field: "schDateString",
                 width: 25
             },
             {
                 headerName: "From",
-                field: "fromTime",
+                field: "fromTimeString",
                 width: 25
             },
             {
                 headerName: "To",
-                field: "toTime",
+                field: "toTimeString",
                 width: 25
             },
             {
-                headerName: "Limit",
-                field: "limitCount",
-                width: 25,
-                type: 'rightAligned'
+                headerName: "Status",
+                field: "actStatus",
+                width: 5,
+                cellRenderer: "checkBox"
             },
             {
-                headerName: "Status",
-                field: "status",
-                width: 25,
-                cellRenderer: "checkBox"
+                headerName: "Remark",
+                field: "remark",
+                width: 100
             },
         ];
         this.docSchRow = [];
@@ -363,12 +380,13 @@ var DoctorScheduleSetupComponent = /** @class */ (function () {
         });
     };
     DoctorScheduleSetupComponent.prototype.generateSchedule = function (data) {
+        var _this = this;
         var fromDate = moment(data.fromDate).format("YYYY-MM-DD");
         var toDate = moment(data.toDate).format("YYYY-MM-DD");
         this.scheduleService.generateDoctorSchedule(fromDate, toDate, this.doctor.doctorId).subscribe({
             next: function (schedule) {
                 console.log("schedule generated");
-                console.log(schedule);
+                _this.getGeneratedSchedule();
             },
             error: function (err) {
                 console.trace(err);

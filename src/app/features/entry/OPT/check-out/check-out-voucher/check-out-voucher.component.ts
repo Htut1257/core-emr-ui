@@ -242,7 +242,8 @@ export class CheckOutVoucherComponent implements OnInit {
     this.checkOutGridOption = {
       columnDefs: this.checkOutColumnDef,
       rowData: this.checkOutRow,
-      suppressScrollOnNewData: false,
+      suppressScrollOnNewData: true,
+      suppressHorizontalScroll:true,
       defaultColDef: {
         resizable: true
       },
@@ -252,6 +253,7 @@ export class CheckOutVoucherComponent implements OnInit {
       columnDefs: this.paymentColumnDef,
       rowData: this.paymentRow,
       suppressScrollOnNewData: false,
+     
       onGridReady(event) {
         this.paymentApi = event.api
         this.paymentColumn = event.columnApi
@@ -463,6 +465,7 @@ export class CheckOutVoucherComponent implements OnInit {
   //cell Editing event for Check Out Table
   checkOutCellEvent(rowIndex: any, firstColumn: any, columnField: string, gridApi: GridApi, rowData: Object, lstRow: any[]) {
     let data: any = rowData
+    console.log(data)
     let itemType = data.cityObject.itemOption
     if (columnField == "cityObject") {
       if (data.cityObject.itemId == '') {
@@ -472,7 +475,7 @@ export class CheckOutVoucherComponent implements OnInit {
 
       data.qty = 1
       data.price = data.cityObject.fees
-      data.amount = data.price * data.qty
+      data.amount = (data.price * data.qty) - data.discount
 
       if (itemType == "Pharmacy") {
         this.checkOutRow[rowIndex] = rowData;
@@ -496,24 +499,27 @@ export class CheckOutVoucherComponent implements OnInit {
       }
 
       data.qty = data.patternObj.factor * data.day
-      data.amount = data.price * data.qty
+      data.amount = (data.price * data.qty) - data.discount
       this.setRowDatatoTable(rowIndex, this.checkOutRow, rowData, this.checkOutApi, this.checkOutGridOption)
       this.focusTableCell(rowIndex + 1, firstColumn, gridApi)
     }
 
     if (columnField == "day") {
       data.qty = data.patternObj.factor * data.day
-      data.amount = data.price * data.qty
+      data.amount = (data.price * data.qty) - data.discount
       this.setRowDatatoTable(rowIndex, this.checkOutRow, rowData, this.checkOutApi, this.checkOutGridOption)
     }
 
     if (columnField == "qty") {
-      data.amount = data.price * data.qty
+      data.amount = (data.price * data.qty) - data.discount
+     
+    
+      
       this.setRowDatatoTable(rowIndex, this.checkOutRow, rowData, this.checkOutApi, this.checkOutGridOption)
     }
 
     if (columnField == "price") {
-      data.amount = data.price * data.qty
+      data.amount =(data.price * data.qty) - data.discount
       this.setRowDatatoTable(rowIndex, this.checkOutRow, rowData, this.checkOutApi, this.checkOutGridOption)
       if (itemType != "Pharmacy" && itemType != '') {
         this.focusTableCell(rowIndex + 1, firstColumn, gridApi)
@@ -521,6 +527,10 @@ export class CheckOutVoucherComponent implements OnInit {
     }
 
     if (columnField == "discount") {
+      data.amount =(data.price * data.qty) - data.discount
+      if(data.price===0 ||data.amount<0){
+        data.amount=0
+      }
       this.setRowDatatoTable(rowIndex, this.checkOutRow, rowData, this.checkOutApi, this.checkOutGridOption)
     }
   }

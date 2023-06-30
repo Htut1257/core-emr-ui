@@ -57,6 +57,12 @@ exports.navItems = [
                 children: []
             },
             {
+                displayName: 'Doctor Booking Status',
+                iconName: 'DoctorBooking Status',
+                route: 'main/opd/appointment/appointment-status',
+                children: []
+            },
+            {
                 displayName: 'Nurse Entry',
                 iconName: 'doctorentry',
                 route: 'main/opd/nurse-entry',
@@ -68,6 +74,37 @@ exports.navItems = [
         displayName: "Setup",
         iconName: "",
         route: "setup",
+        children: [
+            {
+                displayName: 'Doctor Setup',
+                iconName: 'doctor-setup',
+                route: 'setup/doctor',
+                children: []
+            },
+            {
+                displayName: 'OPD Setup',
+                iconName: 'opd-setup',
+                route: 'setup/opd/opd-setup',
+                children: []
+            },
+            {
+                displayName: 'Pattern Setup',
+                iconName: 'pattern-setup',
+                route: 'setup/pattern',
+                children: []
+            },
+            {
+                displayName: 'Schedule Setup',
+                iconName: 'schedule-setup',
+                route: 'setup/schedule/doctor-schedule',
+                children: []
+            },
+        ]
+    },
+    {
+        displayName: "System",
+        iconName: "",
+        route: "system",
         children: [
             {
                 displayName: 'User',

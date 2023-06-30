@@ -18,7 +18,7 @@ var DoctorListComponent = /** @class */ (function () {
         this.commonService = commonService;
         this.toastService = toastService;
         this.doctors = [];
-        this.displayedColumn = ["position", "name", "nrc", "gender"];
+        this.displayedColumn = ["position", "initial", "name", "active"];
         this.isMobile = false;
         this.isSelected = false;
         this.dataSource = new table_1.MatTableDataSource(this.doctors);
@@ -36,6 +36,7 @@ var DoctorListComponent = /** @class */ (function () {
         var _this = this;
         this.doctorService.getDoctor().subscribe({
             next: function (doctors) {
+                console.log(doctors);
                 _this.doctors = doctors;
                 _this.dataSource.data = _this.doctors;
                 _this.filterDctor();

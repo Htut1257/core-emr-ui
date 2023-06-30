@@ -187,21 +187,33 @@ export class DoctorSetupComponent implements OnInit, OnDestroy {
       columnDefs: this.opdFeeColumnDef,
       rowData: this.opdFeeRow,
       suppressScrollOnNewData: false,
-      rowHeight: 22
+      rowHeight: 22,
+      suppressHorizontalScroll: true,
+      defaultColDef: {
+        resizable: true
+      },
     }
 
     this.otFeeGridOption = {
       columnDefs: this.otFeeColumnDef,
       rowData: this.otFeeRow,
       suppressScrollOnNewData: false,
-      rowHeight: 22
+      rowHeight: 22,
+      suppressHorizontalScroll: true,
+      defaultColDef: {
+        resizable: true
+      },
     }
 
     this.dcFeeGridOption = {
       columnDefs: this.dcFeeColumnDef,
       rowData: this.dcFeeRow,
       suppressScrollOnNewData: false,
-      rowHeight: 22
+      rowHeight: 22,
+      suppressHorizontalScroll: true,
+      defaultColDef: {
+        resizable: true
+      },
     }
   }
 
@@ -227,7 +239,7 @@ export class DoctorSetupComponent implements OnInit, OnDestroy {
   getOpdData() {
     this.opdFeeColumnDef = [
       {
-        headerName: 'Opd Service',
+        headerName: 'OPD Service',
         field: 'opdFeeObj',
         width: 100,
         editable: true,
@@ -262,7 +274,7 @@ export class DoctorSetupComponent implements OnInit, OnDestroy {
         // cellClass: "actions-button-cell"
       },
       {
-        headerName: 'Opd Fee',
+        headerName: 'OPD Fee',
         field: 'opdFeeObj.fees',
         type: 'rightAligned',
         width: 100,
@@ -285,13 +297,13 @@ export class DoctorSetupComponent implements OnInit, OnDestroy {
   getOtData() {
     this.otFeeColumnDef = [
       {
-        headerName: 'Ot Service',
+        headerName: 'OT Service',
         field: 'service',
         width: 100,
         editable: true,
       },
       {
-        headerName: 'Ot Fee',
+        headerName: 'OT Fee',
         field: 'fee',
         width: 100,
         editable: true,

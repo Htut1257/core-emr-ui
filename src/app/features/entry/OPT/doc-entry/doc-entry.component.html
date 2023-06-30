@@ -15,13 +15,13 @@
         <mat-label>Adm No</mat-label>
         <input matInput type="text" name="admNo" disabled>
     </mat-form-field>
-    <mat-form-field class="div-no-margin col-1" appearance="outline">
+    <mat-form-field class="div-no-margin col-2" appearance="outline">
         <mat-label>Name</mat-label>
         <input matInput type="text" name="patientName" [(ngModel)]="patientName" disabled>
     </mat-form-field>
-    <div class="col-1">
+    <!-- <div class="col-1">
         <span class="example-spacer"></span>
-    </div>
+    </div> -->
     <mat-form-field class="div-no-margin col-1" appearance="outline">
         <mat-label>Total Reg</mat-label>
         <input matInput type="text" name="fromDate" value="0">
@@ -87,13 +87,13 @@
 </div>
 <div class="row">
     <div class="col-3">
-        <ag-grid-angular id="examinationGrid" class="ag-theme-balham" style="height:72.5vh;width:100%;"
+        <ag-grid-angular id="examinationGrid" class="ag-theme-balham " style="height:72.5vh;width:100%;"
             [gridOptions]="examinationGridOption" (gridReady)="onGriReadyExamination($event)"
             [frameworkComponents]="frameworkComponents" (cellEditingStopped)="cellEditingStopped($event)">
         </ag-grid-angular>
     </div>
     <div class="col-6">
-        <ag-grid-angular id="treatmentGrid" class="ag-theme-balham" style="height:72.5vh;width:100%;"
+        <ag-grid-angular id="treatmentGrid" class="ag-theme-balham no-scrollbars" style="height:72.5vh;width:100%;"
             [gridOptions]="treatmentGridOption" (gridReady)="onGridReadyTreatment($event)"
             [frameworkComponents]="frameworkComponents" (cellEditingStopped)="cellEditingStopped($event)">
         </ag-grid-angular>

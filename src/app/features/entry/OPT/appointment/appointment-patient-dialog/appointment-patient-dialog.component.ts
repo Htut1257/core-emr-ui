@@ -18,7 +18,6 @@ export class AppointmentPatientDialogComponent implements OnInit {
 
   todayDate = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD')
 
-
   displayedColumn: string[] = ["no", "date", "regno", "patient", "doctor", "phone", "serialno", "wl"]
   dataSource!: MatTableDataSource<Booking>
 
@@ -39,7 +38,7 @@ export class AppointmentPatientDialogComponent implements OnInit {
   ngOnInit(): void {
     let filter = {
       fromDate: this.todayDate,
-      toDate: this.todayDate,
+      toDate:'2024-01-01',
       doctorId: this.user.doctorId,
       regNo: '-',
       //tatus: '-'

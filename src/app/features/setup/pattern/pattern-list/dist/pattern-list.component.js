@@ -43,6 +43,11 @@ var PatternListComponent = /** @class */ (function () {
         });
     };
     PatternListComponent.prototype.getRowData = function (row) {
+        this.dataSource.data = this.dataSource.data.map(function (item) {
+            item.isSelected = false;
+            return item;
+        });
+        row.isSelected = !row.isSelected;
         this.patternService._pattern = row;
         if (this.isMobile) {
             this.commonService.getCurrentObject(true);

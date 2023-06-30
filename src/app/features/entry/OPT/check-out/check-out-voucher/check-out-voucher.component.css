@@ -27,3 +27,10 @@
     padding-bottom: 0px;
 } */
 
+#checkOutGrid{
+    overflow-x: hidden;
+}
+
+.ag-theme-balham.no-scrollbars {
+    overflow: hidden !important;
+  }

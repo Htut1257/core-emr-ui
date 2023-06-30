@@ -88,7 +88,7 @@ export const navItems: any = [
                 children: []
             },
             {
-                displayName: 'Opd Setup',
+                displayName: 'OPD Setup',
                 iconName: 'opd-setup',
                 route: 'setup/opd/opd-setup',
                 children: []

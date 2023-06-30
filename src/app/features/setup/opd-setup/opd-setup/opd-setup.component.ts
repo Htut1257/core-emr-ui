@@ -85,6 +85,10 @@ export class OpdSetupComponent implements OnInit {
       columnDefs: this.opdCategoryColumnDef,
       rowData: this.opdCategoryRow,
       suppressScrollOnNewData: false,
+      suppressHorizontalScroll: true,
+      defaultColDef: {
+        resizable: true
+      },
       onGridReady(event) {
         this.opdCategoryApi = event.api
         this.opdCategoryColumn = event.columnApi
@@ -99,6 +103,10 @@ export class OpdSetupComponent implements OnInit {
       columnDefs: this.opdServiceColumnDef,
       rowData: this.opdServiceRow,
       suppressScrollOnNewData: false,
+      suppressHorizontalScroll: true,
+      defaultColDef: {
+        resizable: true
+      },
     }
   }
 

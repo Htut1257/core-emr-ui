@@ -17,7 +17,7 @@ export class DoctorListComponent implements OnInit {
   doctor: Doctor
   doctors: Doctor[] = []
 
-  displayedColumn: string[] = ["position", "name", "nrc", "gender"]
+  displayedColumn: string[] = ["position","initial", "name","active"]
   dataSource: MatTableDataSource<Doctor>
   @ViewChild(MatSort,{static:true})sort:MatSort
 
@@ -46,6 +46,7 @@ export class DoctorListComponent implements OnInit {
   getAllDoctor() {
     this.doctorService.getDoctor().subscribe({
       next: doctors => {
+        console.log(doctors)
         this.doctors = doctors
         this.dataSource.data = this.doctors
         this.filterDctor()

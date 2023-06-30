@@ -321,16 +321,21 @@ export class DocEntryComponent implements OnInit {
       rowData: this.examinationRow,
       suppressScrollOnNewData: false,
       stopEditingWhenCellsLoseFocus: true,
+      suppressHorizontalScroll: true,
+      defaultColDef: {
+        resizable: true
+      },
     }
 
     this.treatmentGridOption = {
       columnDefs: this.treatmentColumnDef,
       rowData: this.treatmentRow,
       suppressScrollOnNewData: false,
+      stopEditingWhenCellsLoseFocus: true,
+      suppressHorizontalScroll: true,
       defaultColDef: {
         resizable: true
       },
-      stopEditingWhenCellsLoseFocus: true,
     }
 
     this.noteGridOption = {
@@ -338,6 +343,10 @@ export class DocEntryComponent implements OnInit {
       rowData: this.noteRow,
       suppressScrollOnNewData: false,
       stopEditingWhenCellsLoseFocus: true,
+      suppressHorizontalScroll: true,
+      defaultColDef: {
+        resizable: true
+      },
     }
 
   }
@@ -385,9 +394,9 @@ export class DocEntryComponent implements OnInit {
           }
           return params.value;
         },
-       
+
       },
-     
+
     ]
 
     this.examinationRow = [
@@ -639,6 +648,7 @@ export class DocEntryComponent implements OnInit {
 
     if (this.treatmentApi.getFocusedCell()) {
       if (columnField == "cityObject") {
+        debugger
         let itemType = rowData.cityObject.itemOption
         if (rowData.cityObject.itemId == '') {
           this.treatmentApi.setFocusedCell(row, columnField);
@@ -658,9 +668,10 @@ export class DocEntryComponent implements OnInit {
         let treatRow: any = this.emptydrTreat()
         treatRow.day = this.pharmacyDays
         this.addNewRowtoTable(row, firstEditCol, this.treatmentApi, rowData, this.drTreatment, treatRow)
-        this.focusTableCell(row + 1, firstEditCol, this.treatmentApi)
+        this.focusTableCell(row, firstEditCol, this.treatmentApi)
       }
       if (columnField == "patternObj") {
+        //debugger
         this.treatmentApi.setFocusedCell(row, columnField);
         rowData.qty = rowData.patternObj.factor * rowData.day
         this.treatmentRow[row] = rowData;
@@ -836,7 +847,6 @@ export class DocEntryComponent implements OnInit {
 
     let booking: any = this.booking
     booking.bStatus = booking.bstatus
-    return
     this.entryService.saveDoctorMedical(docMedic).subscribe({
       next: data => {
         this.appointService.updateAppointmentStatus(booking).subscribe({

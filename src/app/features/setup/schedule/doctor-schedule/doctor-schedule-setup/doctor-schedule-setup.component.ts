@@ -80,10 +80,10 @@ export class DoctorScheduleSetupComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.initializeForm()
     this.getScheduleTemplateData()
-    //  this.getDoctorScheduleTemplateData()
+    this.getDoctorScheduleTemplateData()
     this.initializeGrid()
     //this.getWeekDay()
-    
+
   }
 
   ngOnDestroy(): void {
@@ -106,7 +106,6 @@ export class DoctorScheduleSetupComponent implements OnInit, OnDestroy {
   getDoctorSchedule(docId: string) {
     this.scheduleService.getDoctorSchedule(docId).pipe(
       map(item => {
-        console.log(item)
         return item.filter((data: any) => {
           data.fromTimeString = moment(this.todayDate + " " + data.fromTime).format('hh:mm A')
           data.toTimeString = moment(this.todayDate + " " + data.toTime).format('hh:mm A')
@@ -127,14 +126,26 @@ export class DoctorScheduleSetupComponent implements OnInit, OnDestroy {
   }
 
   getGeneratedSchedule() {
-    this.scheduleService.searchDoctorSchedule(this.todayDate, this.doctor.doctorId).subscribe({
-      next: schedules => {
-        console.log(schedules)
-      },
-      error: err => {
-        console.trace(err)
-      }
-    })
+    this.scheduleService.searchDoctorSchedule(this.todayDate, this.doctor.doctorId).pipe(
+      map(item => {
+        return item.filter((data: any) => {
+          data.schDateString = moment(data.schDate).format('DD/MM/YYYY')
+          data.fromTimeString = moment(this.todayDate + " " + data.fromTime).format('hh:mm A')
+          data.toTimeString = moment(this.todayDate + " " + data.toTime).format('hh:mm A')
+          return data;
+        })
+      })
+    )
+      .subscribe({
+        next: schedules => {
+          console.log(schedules)
+          this.docSchRow = schedules
+          this.docSchApi.setRowData(this.docSchRow)
+        },
+        error: err => {
+          console.trace(err)
+        }
+      })
   }
 
   renderScheduleTemplate(data) {
@@ -172,12 +183,20 @@ export class DoctorScheduleSetupComponent implements OnInit, OnDestroy {
       columnDefs: this.schColumnDef,
       rowData: this.schRow,
       suppressScrollOnNewData: false,
+      suppressHorizontalScroll: true,
+      defaultColDef: {
+        resizable: true
+      },
     }
 
     this.docSchGridOption = {
       columnDefs: this.docSchColumnDef,
       rowData: this.docSchRow,
       suppressScrollOnNewData: false,
+      suppressHorizontalScroll: true,
+      defaultColDef: {
+        resizable: true
+      },
     }
   }
 
@@ -266,31 +285,30 @@ export class DoctorScheduleSetupComponent implements OnInit, OnDestroy {
   getDoctorScheduleTemplateData() {
     this.docSchColumnDef = [
       {
-        headerName: "Days",
-        field: "day",
+        headerName: "Date",
+        field: "schDateString",
         width: 25,
       },
       {
         headerName: "From",
-        field: "fromTime",
+        field: "fromTimeString",
         width: 25,
       },
       {
         headerName: "To",
-        field: "toTime",
+        field: "toTimeString",
         width: 25,
-      },
-      {
-        headerName: "Limit",
-        field: "limitCount",
-        width: 25,
-        type: 'rightAligned'
       },
       {
         headerName: "Status",
-        field: "status",
-        width: 25,
+        field: "actStatus",
+        width: 5,
         cellRenderer: "checkBox"
+      },
+      {
+        headerName: "Remark",
+        field: "remark",
+        width: 100,
       },
     ]
     this.docSchRow = [
@@ -444,7 +462,7 @@ export class DoctorScheduleSetupComponent implements OnInit, OnDestroy {
     this.scheduleService.generateDoctorSchedule(fromDate, toDate, this.doctor.doctorId).subscribe({
       next: schedule => {
         console.log("schedule generated")
-        console.log(schedule)
+        this.getGeneratedSchedule()
       },
       error: err => {
         console.trace(err)

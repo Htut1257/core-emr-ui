@@ -2,7 +2,7 @@
     <div class="col-3">
         <div class="row">
             <mat-form-field class='div-no-margin col-9' appearance="outline">
-                <mat-label>Opd Group</mat-label>
+                <mat-label>OPD Group</mat-label>
                 <input [id]="'opdGroup'" matInput [matAutocomplete]="auto" type="text" name="opdGroup"
                     [formControl]="opdGroupControl">
                 <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="opdGroupDisplayFn"
@@ -18,7 +18,7 @@
             </div>
         </div>
         <mat-form-field class='div-no-margin col-12' appearance="outline">
-            <mat-label>Opd Category</mat-label>
+            <mat-label>OPD Category</mat-label>
             <input [id]="'opdCategory'" matInput type="text" name="opdCategory" [formControl]="opdCategoryControl">
             <mat-autocomplete autoActiveFirstOption [displayWith]="opdCategoryDisplayFn"
                 (optionSelected)="getOpdGroupData($event)">
@@ -33,7 +33,7 @@
     </div>
     <div class="col-9">
         <mat-form-field class='div-no-margin col-12' appearance="outline">
-            <mat-label>Opd Service</mat-label>
+            <mat-label>OPD Service</mat-label>
             <input [id]="'opdService'" matInput type="text" name="opdService" [formControl]="opdServiceControl">
             <mat-autocomplete autoActiveFirstOption [displayWith]="opdServiceDisplayFn"
                 (optionSelected)="getOpdGroupData($event)">

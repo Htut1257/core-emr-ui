@@ -4,7 +4,7 @@
     </div>
     <div class="container-setup large">
 
-        <ag-grid-angular #schTemplateGrid class="ag-theme-balham mb-1" style="width:100%;height:42vh"
+        <ag-grid-angular #schTemplateGrid class="ag-theme-balham mb-1" style="width:100%;height:40vh"
             [gridOptions]="schGridOption" [frameworkComponents]="frameworkComponents"
             (gridReady)="onGridReadySchedule($event)" (cellValueChanged)="cellValueChanged($event)"
             (cellEditingStopped)="cellEditingStopped($event)">
@@ -33,7 +33,7 @@
             </div>
 
         </form>
-        <ag-grid-angular #schGrid class="ag-theme-balham mb-1" style="width:100%;height:42vh"
+        <ag-grid-angular #schGrid class="ag-theme-balham mb-1" style="width:100%;height:40vh"
             [gridOptions]="docSchGridOption" [frameworkComponents]="frameworkComponents"
             (gridReady)="onGridReadyDoctorSchedule($event)">
         </ag-grid-angular>

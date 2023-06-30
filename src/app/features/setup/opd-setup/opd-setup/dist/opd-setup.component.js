@@ -32,19 +32,22 @@ var OpdSetupComponent = /** @class */ (function () {
         };
     }
     OpdSetupComponent.prototype.ngOnInit = function () {
-        //
         this.autocompleteFilter();
         this.getOpdCategoryData();
         this.getOpdServiceData();
         this.initializeGridTable();
-        this.getOpdGroup();
     };
+    //initialize grid table with data
     OpdSetupComponent.prototype.initializeGridTable = function () {
         var _this = this;
         this.opdCategoryGridOption = {
             columnDefs: this.opdCategoryColumnDef,
             rowData: this.opdCategoryRow,
             suppressScrollOnNewData: false,
+            suppressHorizontalScroll: true,
+            defaultColDef: {
+                resizable: true
+            },
             onGridReady: function (event) {
                 this.opdCategoryApi = event.api;
                 this.opdCategoryColumn = event.columnApi;
@@ -57,7 +60,11 @@ var OpdSetupComponent = /** @class */ (function () {
         this.opdServiceGridOption = {
             columnDefs: this.opdServiceColumnDef,
             rowData: this.opdServiceRow,
-            suppressScrollOnNewData: false
+            suppressScrollOnNewData: false,
+            suppressHorizontalScroll: true,
+            defaultColDef: {
+                resizable: true
+            }
         };
     };
     OpdSetupComponent.prototype.onGridReadyOpdCategory = function (params) {
@@ -288,20 +295,14 @@ var OpdSetupComponent = /** @class */ (function () {
     //filter for autocomplete
     OpdSetupComponent.prototype.autocompleteFilter = function () {
         var _this = this;
-        this.filteredGroup = this.opdGroupControl.valueChanges.pipe(rxjs_1.startWith(''), rxjs_1.map(function (value) { return (value ? _this._filterOpdGroup(value) : _this.opdGroups.slice()); }));
+        this.filteredGroup = this.opdGroupControl.valueChanges.pipe(rxjs_1.startWith(''), rxjs_1.switchMap(function (name) {
+            return name ? _this._filterOpdGroup(name) : [];
+        }));
         this.filteredCategory = this.opdCategoryControl.valueChanges.pipe(rxjs_1.startWith(''), rxjs_1.map(function (value) { return (value ? _this._filterOpdCategory(value) : _this.opdCategories.slice()); }));
         this.filteredService = this.opdServiceControl.valueChanges.pipe(rxjs_1.startWith(''), rxjs_1.map(function (value) { return (value ? _this._filterOpdService(value) : _this.opdServices.slice()); }));
     };
-    OpdSetupComponent.prototype.getOpdGroup = function () {
-        var _this = this;
-        this.opdService.getOpdGroup().subscribe({
-            next: function (opdGroups) {
-                _this.opdGroups = opdGroups;
-            },
-            error: function (err) {
-                console.trace(err);
-            }
-        });
+    OpdSetupComponent.prototype.getOpdGroup = function (name) {
+        return this.opdService.getOpdGroup().pipe(rxjs_1.filter(function (data) { return !!data; }), rxjs_1.map(function (item) { return item.filter(function (option) { return option.groupName.toLowerCase().includes(name); }); }));
     };
     OpdSetupComponent.prototype.opdGroupDisplayFn = function (item) {
         return item ? item.groupName : '';
@@ -309,13 +310,7 @@ var OpdSetupComponent = /** @class */ (function () {
     //filter data for autocomplete
     OpdSetupComponent.prototype._filterOpdGroup = function (value) {
         var filterValue = value;
-        if (value.groupName != null) {
-            filterValue = value.groupName.toLowerCase();
-        }
-        else {
-            filterValue = value.toLowerCase();
-        }
-        return this.opdGroups.filter(function (data) { return data.groupName.toLowerCase().includes(filterValue); });
+        return this.getOpdGroup(filterValue);
     };
     //open dialog of opd group setup
     OpdSetupComponent.prototype.openOpdGroupDialog = function () {

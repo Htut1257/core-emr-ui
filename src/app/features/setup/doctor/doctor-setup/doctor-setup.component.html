@@ -61,14 +61,15 @@
                 </mat-option>
             </mat-select>
         </mat-form-field>
+        <div class="form-group-btn col-12 col-lg-6">
+            <mat-checkbox class="col-2" formControlName="active" name="active" color="primary">Active
+            </mat-checkbox>
+            <button mat-flat-button type="button" color="primary" class="btn-small float-right">Clear</button>
+            <button mat-flat-button type="submit" color="primary" class="btn-small float-right">Save</button>
+            <!-- [disabled]="!doctorForm.valid" -->
+        </div>
     </div>
-    <div class="form-group-btn col-12 ">
-        <mat-checkbox class="col-2" formControlName="active" name="active" color="primary">Active
-        </mat-checkbox>
-        <button mat-flat-button type="button" color="primary" class="btn-small float-right">Clear</button>
-        <button mat-flat-button type="submit" color="primary" class="btn-small float-right">Save</button>
-        <!-- [disabled]="!doctorForm.valid" -->
-    </div>
+   
     <div class="row mt-2">
         <ag-grid-angular #opdFeeGrid class="ag-theme-balham mb-1" style="width:100%;height:15.5vh"
             [gridOptions]="opdFeeGridOption" [frameworkComponents]="frameworkComponents"

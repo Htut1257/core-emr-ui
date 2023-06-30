@@ -39,7 +39,7 @@ var NurseEntryComponent = /** @class */ (function () {
         var _this = this;
         var filter = {
             fromDate: this.todayDate,
-            toDate: this.todayDate,
+            toDate: '2024-01-01',
             doctorId: '-',
             regNo: '-',
             status: 'Doctor Waiting'
