@@ -1,12 +1,15 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit,OnDestroy, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Booking } from 'src/app/core/model/booking.model';
+
 import { AppointmentService } from 'src/app/core/services/appointment-service/appointment.service';
 import { ServerService } from 'src/app/core/services/server-service/server.service';
 import { ToastService } from 'src/app/core/services/toast-service/toast-service.service';
 import { CommonServiceService } from 'src/app/core/services/common-service/common-service.service';
+
 import { MatDialog } from '@angular/material/dialog';
 import { AppointmentSearchDialogComponent } from '../appointment-search-dialog/appointment-search-dialog.component';
 import * as moment from 'moment';
@@ -16,15 +19,14 @@ import * as moment from 'moment';
   styleUrls: ['./appointment-history.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class AppointmentHistoryComponent implements OnInit {
+export class AppointmentHistoryComponent implements OnInit,OnDestroy {
   bookings: Booking[]
 
   todayDate = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD')
 
-
   displayedColumn: string[] = ["no", "date", "regno", "patient", "doctor", "phone", "serialno", "wl", "reg"]
   dataSource!: MatTableDataSource<Booking>
-
+  serverSubscription:Subscription
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
 
   constructor(
@@ -35,9 +37,10 @@ export class AppointmentHistoryComponent implements OnInit {
   ) {
     this.bookings = []
     this.dataSource = new MatTableDataSource<Booking>(this.bookings)
-    this.appointService.bookings.subscribe(data => {
+    this.appointService.bookings$.subscribe(data => {
       this.dataSource.data = data
     })
+   // this.getServer()
   }
 
   ngOnInit(): void {
@@ -49,12 +52,35 @@ export class AppointmentHistoryComponent implements OnInit {
       status: '-'
     }
     this.getBooking(filter);
-    this.getServerSideData();
+   
+   // this.getServerSideData();
+  }
+
+  ngOnDestroy(): void {
+    //this.serverSubscription.unsubscribe()
+  }
+
+  getServer(){
+    this.serverService.serverData
+    console.log( this.serverService.serverData)
+    // if (this.serverService.serverData.actionStatus == "ADD") {
+    //   // console.log("add")
+    //   // this.bookings.push(serverData);
+    //   // this.appointService.bookings.next(this.bookings)
+    // }
+    // if (this.serverService.serverData.actionStatus == "UPDATE") {
+    //   console.log("update")
+    //   // let targetIndex = this.bookings.findIndex(data => data.bookingId == serverData.bookingId)
+    //   // this.bookings[targetIndex] = serverData
+    //   // this.appointService.bookings.next(this.bookings)
+    //   //this.bookings[this.bookings.indexOf(serverData.bookingId)] = serverData
+
+    // }
   }
 
   getServerSideData() {
     let uri = '/opdBooking/getMessage'
-    this.serverService.getServerSource(uri).subscribe(data => {
+    this.serverSubscription=this.serverService.getServerSource(uri).subscribe(data => {
       let serverData = JSON.parse(data.data)
       console.log(serverData)
       if (serverData.actionStatus == "ADD") {
@@ -76,7 +102,6 @@ export class AppointmentHistoryComponent implements OnInit {
   //get Appointment
   getBooking(filter: any) {
     this.appointService.getAppointment(filter).subscribe(appoint => {
-      console.log(appoint)
       this.bookings = appoint
       this.dataSource = new MatTableDataSource(this.bookings)
       this.sortBooking()

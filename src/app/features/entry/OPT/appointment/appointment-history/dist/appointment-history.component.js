@@ -25,9 +25,10 @@ var AppointmentHistoryComponent = /** @class */ (function () {
         this.displayedColumn = ["no", "date", "regno", "patient", "doctor", "phone", "serialno", "wl", "reg"];
         this.bookings = [];
         this.dataSource = new table_1.MatTableDataSource(this.bookings);
-        this.appointService.bookings.subscribe(function (data) {
+        this.appointService.bookings$.subscribe(function (data) {
             _this.dataSource.data = data;
         });
+        // this.getServer()
     }
     AppointmentHistoryComponent.prototype.ngOnInit = function () {
         var filter = {
@@ -38,12 +39,31 @@ var AppointmentHistoryComponent = /** @class */ (function () {
             status: '-'
         };
         this.getBooking(filter);
-        this.getServerSideData();
+        // this.getServerSideData();
+    };
+    AppointmentHistoryComponent.prototype.ngOnDestroy = function () {
+        //this.serverSubscription.unsubscribe()
+    };
+    AppointmentHistoryComponent.prototype.getServer = function () {
+        this.serverService.serverData;
+        console.log(this.serverService.serverData);
+        // if (this.serverService.serverData.actionStatus == "ADD") {
+        //   // console.log("add")
+        //   // this.bookings.push(serverData);
+        //   // this.appointService.bookings.next(this.bookings)
+        // }
+        // if (this.serverService.serverData.actionStatus == "UPDATE") {
+        //   console.log("update")
+        //   // let targetIndex = this.bookings.findIndex(data => data.bookingId == serverData.bookingId)
+        //   // this.bookings[targetIndex] = serverData
+        //   // this.appointService.bookings.next(this.bookings)
+        //   //this.bookings[this.bookings.indexOf(serverData.bookingId)] = serverData
+        // }
     };
     AppointmentHistoryComponent.prototype.getServerSideData = function () {
         var _this = this;
         var uri = '/opdBooking/getMessage';
-        this.serverService.getServerSource(uri).subscribe(function (data) {
+        this.serverSubscription = this.serverService.getServerSource(uri).subscribe(function (data) {
             var serverData = JSON.parse(data.data);
             console.log(serverData);
             if (serverData.actionStatus == "ADD") {
@@ -64,7 +84,6 @@ var AppointmentHistoryComponent = /** @class */ (function () {
     AppointmentHistoryComponent.prototype.getBooking = function (filter) {
         var _this = this;
         this.appointService.getAppointment(filter).subscribe(function (appoint) {
-            console.log(appoint);
             _this.bookings = appoint;
             _this.dataSource = new table_1.MatTableDataSource(_this.bookings);
             _this.sortBooking();

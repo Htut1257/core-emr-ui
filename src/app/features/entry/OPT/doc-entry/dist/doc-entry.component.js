@@ -68,7 +68,7 @@ var DocEntryComponent = /** @class */ (function () {
         this.getTreatmentData();
         this.getNoteData();
         this.InitializeGridTable();
-        this.getServerSideData();
+        //this.getServerSideData();
         // this.getVisitDate()
     };
     DocEntryComponent.prototype.onInitData = function (booking) {
@@ -562,7 +562,7 @@ var DocEntryComponent = /** @class */ (function () {
                 var treatRow = this.emptydrTreat();
                 treatRow.day = this.pharmacyDays;
                 this.addNewRowtoTable(row, firstEditCol, this.treatmentApi, rowData, this.drTreatment, treatRow);
-                this.focusTableCell(row, firstEditCol, this.treatmentApi);
+                this.focusTableCell(row + 1, firstEditCol, this.treatmentApi);
             }
             if (columnField == "patternObj") {
                 //debugger

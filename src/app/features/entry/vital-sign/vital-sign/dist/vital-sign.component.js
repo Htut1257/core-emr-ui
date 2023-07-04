@@ -28,7 +28,7 @@ var VitalSignComponent = /** @class */ (function () {
         this.commonService.isMobile$.subscribe(function (data) {
             _this.isMobile = data;
         });
-        this.appointService.bookings.subscribe(function (data) {
+        this.appointService.bookings$.subscribe(function (data) {
             _this.dataSource.data = data;
         });
     }
@@ -38,10 +38,10 @@ var VitalSignComponent = /** @class */ (function () {
             toDate: this.todayDate,
             doctorId: '-',
             regNo: '-',
-            status: 'Vital Sign'
+            status: '-'
         };
         this.getBooking(filter);
-        this.getServerSideData();
+        // this.getServerSideData();
     };
     VitalSignComponent.prototype.getServerSideData = function () {
         var _this = this;

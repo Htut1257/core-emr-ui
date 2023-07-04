@@ -89,8 +89,8 @@ var AppointmentRegistrationComponent = /** @class */ (function () {
             next: function (schedules) {
                 console.log(schedules);
                 _this.schedules = schedules.map(function (item) {
-                    item.fromTime = moment(_this.todayDate + ' ' + item.fromTime).format('hh:mm a');
-                    item.toTime = moment(_this.todayDate + ' ' + item.toTime).format('hh:mm a');
+                    item.fromTimeString = moment(_this.todayDate + ' ' + item.fromTime).format('hh:mm a');
+                    item.toTimeString = moment(_this.todayDate + ' ' + item.toTime).format('hh:mm a');
                     return item;
                 });
             },
@@ -132,7 +132,10 @@ var AppointmentRegistrationComponent = /** @class */ (function () {
         var booking = data;
         booking.patientName = data.patient.patientName != undefined ? data.patient.patientName : data.patient;
         booking.doctorId = data.doctor.doctorId;
-        booking.bkDate = moment(data.bkDate).format("yyyy-MM-DD");
+        booking.schId = data.bkDate.schId;
+        booking.from = data.bkDate.fromTime;
+        booking.to = data.bkDate.fromTime;
+        booking.bkDate = moment(data.bkDate.schDate).format("yyyy-MM-DD");
         console.log(booking);
         this.appointService.saveAppointment(booking).subscribe(function (data) {
             _this.toastService.showSuccessToast("", "Success Adding new Appointment");

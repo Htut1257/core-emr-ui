@@ -45,7 +45,7 @@ var NurseEntryComponent = /** @class */ (function () {
             status: 'Doctor Waiting'
         };
         this.getBooking(filter);
-        this.getServerSideData();
+        //s this.getServerSideData();
         this.filteredDoc = this.docControl.valueChanges.pipe(rxjs_1.startWith(''), rxjs_1.switchMap(function (name) {
             return name ? _this._filterDoc(name) : [];
         }));

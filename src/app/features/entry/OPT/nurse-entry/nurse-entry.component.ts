@@ -54,7 +54,7 @@ export class NurseEntryComponent implements OnInit {
       status: 'Doctor Waiting'
     }
     this.getBooking(filter);
-    this.getServerSideData();
+   //s this.getServerSideData();
 
     this.filteredDoc = this.docControl.valueChanges.pipe(
       startWith(''),

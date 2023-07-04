@@ -35,7 +35,7 @@ export class VitalSignComponent implements OnInit {
     this.commonService.isMobile$.subscribe(data => {
       this.isMobile = data
     })
-    this.appointService.bookings.subscribe(data => {
+    this.appointService.bookings$.subscribe(data => {
       this.dataSource.data = data
     })
 
@@ -47,10 +47,10 @@ export class VitalSignComponent implements OnInit {
       toDate: this.todayDate,
       doctorId: '-',
       regNo: '-',
-      status: 'Vital Sign'
+      status: '-'
     }
     this.getBooking(filter);
-    this.getServerSideData();
+   // this.getServerSideData();
   }
 
   getServerSideData() {

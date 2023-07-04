@@ -11,17 +11,19 @@ var core_1 = require("@angular/core");
 var doctor_status_modal_component_1 = require("src/app/features/entry/OPT/doctor-status-modal/doctor-status-modal.component");
 var nav_item_model_1 = require("src/app/core/model/nav-item.model");
 var MainDefaultComponent = /** @class */ (function () {
-    function MainDefaultComponent(route, commonService, dialog, cdr) {
+    function MainDefaultComponent(route, commonService, serverService, appointService, dialog, cdr) {
         this.route = route;
         this.commonService = commonService;
+        this.serverService = serverService;
+        this.appointService = appointService;
         this.dialog = dialog;
         this.cdr = cdr;
         this.items = [];
         this.loading = false;
+        this.getServerSideData();
     }
     MainDefaultComponent.prototype.ngOnInit = function () {
         var _this = this;
-        console.log(window.location.hostname);
         this.items = nav_item_model_1.navItems;
         this.subscription = this.commonService.isProgress$.subscribe(function (data) {
             _this.loading = data;
@@ -37,6 +39,29 @@ var MainDefaultComponent = /** @class */ (function () {
             height: window.innerHeight
         };
         this.commonService.getSize(screenSize);
+    };
+    MainDefaultComponent.prototype.getServerSideData = function () {
+        var _this = this;
+        var uri = '/opdBooking/getMessage';
+        this.serverService.getServerSource(uri).subscribe(function (data) {
+            var serverData = JSON.parse(data.data);
+            //let bookings = 
+            //  this.serverService.serverData = serverData
+            //  console.log(this.serverService.serverData)
+            if (serverData.actionStatus == "ADD") {
+                console.log("add");
+                _this.appointService._bookings.push(serverData.tranObject);
+                _this.appointService.bookings.next(_this.appointService._bookings);
+            }
+            if (serverData.actionStatus == "UPDATE") {
+                console.log("update");
+                var targetIndex = _this.appointService._bookings.findIndex(function (data) { return data.bookingId == serverData.tranObject.bookingId; });
+                console.log(targetIndex);
+                console.log(_this.appointService._bookings[targetIndex]);
+                _this.appointService._bookings[targetIndex] = serverData.tranObject;
+                _this.appointService.bookings.next(_this.appointService._bookings);
+            }
+        });
     };
     MainDefaultComponent.prototype.openDialog = function () {
         var _this = this;

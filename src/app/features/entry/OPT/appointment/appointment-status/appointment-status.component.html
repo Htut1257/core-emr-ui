@@ -10,7 +10,7 @@
         </ng-container>
         <ng-container matColumnDef="schedule">
             <th mat-header-cell class="td-text" *matHeaderCellDef="">Schedule</th>
-            <td mat-cell class="td-text" *matCellDef="let element">5:30 pm</td>
+            <td mat-cell class="td-text" *matCellDef="let element">{{element.schedule}}</td>
         </ng-container>
         <ng-container matColumnDef="status1">
             <th mat-header-cell class="td-number" *matHeaderCellDef="">Total </th>

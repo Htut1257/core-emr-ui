@@ -10,6 +10,7 @@ var uri = ``
 })
 export class ServerService {
   apiConfig: apiEndPoint
+  serverData:any
   constructor(private _zone: NgZone, private sseService: SseService, private apiService: ApiConfigService) {
     this.apiConfig = this.apiService.getConfig()
   }

@@ -16,8 +16,8 @@
             <mat-label>Booking Date</mat-label>
             <mat-select [id]="'bkDate'" name="bkDate" formControlName="bkDate"
                 (keyup.enter)="focusElement('bkDate','patient','option')">
-                <mat-option *ngFor="let item of schedules" [value]="item.schDate">
-                    {{item.schDate }}&nbsp;(&nbsp;{{item.fromTime }}&nbsp;to&nbsp;{{item.toTime }}&nbsp;)&nbsp;
+                <mat-option *ngFor="let item of schedules" [value]="item">
+                    {{item.schDate }}&nbsp;(&nbsp;{{item.fromTimeString }}&nbsp;to&nbsp;{{item.toTimeString }}&nbsp;)&nbsp;
                 </mat-option>
             </mat-select>
         </mat-form-field>

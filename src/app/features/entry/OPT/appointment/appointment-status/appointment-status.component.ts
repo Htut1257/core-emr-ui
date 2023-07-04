@@ -28,8 +28,8 @@ export class AppointmentStatusComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getDoctorBookingStatus('-', this.todayDate)
-    this.getServerSideData()
+    this.getDoctorBookingStatus('-', '2023-07-03')
+    //this.getServerSideData()
   }
 
   getServerSideData() {
@@ -37,7 +37,7 @@ export class AppointmentStatusComponent implements OnInit {
     this.serverService.getServerSource(uri).subscribe(data => {
       let serverData = JSON.parse(data.data)
       console.log(serverData)
-      this.getDoctorBookingStatus('-', this.todayDate)
+      this.getDoctorBookingStatus('-', '2023-07-03')
     })
   }
 

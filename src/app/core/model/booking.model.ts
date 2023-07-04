@@ -14,6 +14,9 @@ export interface Booking {
     bStatus: string
     statusLevel:number
     bkPatientStatus:string
+    scheduleId:string
+    from:string
+    to:string
 }
 
 export interface DoctorBooking{

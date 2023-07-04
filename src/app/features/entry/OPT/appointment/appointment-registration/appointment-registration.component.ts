@@ -125,9 +125,9 @@ export class AppointmentRegistrationComponent implements OnInit {
     this.scheduleServcie.searchDoctorSchedule(date, doctorId).subscribe({
       next: schedules => {
         console.log(schedules)
-        this.schedules = schedules.map(item => {
-          item.fromTime = moment(this.todayDate + ' ' + item.fromTime).format('hh:mm a')
-          item.toTime = moment(this.todayDate + ' ' + item.toTime).format('hh:mm a')
+        this.schedules = schedules.map((item: any) => {
+          item.fromTimeString = moment(this.todayDate + ' ' + item.fromTime).format('hh:mm a')
+          item.toTimeString = moment(this.todayDate + ' ' + item.toTime).format('hh:mm a')
           return item;
         })
       },
@@ -176,7 +176,10 @@ export class AppointmentRegistrationComponent implements OnInit {
     let booking = data
     booking.patientName = data.patient.patientName != undefined ? data.patient.patientName : data.patient
     booking.doctorId = data.doctor.doctorId
-    booking.bkDate = moment(data.bkDate).format("yyyy-MM-DD")
+    booking.schId = data.bkDate.schId
+    booking.from = data.bkDate.fromTime
+    booking.to = data.bkDate.fromTime
+    booking.bkDate = moment(data.bkDate.schDate).format("yyyy-MM-DD")
     console.log(booking)
     this.appointService.saveAppointment(booking).subscribe(data => {
       this.toastService.showSuccessToast("", "Success Adding new Appointment")
