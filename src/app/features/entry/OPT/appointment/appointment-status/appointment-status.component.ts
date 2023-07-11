@@ -34,11 +34,11 @@ export class AppointmentStatusComponent implements OnInit {
 
   getServerSideData() {
     let uri = '/opdBooking/getMessage'
-    this.serverService.getServerSource(uri).subscribe(data => {
-      let serverData = JSON.parse(data.data)
-      console.log(serverData)
-      this.getDoctorBookingStatus('-', '2023-07-03')
-    })
+    // this.serverService.getServerSource(uri).subscribe(data => {
+    //   let serverData = JSON.parse(data.data)
+    //   console.log(serverData)
+    //   this.getDoctorBookingStatus('-', '2023-07-03')
+    // })
   }
 
   getDoctorBookingStatus(id: string, date: string) {

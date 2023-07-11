@@ -1,4 +1,4 @@
-import { Component, OnInit,OnDestroy, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { MatSort } from '@angular/material/sort';
@@ -19,14 +19,14 @@ import * as moment from 'moment';
   styleUrls: ['./appointment-history.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class AppointmentHistoryComponent implements OnInit,OnDestroy {
+export class AppointmentHistoryComponent implements OnInit, OnDestroy {
   bookings: Booking[]
 
   todayDate = moment(new Date(), 'MM/DD/YYYY').format('YYYY-MM-DD')
 
   displayedColumn: string[] = ["no", "date", "regno", "patient", "doctor", "phone", "serialno", "wl", "reg"]
   dataSource!: MatTableDataSource<Booking>
-  serverSubscription:Subscription
+  serverSubscription: Subscription
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
 
   constructor(
@@ -40,7 +40,7 @@ export class AppointmentHistoryComponent implements OnInit,OnDestroy {
     this.appointService.bookings$.subscribe(data => {
       this.dataSource.data = data
     })
-   // this.getServer()
+    this.getServer()
   }
 
   ngOnInit(): void {
@@ -52,51 +52,60 @@ export class AppointmentHistoryComponent implements OnInit,OnDestroy {
       status: '-'
     }
     this.getBooking(filter);
-   
-   // this.getServerSideData();
+
+    // this.getServerSideData();
   }
 
   ngOnDestroy(): void {
-    //this.serverSubscription.unsubscribe()
+    if (this.serverSubscription) {
+      this.serverSubscription.unsubscribe()
+    }
   }
 
-  getServer(){
-    this.serverService.serverData
-    console.log( this.serverService.serverData)
-    // if (this.serverService.serverData.actionStatus == "ADD") {
-    //   // console.log("add")
-    //   // this.bookings.push(serverData);
-    //   // this.appointService.bookings.next(this.bookings)
-    // }
-    // if (this.serverService.serverData.actionStatus == "UPDATE") {
-    //   console.log("update")
-    //   // let targetIndex = this.bookings.findIndex(data => data.bookingId == serverData.bookingId)
-    //   // this.bookings[targetIndex] = serverData
-    //   // this.appointService.bookings.next(this.bookings)
-    //   //this.bookings[this.bookings.indexOf(serverData.bookingId)] = serverData
-
-    // }
+  getServer() {
+    let uri = '/opdBooking/getSSEMessage'
+    this.serverSubscription = this.serverService.getServerSource(uri).subscribe(data => {
+      console.log(data.data)
+    })
   }
+
+  // getServer(){
+  //   this.serverService.serverData
+  //   console.log( this.serverService.serverData)
+  //   // if (this.serverService.serverData.actionStatus == "ADD") {
+  //   //   // console.log("add")
+  //   //   // this.bookings.push(serverData);
+  //   //   // this.appointService.bookings.next(this.bookings)
+  //   // }
+  //   // if (this.serverService.serverData.actionStatus == "UPDATE") {
+  //   //   console.log("update")
+  //   //   // let targetIndex = this.bookings.findIndex(data => data.bookingId == serverData.bookingId)
+  //   //   // this.bookings[targetIndex] = serverData
+  //   //   // this.appointService.bookings.next(this.bookings)
+  //   //   //this.bookings[this.bookings.indexOf(serverData.bookingId)] = serverData
+
+  //   // }
+  // }
 
   getServerSideData() {
     let uri = '/opdBooking/getMessage'
-    this.serverSubscription=this.serverService.getServerSource(uri).subscribe(data => {
-      let serverData = JSON.parse(data.data)
-      console.log(serverData)
-      if (serverData.actionStatus == "ADD") {
-        console.log("add")
-        this.bookings.push(serverData);
-        this.appointService.bookings.next(this.bookings)
-      }
-      if (serverData.actionStatus == "UPDATE") {
-        console.log("update")
-        let targetIndex = this.bookings.findIndex(data => data.bookingId == serverData.bookingId)
-        this.bookings[targetIndex] = serverData
-        this.appointService.bookings.next(this.bookings)
-        //this.bookings[this.bookings.indexOf(serverData.bookingId)] = serverData
+    // this.serverSubscription = this.serverService.getServerSource(uri).subscribe(data => {
+    //   let serverData = JSON.parse(data.data)
+    //   console.log(serverData)
+    //   if (serverData.actionStatus == "ADD") {
+    //     console.log("add")
+    //     this.bookings.push(serverData);
+    //     this.appointService.bookings.next(this.bookings)
+    //   }
+    //   if (serverData.actionStatus == "UPDATE") {
+    //     console.log("update")
+    //     let targetIndex = this.bookings.findIndex(data => data.bookingId == serverData.bookingId)
+    //     this.bookings[targetIndex] = serverData
+    //     this.appointService.bookings.next(this.bookings)
+    //     //this.bookings[this.bookings.indexOf(serverData.bookingId)] = serverData
 
-      }
-    })
+    //   }
+    // })
   }
 
   //get Appointment
@@ -123,7 +132,7 @@ export class AppointmentHistoryComponent implements OnInit,OnDestroy {
   filterBooking() {
     this.dataSource.filterPredicate = (data: any, filter: string) => {
       return data.bookingId.toString().toLowerCase().includes(filter) ||
-       // data.regNo.toLowerCase().includes(filter) ||
+        // data.regNo.toLowerCase().includes(filter) ||
         data.doctorName.toLowerCase().includes(filter) ||
         data.patientName.toLowerCase().includes(filter);
     }
@@ -167,6 +176,12 @@ export class AppointmentHistoryComponent implements OnInit,OnDestroy {
       error: err => {
         console.trace(err)
       }
+    })
+  }
+
+  SSETest() {
+    this.appointService.SSETest().subscribe(data=>{
+      console.log(data)
     })
   }
 

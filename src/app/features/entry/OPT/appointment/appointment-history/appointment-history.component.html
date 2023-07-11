@@ -4,7 +4,7 @@
         <input matInput type="text" name="fromDate" (keyup)="applyFilter($event)">
     </mat-form-field>
     <div class="col-12 col-lg-2 form-btn-group ">
-        <button mat-flat-button color="primary" type="button" class="col-12 col-lg-5 btn-small float-right">
+        <button mat-flat-button color="primary" type="button" class="col-12 col-lg-5 btn-small float-right" (click)="SSETest()">
             Print</button>
         <button mat-flat-button color="primary" type="button" class="col-12 col-lg-5 btn-small  float-right"
             (click)="searchBooking()">

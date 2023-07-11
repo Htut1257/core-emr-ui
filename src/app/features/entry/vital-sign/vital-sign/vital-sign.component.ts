@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit,OnDestroy, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { Router } from '@angular/router';
-import { Observable, map } from 'rxjs';
+import { Observable, Subscription, map } from 'rxjs';
 import { Booking } from 'src/app/core/model/booking.model';
 import { AppointmentService } from 'src/app/core/services/appointment-service/appointment.service';
 import { CommonServiceService } from 'src/app/core/services/common-service/common-service.service';
@@ -15,7 +15,7 @@ import * as moment from 'moment';
   templateUrl: './vital-sign.component.html',
   styleUrls: ['./vital-sign.component.css']
 })
-export class VitalSignComponent implements OnInit {
+export class VitalSignComponent implements OnInit ,OnDestroy{
 
   bookings: Booking[]
 
@@ -25,6 +25,7 @@ export class VitalSignComponent implements OnInit {
   dataSource!: MatTableDataSource<Booking>
   @ViewChild(MatSort, { static: true }) sort: MatSort
   isMobile: boolean = false
+  serverSubscription:Subscription
   constructor(
     private route: Router, private appointService: AppointmentService,
     private commonService: CommonServiceService, private serverService: ServerService,
@@ -38,7 +39,7 @@ export class VitalSignComponent implements OnInit {
     this.appointService.bookings$.subscribe(data => {
       this.dataSource.data = data
     })
-
+    this.getServer()
   }
 
   ngOnInit(): void {
@@ -53,29 +54,42 @@ export class VitalSignComponent implements OnInit {
    // this.getServerSideData();
   }
 
+  ngOnDestroy(): void {
+    if(this.serverSubscription){
+      this.serverSubscription.unsubscribe()
+    }
+  }
+
+  getServer() {
+    let uri = '/opdBooking/getSSEMessage' 
+    this.serverSubscription=this.serverService.getServerSource(uri).subscribe(data => {
+      console.log(data.data)
+    })
+  }
+
   getServerSideData() {
     let uri = '/opdBooking/getMessage'
-    this.serverService.getServerSource(uri).subscribe(data => {
-      let serverData = JSON.parse(data.data)
-      console.log(serverData)
+    // this.serverService.getServerSource(uri).subscribe(data => {
+    //   let serverData = JSON.parse(data.data)
+    //   console.log(serverData)
 
-      if (serverData.actionStatus == "UPDATE") {
-        console.log("update")
-        let filter = {
-          fromDate: this.todayDate,
-          toDate: this.todayDate,
-          doctorId: '-',
-          regNo: '-',
-          status: 'Vital Sign'
-        }
-        this.getBooking(filter);
-        let targetIndex = this.bookings.findIndex(data => data.bookingId == serverData.bookingId)
-        this.bookings[targetIndex] = serverData
-        this.appointService.bookings.next(this.bookings)
-        //this.bookings[this.bookings.indexOf(serverData.bookingId)] = serverData
+    //   if (serverData.actionStatus == "UPDATE") {
+    //     console.log("update")
+    //     let filter = {
+    //       fromDate: this.todayDate,
+    //       toDate: this.todayDate,
+    //       doctorId: '-',
+    //       regNo: '-',
+    //       status: 'Vital Sign'
+    //     }
+    //     this.getBooking(filter);
+    //     let targetIndex = this.bookings.findIndex(data => data.bookingId == serverData.bookingId)
+    //     this.bookings[targetIndex] = serverData
+    //     this.appointService.bookings.next(this.bookings)
+    //     //this.bookings[this.bookings.indexOf(serverData.bookingId)] = serverData
 
-      }
-    })
+    //   }
+    // })
   }
 
   getBooking(filter: any) {

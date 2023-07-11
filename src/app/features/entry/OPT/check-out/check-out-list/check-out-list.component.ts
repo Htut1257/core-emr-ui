@@ -51,10 +51,10 @@ export class CheckOutListComponent implements OnInit {
 
   getServerSideData() {
     let uri = '/opdBooking/getMessage'
-    this.serverService.getServerSource(uri).subscribe(data => {
-      let serverData = JSON.parse(data.data)
-      console.log(serverData)
-    })
+    // this.serverService.getServerSource(uri).subscribe(data => {
+    //   let serverData = JSON.parse(data.data)
+    //   console.log(serverData)
+    // })
   }
 
   //get Appointment

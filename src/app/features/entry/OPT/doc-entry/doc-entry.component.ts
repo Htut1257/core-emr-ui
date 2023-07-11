@@ -154,16 +154,16 @@ export class DocEntryComponent implements OnInit {
 
   getServerSideData() {
     let uri = '/opdBooking/getMessage'
-    this.serverService.getServerSource(uri).subscribe(data => {
-      let serverData = JSON.parse(data.data)
-      this.booking = serverData
-      if (serverData.bstatus == "Doctor Room") {
-        if (this.doctorId == serverData.doctorId) {//
+    // this.serverService.getServerSource(uri).subscribe(data => {
+    //   let serverData = JSON.parse(data.data)
+    //   this.booking = serverData
+    //   if (serverData.bstatus == "Doctor Room") {
+    //     if (this.doctorId == serverData.doctorId) {//
 
-          this.onInitData(this.booking)
-        }
-      }
-    })
+    //       this.onInitData(this.booking)
+    //     }
+    //   }
+    // })
   }
 
   //get Booking status

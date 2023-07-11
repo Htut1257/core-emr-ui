@@ -92,6 +92,11 @@ var AppointmentService = /** @class */ (function (_super) {
         var httpOption = { headers: httpHeaders, params: httpParams };
         return this.http.get(url, httpOption);
     };
+    AppointmentService.prototype.SSETest = function () {
+        var url = uri + "/opdBooking/getPublishSSEMessage";
+        var httpOption = { headers: httpHeaders };
+        return this.http.get(url, httpOption);
+    };
     AppointmentService = __decorate([
         core_1.Injectable({
             providedIn: 'root'

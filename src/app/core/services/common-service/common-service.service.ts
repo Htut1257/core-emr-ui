@@ -29,8 +29,13 @@ export class CommonServiceService {
   public isMobileObj: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
   public isMobileObj$: Observable<any> = this.isMobileObj.asObservable()
 
-  constructor(private route: Router) {
+  //for project id
+  public projIdSubject: BehaviorSubject<Object> = new BehaviorSubject<Object>(null)
+  public projId$: Observable<Object> = this.projIdSubject.asObservable()
 
+
+  constructor(private route: Router) {
+    this.projIdSubject.next(JSON.parse(localStorage.getItem('core-emr')))
     //define route name 
     this.route.events.subscribe((event: Event) => {
       if (event instanceof NavigationEnd) {
@@ -65,8 +70,6 @@ export class CommonServiceService {
     this.titleSubject.next(name)
   }
 
-  
-
   //get screen size
   getSize(size: any) {
     this.sizeSubject$.next(size);
@@ -89,5 +92,7 @@ export class CommonServiceService {
   getCurrentObject(data) {
     this.isMobileObj.next(data);
   }
+
+
 
 }

@@ -67,27 +67,27 @@ export class NurseEntryComponent implements OnInit {
 
   getServerSideData() {
     let uri = '/opdBooking/getMessage'
-    this.serverService.getServerSource(uri).subscribe(data => {
-      let serverData = JSON.parse(data.data)
-      console.log(serverData)
+    // this.serverService.getServerSource(uri).subscribe(data => {
+    //   let serverData = JSON.parse(data.data)
+    //   console.log(serverData)
 
-      if (serverData.actionStatus == "UPDATE") {
-        console.log("update")
-        let filter = {
-          fromDate: this.todayDate,
-          toDate: this.todayDate,
-          doctorId: '-',
-          regNo: '-',
-          status: 'Doctor Waiting'
-        }
-        this.getBooking(filter);
-        let targetIndex = this.bookings.findIndex(data => data.bookingId == serverData.bookingId)
-        this.bookings[targetIndex] = serverData
-        this.appointService.bookings.next(this.bookings)
-        //this.bookings[this.bookings.indexOf(serverData.bookingId)] = serverData
+    //   if (serverData.actionStatus == "UPDATE") {
+    //     console.log("update")
+    //     let filter = {
+    //       fromDate: this.todayDate,
+    //       toDate: this.todayDate,
+    //       doctorId: '-',
+    //       regNo: '-',
+    //       status: 'Doctor Waiting'
+    //     }
+    //     this.getBooking(filter);
+    //     let targetIndex = this.bookings.findIndex(data => data.bookingId == serverData.bookingId)
+    //     this.bookings[targetIndex] = serverData
+    //     this.appointService.bookings.next(this.bookings)
+    //     //this.bookings[this.bookings.indexOf(serverData.bookingId)] = serverData
 
-      }
-    })
+    //   }
+    // })
   }
 
   //get Appointment

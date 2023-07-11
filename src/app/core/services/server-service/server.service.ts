@@ -10,28 +10,45 @@ var uri = ``
 })
 export class ServerService {
   apiConfig: apiEndPoint
-  serverData:any
+  serverData: any
+  eventsource: EventSource
   constructor(private _zone: NgZone, private sseService: SseService, private apiService: ApiConfigService) {
     this.apiConfig = this.apiService.getConfig()
   }
 
-  getServerSource(url: string) {
+  getServerSource(url: string): Observable<any> {
     uri = `${this.apiConfig.EmrEndPoint}${url}`;
-    return Observable.create(observer => {
-      let eventsource = this.sseService.getEventSource(uri)
-      eventsource.onmessage = event => {
+    return new Observable(observer => {
+      if(this.eventsource){
+        this.eventsource.close()
+      }
+      this.eventsource = this.sseService.getEventSource(uri)
+      console.log(this.eventsource)
+      this.eventsource.onmessage = event => {
+        console.log("subscribe id :" + event.lastEventId)
         this._zone.run(() => {
           observer.next(event);
         })
       }
 
-      eventsource.onerror = error => {
+      this.eventsource.onerror = error => {
         this._zone.run(() => {
+          console.log('connection lost :attempt to reconnect ')
           observer.error(error);
+          this.reconnectToSSE(url)
         })
       }
-
+      return () => {
+        this.eventsource.close();
+      };
     })
+  }
+
+
+  reconnectToSSE(url) {
+    if (this.eventsource.readyState === EventSource.CLOSED) {
+      this.getServerSource(url);
+    }
   }
 
 }

@@ -20,19 +20,34 @@ var ServerService = /** @class */ (function () {
     ServerService.prototype.getServerSource = function (url) {
         var _this = this;
         uri = "" + this.apiConfig.EmrEndPoint + url;
-        return rxjs_1.Observable.create(function (observer) {
-            var eventsource = _this.sseService.getEventSource(uri);
-            eventsource.onmessage = function (event) {
+        return new rxjs_1.Observable(function (observer) {
+            if (_this.eventsource) {
+                _this.eventsource.close();
+            }
+            _this.eventsource = _this.sseService.getEventSource(uri);
+            console.log(_this.eventsource);
+            _this.eventsource.onmessage = function (event) {
+                console.log("subscribe id :" + event.lastEventId);
                 _this._zone.run(function () {
                     observer.next(event);
                 });
             };
-            eventsource.onerror = function (error) {
+            _this.eventsource.onerror = function (error) {
                 _this._zone.run(function () {
+                    console.log('connection lost :attempt to reconnect ');
                     observer.error(error);
+                    _this.reconnectToSSE(url);
                 });
             };
+            return function () {
+                _this.eventsource.close();
+            };
         });
+    };
+    ServerService.prototype.reconnectToSSE = function (url) {
+        if (this.eventsource.readyState === EventSource.CLOSED) {
+            this.getServerSource(url);
+        }
     };
     ServerService = __decorate([
         core_1.Injectable({

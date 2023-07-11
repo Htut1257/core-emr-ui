@@ -51,27 +51,26 @@ var NurseEntryComponent = /** @class */ (function () {
         }));
     };
     NurseEntryComponent.prototype.getServerSideData = function () {
-        var _this = this;
         var uri = '/opdBooking/getMessage';
-        this.serverService.getServerSource(uri).subscribe(function (data) {
-            var serverData = JSON.parse(data.data);
-            console.log(serverData);
-            if (serverData.actionStatus == "UPDATE") {
-                console.log("update");
-                var filter_1 = {
-                    fromDate: _this.todayDate,
-                    toDate: _this.todayDate,
-                    doctorId: '-',
-                    regNo: '-',
-                    status: 'Doctor Waiting'
-                };
-                _this.getBooking(filter_1);
-                var targetIndex = _this.bookings.findIndex(function (data) { return data.bookingId == serverData.bookingId; });
-                _this.bookings[targetIndex] = serverData;
-                _this.appointService.bookings.next(_this.bookings);
-                //this.bookings[this.bookings.indexOf(serverData.bookingId)] = serverData
-            }
-        });
+        // this.serverService.getServerSource(uri).subscribe(data => {
+        //   let serverData = JSON.parse(data.data)
+        //   console.log(serverData)
+        //   if (serverData.actionStatus == "UPDATE") {
+        //     console.log("update")
+        //     let filter = {
+        //       fromDate: this.todayDate,
+        //       toDate: this.todayDate,
+        //       doctorId: '-',
+        //       regNo: '-',
+        //       status: 'Doctor Waiting'
+        //     }
+        //     this.getBooking(filter);
+        //     let targetIndex = this.bookings.findIndex(data => data.bookingId == serverData.bookingId)
+        //     this.bookings[targetIndex] = serverData
+        //     this.appointService.bookings.next(this.bookings)
+        //     //this.bookings[this.bookings.indexOf(serverData.bookingId)] = serverData
+        //   }
+        // })
     };
     //get Appointment
     NurseEntryComponent.prototype.getBooking = function (filter) {

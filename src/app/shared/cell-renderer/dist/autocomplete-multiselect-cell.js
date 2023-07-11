@@ -97,12 +97,16 @@ var AutocompleteCellMultiSelect = /** @class */ (function () {
         this.params.api.stopEditing();
     };
     AutocompleteCellMultiSelect.prototype.rowConfirmed = function () {
+        if (!this.isInput) {
+            this.params.stopEditing();
+        }
         if (this.gridApi.getSelectedRows()[0]) {
             this.selectedObject = this.gridApi.getSelectedRows()[0];
             this.isCanceled = false;
             this.getCellValue(this.cellValue, this.inputValue);
-            //    this.cellValue += this.selectedObject.desc + " "
             this.inputValue = this.cellValue;
+            this.gridApi.setFocusedCell(this.gridApi.getDisplayedRowAtIndex(0).rowIndex, this.propertyName);
+            this.input.nativeElement.focus();
         }
         else {
             this.isCanceled = false;
@@ -111,35 +115,25 @@ var AutocompleteCellMultiSelect = /** @class */ (function () {
                 id: '',
                 desc: this.inputValue
             };
+            this.params.stopEditing();
         }
-        this.gridApi.setFocusedCell(this.gridApi.getDisplayedRowAtIndex(0).rowIndex, this.propertyName);
-        this.gridApi.getDisplayedRowAtIndex(this.gridApi.getFocusedCell().rowIndex).setSelected(true);
-        this.input.nativeElement.focus();
+        //  this.gridApi.getDisplayedRowAtIndex(this.gridApi.getFocusedCell().rowIndex).setSelected(true);
         this.isInput = false;
     };
     AutocompleteCellMultiSelect.prototype.getCellValue = function (cell, input) {
         var cellArr = cell.split(" ");
         var inputArr = input.split(" ");
         var strCell = "";
-        console.log(cellArr);
-        console.log(inputArr);
         for (var i = 0; i < inputArr.length; i++) {
             if (inputArr[i] !== cellArr[i]) {
                 inputArr[i] = this.selectedObject.desc;
             }
-            console.log(inputArr[i] == "");
             if (inputArr[i] == " ") {
                 inputArr[i] = this.selectedObject.desc;
             }
             strCell += inputArr[i] + " ";
         }
         this.cellValue = strCell;
-        // if (cellArr.length != inputArr.length) {
-        //     for (let i = 0; i <= inputArr.length - 1; i++) {
-        //         strCell += inputArr[i] + " "
-        //     }
-        //     this.cellValue = strCell
-        // }
     };
     AutocompleteCellMultiSelect.prototype.onKeydown = function (event) {
         var _a;
@@ -152,6 +146,7 @@ var AutocompleteCellMultiSelect = /** @class */ (function () {
             return false;
         }
         if (event.key == "Enter" || event.key == "Tab") {
+            console.log(this.isInput);
             this.rowConfirmed();
             return false;
         }
@@ -161,7 +156,7 @@ var AutocompleteCellMultiSelect = /** @class */ (function () {
         }
         return true;
     };
-    //splitting string and re 
+    //splitting string and re calculate the array
     AutocompleteCellMultiSelect.prototype.splitStringBySpace = function (value) {
         var inputValue = value;
         var cursorPosition = this.input.nativeElement.selectionStart;
@@ -175,7 +170,6 @@ var AutocompleteCellMultiSelect = /** @class */ (function () {
         if (inputValue.length > 1 && cursorPosition != inputValue.length) {
             newArr = inputValue.substring(0, cursorPosition - 1);
         }
-        //console.log(newArr)
         return newArr;
     };
     AutocompleteCellMultiSelect.prototype.processDataInput = function (event) {
@@ -265,7 +259,7 @@ var AutocompleteCellMultiSelect = /** @class */ (function () {
             host: {
                 style: "position: absolute;\n\t\t\t\t\tleft: 0px; \n\t\t\t\t\ttop: 0px;\n\t\t\t\t\tbackground-color: transparant;\n\t\t\t\t\t"
             },
-            template: " \n\t\t<input #input [id]=\"'autoText'\"\n\t\t\t[(ngModel)]=\"inputValue\"\n\t\t\t(ngModelChange)=\"processDataInput($event)\"\n\t\t\tstyle=\" height: 28px; font-weight: 400; font-size: 12px;\"\n\t\t\t[style.width]=\"params.column.actualWidth + 'px'\" autocomplete=\"off\">\n\t\t<ag-grid-angular \n        \n\t\t\tstyle=\"font-weight: 150;\" \n\t\t\t[style.height]=\"gridHeight + 'px'\"\n\t\t\t[style.width]=\"gridWidth + 'px'\"\n\t\t\tclass=\"ag-theme-balham\"\n\t\t\t[rowData]=\"rowData\" \n\t\t\t[columnDefs]=\"columnDefs\"\n\t\t\t(gridReady)=\"onGridReady($event)\"\n\t\t\t(rowClicked)=\"rowClicked($event)\">\n\t\t</ag-grid-angular>\n\t"
+            template: " \n\t\t<input #input [id]=\"'autoText'\"\n\t\t\t[(ngModel)]=\"inputValue\"\n\t\t\t(ngModelChange)=\"processDataInput($event)\"\n\t\t\tstyle=\" height: 28px; font-weight: 400; font-size: 12px;\"\n\t\t\t[style.width]=\"params.column.actualWidth + 'px'\" autocomplete=\"off\">\n\t\t<ag-grid-angular *ngIf=\"isInput\"\n        \n\t\t\tstyle=\"font-weight: 150;\" \n\t\t\t[style.height]=\"gridHeight + 'px'\"\n\t\t\t[style.width]=\"gridWidth + 'px'\"\n\t\t\tclass=\"ag-theme-balham\"\n\t\t\t[rowData]=\"rowData\" \n\t\t\t[columnDefs]=\"columnDefs\"\n\t\t\t(gridReady)=\"onGridReady($event)\"\n\t\t\t(rowClicked)=\"rowClicked($event)\">\n\t\t</ag-grid-angular>\n\t"
         })
     ], AutocompleteCellMultiSelect);
     return AutocompleteCellMultiSelect;

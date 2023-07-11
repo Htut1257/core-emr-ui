@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { FormControl } from '@angular/forms';
@@ -10,20 +10,25 @@ import { SesionService } from 'src/app/core/services/session-service/sesion.serv
   templateUrl: './session.component.html',
   styleUrls: ['./session.component.css']
 })
-export class SessionComponent implements OnInit {
+export class SessionComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: Router,
     private sessionService: SesionService,
     public dialogRef: MatDialogRef<SessionComponent>
   ) {
-   // this.dialogRef.disableClose = true
+    // this.dialogRef.disableClose = true
   }
   session: Session
   sessions: Session[] = []
   sessionControl: FormControl = new FormControl(null)
+
   ngOnInit(): void {
     this.getSession()
+  }
+
+  ngOnDestroy(): void {
+    this.dialogRef.close(this.session)
   }
 
   getSession() {
@@ -37,11 +42,24 @@ export class SessionComponent implements OnInit {
     })
   }
 
+  //get session data on selection 
   getSelectedSession() {
-    if (this.sessionControl.value) {
+    if (this.sessionControl.value != null) {
+      this.session = this.sessionControl.value
       this.route.navigate(['/main'])
-      this.dialogRef.close()
+      this.dialogRef.close(this.session)
     }
+  }
+
+
+  //get session data on Enter
+  getSessonData(event) {
+    if (this.sessionControl.value == null) {
+      return
+    }
+    this.session = this.sessionControl.value
+    this.route.navigate(['/main'])
+    this.dialogRef.close(this.session)
   }
 
 }

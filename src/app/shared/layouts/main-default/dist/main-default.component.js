@@ -20,7 +20,8 @@ var MainDefaultComponent = /** @class */ (function () {
         this.cdr = cdr;
         this.items = [];
         this.loading = false;
-        this.getServerSideData();
+        //this.getServerSideData()
+        this.getServer();
     }
     MainDefaultComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -33,6 +34,17 @@ var MainDefaultComponent = /** @class */ (function () {
     MainDefaultComponent.prototype.ngAfterViewInit = function () {
         this.commonService.appDrawer = this.appDrawer;
     };
+    MainDefaultComponent.prototype.ngOnDestroy = function () {
+        if (this.serverSubscription) {
+            this.serverSubscription.unsubscribe();
+        }
+    };
+    MainDefaultComponent.prototype.getServer = function () {
+        var uri = '/opdBooking/getSSEMessage';
+        this.serverSubscription = this.serverService.getServerSource(uri).subscribe(function (data) {
+            console.log(data.data);
+        });
+    };
     MainDefaultComponent.prototype.getScreenSize = function () {
         var screenSize = {
             width: window.innerWidth,
@@ -41,26 +53,26 @@ var MainDefaultComponent = /** @class */ (function () {
         this.commonService.getSize(screenSize);
     };
     MainDefaultComponent.prototype.getServerSideData = function () {
-        var _this = this;
-        var uri = '/opdBooking/getMessage';
+        var uri = '/opdBooking/getSSEMessage';
         this.serverService.getServerSource(uri).subscribe(function (data) {
-            var serverData = JSON.parse(data.data);
+            console.log(data);
+            //  let serverData = JSON.parse(data.data)
             //let bookings = 
             //  this.serverService.serverData = serverData
             //  console.log(this.serverService.serverData)
-            if (serverData.actionStatus == "ADD") {
-                console.log("add");
-                _this.appointService._bookings.push(serverData.tranObject);
-                _this.appointService.bookings.next(_this.appointService._bookings);
-            }
-            if (serverData.actionStatus == "UPDATE") {
-                console.log("update");
-                var targetIndex = _this.appointService._bookings.findIndex(function (data) { return data.bookingId == serverData.tranObject.bookingId; });
-                console.log(targetIndex);
-                console.log(_this.appointService._bookings[targetIndex]);
-                _this.appointService._bookings[targetIndex] = serverData.tranObject;
-                _this.appointService.bookings.next(_this.appointService._bookings);
-            }
+            // if (serverData.actionStatus == "ADD") {
+            //   console.log("add")
+            //   this.appointService._bookings.push(serverData.tranObject);
+            //   this.appointService.bookings.next(this.appointService._bookings)
+            // }
+            // if (serverData.actionStatus == "UPDATE") {
+            //   console.log("update")
+            //  let targetIndex = this.appointService._bookings.findIndex(data => data.bookingId == serverData.tranObject.bookingId)
+            //  console.log(targetIndex)
+            //  console.log( this.appointService._bookings[targetIndex])
+            //  this.appointService._bookings[targetIndex] = serverData.tranObject
+            //  this.appointService.bookings.next(this.appointService._bookings)
+            // }
         });
     };
     MainDefaultComponent.prototype.openDialog = function () {

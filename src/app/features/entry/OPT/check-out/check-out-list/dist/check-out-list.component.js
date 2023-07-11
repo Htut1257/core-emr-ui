@@ -42,10 +42,10 @@ var CheckOutListComponent = /** @class */ (function () {
     };
     CheckOutListComponent.prototype.getServerSideData = function () {
         var uri = '/opdBooking/getMessage';
-        this.serverService.getServerSource(uri).subscribe(function (data) {
-            var serverData = JSON.parse(data.data);
-            console.log(serverData);
-        });
+        // this.serverService.getServerSource(uri).subscribe(data => {
+        //   let serverData = JSON.parse(data.data)
+        //   console.log(serverData)
+        // })
     };
     //get Appointment
     CheckOutListComponent.prototype.getBooking = function (filter) {

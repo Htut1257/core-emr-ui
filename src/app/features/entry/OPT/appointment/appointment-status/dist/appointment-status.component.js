@@ -24,13 +24,12 @@ var AppointmentStatusComponent = /** @class */ (function () {
         //this.getServerSideData()
     };
     AppointmentStatusComponent.prototype.getServerSideData = function () {
-        var _this = this;
         var uri = '/opdBooking/getMessage';
-        this.serverService.getServerSource(uri).subscribe(function (data) {
-            var serverData = JSON.parse(data.data);
-            console.log(serverData);
-            _this.getDoctorBookingStatus('-', '2023-07-03');
-        });
+        // this.serverService.getServerSource(uri).subscribe(data => {
+        //   let serverData = JSON.parse(data.data)
+        //   console.log(serverData)
+        //   this.getDoctorBookingStatus('-', '2023-07-03')
+        // })
     };
     AppointmentStatusComponent.prototype.getDoctorBookingStatus = function (id, date) {
         var _this = this;

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, HostListener, ChangeDetectorRef } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, OnDestroy, HostListener, ChangeDetectorRef } from '@angular/core';
 import { Subscription } from 'rxjs'
 import { Router } from '@angular/router';
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
@@ -13,19 +13,21 @@ import { NavItem, navItems } from 'src/app/core/model/nav-item.model';
   styleUrls: ['./main-default.component.css']
 })
 
-export class MainDefaultComponent implements OnInit, AfterViewInit {
+export class MainDefaultComponent implements OnInit, AfterViewInit, OnDestroy {
 
   items: NavItem[] = []
   loading: boolean = false;
   dialogRef: MatDialogRef<any>;
   @ViewChild('appDrawer') appDrawer: ElementRef;
   subscription: Subscription
+  serverSubscription:Subscription
   constructor(
     private route: Router, private commonService: CommonServiceService,
     private serverService: ServerService, private appointService: AppointmentService,
     public dialog: MatDialog, private cdr: ChangeDetectorRef
   ) {
-    this.getServerSideData()
+    //this.getServerSideData()
+    this.getServer()
   }
 
   ngOnInit(): void {
@@ -40,6 +42,19 @@ export class MainDefaultComponent implements OnInit, AfterViewInit {
     this.commonService.appDrawer = this.appDrawer
   }
 
+  ngOnDestroy(): void {
+    if(this.serverSubscription){
+      this.serverSubscription.unsubscribe()
+    }
+  }
+
+  getServer() {
+    let uri = '/opdBooking/getSSEMessage' 
+    this.serverSubscription=this.serverService.getServerSource(uri).subscribe(data => {
+      console.log(data.data)
+    })
+  }
+
   @HostListener('window:resize', ['$event'])
   getScreenSize() {
     let screenSize = {
@@ -50,25 +65,30 @@ export class MainDefaultComponent implements OnInit, AfterViewInit {
   }
 
   getServerSideData() {
-    let uri = '/opdBooking/getMessage'
+    let uri = '/opdBooking/getSSEMessage'
     this.serverService.getServerSource(uri).subscribe(data => {
-      let serverData = JSON.parse(data.data)
+      console.log(data)
+    //  let serverData = JSON.parse(data.data)
       //let bookings = 
       //  this.serverService.serverData = serverData
       //  console.log(this.serverService.serverData)
-      if (serverData.actionStatus == "ADD") {
-        console.log("add")
-        this.appointService._bookings.push(serverData.tranObject);
-        this.appointService.bookings.next(this.appointService._bookings)
-      }
-      if (serverData.actionStatus == "UPDATE") {
-        console.log("update")
-       let targetIndex = this.appointService._bookings.findIndex(data => data.bookingId == serverData.tranObject.bookingId)
-       console.log(targetIndex)
-       console.log( this.appointService._bookings[targetIndex])
-       this.appointService._bookings[targetIndex] = serverData.tranObject
-       this.appointService.bookings.next(this.appointService._bookings)
-      }
+
+
+      // if (serverData.actionStatus == "ADD") {
+      //   console.log("add")
+      //   this.appointService._bookings.push(serverData.tranObject);
+      //   this.appointService.bookings.next(this.appointService._bookings)
+      // }
+      // if (serverData.actionStatus == "UPDATE") {
+      //   console.log("update")
+      //  let targetIndex = this.appointService._bookings.findIndex(data => data.bookingId == serverData.tranObject.bookingId)
+      //  console.log(targetIndex)
+      //  console.log( this.appointService._bookings[targetIndex])
+      //  this.appointService._bookings[targetIndex] = serverData.tranObject
+      //  this.appointService.bookings.next(this.appointService._bookings)
+      // }
+
+
     })
   }
 

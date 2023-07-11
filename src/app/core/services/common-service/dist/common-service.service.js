@@ -19,12 +19,19 @@ var CommonServiceService = /** @class */ (function () {
         //set title object
         this.titleSubject = new rxjs_1.BehaviorSubject(localStorage.getItem('headerName'));
         this.titleSubject$ = this.titleSubject.asObservable();
+        //for progres bar 
+        this.isProgress = new rxjs_1.BehaviorSubject(false);
+        this.isProgress$ = this.isProgress.asObservable();
         //for configurating mobile screen
         this.isMobile = new rxjs_1.BehaviorSubject(false);
         this.isMobile$ = this.isMobile.asObservable();
         //set mobile screen 
         this.isMobileObj = new rxjs_1.BehaviorSubject(false);
         this.isMobileObj$ = this.isMobileObj.asObservable();
+        //for project id
+        this.projIdSubject = new rxjs_1.BehaviorSubject(null);
+        this.projId$ = this.projIdSubject.asObservable();
+        this.projIdSubject.next(JSON.parse(localStorage.getItem('core-emr')));
         //define route name 
         this.route.events.subscribe(function (event) {
             if (event instanceof router_1.NavigationEnd) {

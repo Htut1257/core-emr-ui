@@ -86,4 +86,10 @@ export class AppointmentService extends AbstractService<Booking>{
     return this.http.get<DoctorBooking[]>(url, httpOption)
   }
 
+  SSETest():Observable<any[]>{
+    let url = `${uri}/opdBooking/getPublishSSEMessage`
+    let httpOption = { headers: httpHeaders}
+    return this.http.get<any[]>(url, httpOption)
+  }
+
 }

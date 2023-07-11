@@ -31,6 +31,7 @@ var VitalSignComponent = /** @class */ (function () {
         this.appointService.bookings$.subscribe(function (data) {
             _this.dataSource.data = data;
         });
+        this.getServer();
     }
     VitalSignComponent.prototype.ngOnInit = function () {
         var filter = {
@@ -43,28 +44,38 @@ var VitalSignComponent = /** @class */ (function () {
         this.getBooking(filter);
         // this.getServerSideData();
     };
-    VitalSignComponent.prototype.getServerSideData = function () {
-        var _this = this;
-        var uri = '/opdBooking/getMessage';
-        this.serverService.getServerSource(uri).subscribe(function (data) {
-            var serverData = JSON.parse(data.data);
-            console.log(serverData);
-            if (serverData.actionStatus == "UPDATE") {
-                console.log("update");
-                var filter = {
-                    fromDate: _this.todayDate,
-                    toDate: _this.todayDate,
-                    doctorId: '-',
-                    regNo: '-',
-                    status: 'Vital Sign'
-                };
-                _this.getBooking(filter);
-                var targetIndex = _this.bookings.findIndex(function (data) { return data.bookingId == serverData.bookingId; });
-                _this.bookings[targetIndex] = serverData;
-                _this.appointService.bookings.next(_this.bookings);
-                //this.bookings[this.bookings.indexOf(serverData.bookingId)] = serverData
-            }
+    VitalSignComponent.prototype.ngOnDestroy = function () {
+        if (this.serverSubscription) {
+            this.serverSubscription.unsubscribe();
+        }
+    };
+    VitalSignComponent.prototype.getServer = function () {
+        var uri = '/opdBooking/getSSEMessage';
+        this.serverSubscription = this.serverService.getServerSource(uri).subscribe(function (data) {
+            console.log(data.data);
         });
+    };
+    VitalSignComponent.prototype.getServerSideData = function () {
+        var uri = '/opdBooking/getMessage';
+        // this.serverService.getServerSource(uri).subscribe(data => {
+        //   let serverData = JSON.parse(data.data)
+        //   console.log(serverData)
+        //   if (serverData.actionStatus == "UPDATE") {
+        //     console.log("update")
+        //     let filter = {
+        //       fromDate: this.todayDate,
+        //       toDate: this.todayDate,
+        //       doctorId: '-',
+        //       regNo: '-',
+        //       status: 'Vital Sign'
+        //     }
+        //     this.getBooking(filter);
+        //     let targetIndex = this.bookings.findIndex(data => data.bookingId == serverData.bookingId)
+        //     this.bookings[targetIndex] = serverData
+        //     this.appointService.bookings.next(this.bookings)
+        //     //this.bookings[this.bookings.indexOf(serverData.bookingId)] = serverData
+        //   }
+        // })
     };
     VitalSignComponent.prototype.getBooking = function (filter) {
         var _this = this;

@@ -17,7 +17,7 @@ import { PatternService } from 'src/app/core/services/pattern-service/pattern.se
 			(ngModelChange)="processDataInput($event)"
 			style=" height: 28px; font-weight: 400; font-size: 12px;"
 			[style.width]="params.column.actualWidth + 'px'" autocomplete="off">
-		<ag-grid-angular 
+		<ag-grid-angular *ngIf="isInput"
         
 			style="font-weight: 150;" 
 			[style.height]="gridHeight + 'px'"
@@ -142,12 +142,17 @@ export class AutocompleteCellMultiSelect implements ICellEditorAngularComp, Afte
     }
 
     rowConfirmed() {
+        if(!this.isInput){
+            this.params.stopEditing()   
+        }
         if (this.gridApi.getSelectedRows()[0]) {
             this.selectedObject = this.gridApi.getSelectedRows()[0];
             this.isCanceled = false;
             this.getCellValue(this.cellValue, this.inputValue)
-        //    this.cellValue += this.selectedObject.desc + " "
+
             this.inputValue = this.cellValue
+            this.gridApi.setFocusedCell(this.gridApi.getDisplayedRowAtIndex(0).rowIndex, this.propertyName);
+            this.input.nativeElement.focus();
         } else {
             this.isCanceled = false;
             this.cellValue = this.inputValue
@@ -155,37 +160,31 @@ export class AutocompleteCellMultiSelect implements ICellEditorAngularComp, Afte
                 id: '',
                 desc: this.inputValue
             }
+            this.params.stopEditing()
         }
-         this.gridApi.setFocusedCell(this.gridApi.getDisplayedRowAtIndex(0).rowIndex, this.propertyName);
-         this.gridApi.getDisplayedRowAtIndex(this.gridApi.getFocusedCell().rowIndex).setSelected(true);
 
-        this.input.nativeElement.focus();
-        this.isInput = false
+        //  this.gridApi.getDisplayedRowAtIndex(this.gridApi.getFocusedCell().rowIndex).setSelected(true);
+        
+
+       this.isInput = false
     }
 
     getCellValue(cell: any, input: any) {
         let cellArr = cell.split(" ")
         let inputArr = input.split(" ")
         let strCell = ""
-        console.log(cellArr)
-        console.log(inputArr)
+
         for (let i = 0; i < inputArr.length; i++) {
             if (inputArr[i] !== cellArr[i]) {
                 inputArr[i] = this.selectedObject.desc
             }
-            console.log(inputArr[i]=="")
-            if(inputArr[i]==" "){
+            if (inputArr[i] == " ") {
                 inputArr[i] = this.selectedObject.desc
             }
             strCell += inputArr[i] + " "
         }
         this.cellValue = strCell
-        // if (cellArr.length != inputArr.length) {
-        //     for (let i = 0; i <= inputArr.length - 1; i++) {
-        //         strCell += inputArr[i] + " "
-        //     }
-        //     this.cellValue = strCell
-        // }
+
 
     }
 
@@ -200,6 +199,7 @@ export class AutocompleteCellMultiSelect implements ICellEditorAngularComp, Afte
             return false;
         }
         if (event.key == "Enter" || event.key == "Tab") {
+            console.log(this.isInput)
             this.rowConfirmed();
             return false;
         }
@@ -210,7 +210,7 @@ export class AutocompleteCellMultiSelect implements ICellEditorAngularComp, Afte
         return true
     }
 
-    //splitting string and re 
+    //splitting string and re calculate the array
     splitStringBySpace(value) {
         const inputValue = value;
         let cursorPosition = this.input.nativeElement.selectionStart
@@ -224,7 +224,6 @@ export class AutocompleteCellMultiSelect implements ICellEditorAngularComp, Afte
         if (inputValue.length > 1 && cursorPosition != inputValue.length) {
             newArr = inputValue.substring(0, cursorPosition - 1)
         }
-        //console.log(newArr)
         return newArr
     }
 

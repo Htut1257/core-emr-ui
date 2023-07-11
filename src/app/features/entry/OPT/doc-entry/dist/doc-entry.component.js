@@ -80,17 +80,16 @@ var DocEntryComponent = /** @class */ (function () {
         this.getVitalSign(booking.bookingId.toString());
     };
     DocEntryComponent.prototype.getServerSideData = function () {
-        var _this = this;
         var uri = '/opdBooking/getMessage';
-        this.serverService.getServerSource(uri).subscribe(function (data) {
-            var serverData = JSON.parse(data.data);
-            _this.booking = serverData;
-            if (serverData.bstatus == "Doctor Room") {
-                if (_this.doctorId == serverData.doctorId) { //
-                    _this.onInitData(_this.booking);
-                }
-            }
-        });
+        // this.serverService.getServerSource(uri).subscribe(data => {
+        //   let serverData = JSON.parse(data.data)
+        //   this.booking = serverData
+        //   if (serverData.bstatus == "Doctor Room") {
+        //     if (this.doctorId == serverData.doctorId) {//
+        //       this.onInitData(this.booking)
+        //     }
+        //   }
+        // })
     };
     //get Booking status
     DocEntryComponent.prototype.getDoctorBookingStatus = function (id, date) {

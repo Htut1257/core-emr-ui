@@ -1,6 +1,9 @@
+<h1 mat-dialog-title>
+   Session
+</h1>
 <mat-form-field hideRequiredMarker="hideRequiredMarker">
     <mat-label>Session</mat-label>
-    <mat-select [formControl]="sessionControl" (selectionChange)="getSelectedSession()" >
+    <mat-select [id]="'session'" [formControl]="sessionControl" (selectionChange)="getSelectedSession()" (keydown.enter)="getSessonData('session')">
         <mat-option [value]="null">--</mat-option>
         <mat-option *ngFor="let item of sessions" [value]="item">
             {{item.sessionName}}
