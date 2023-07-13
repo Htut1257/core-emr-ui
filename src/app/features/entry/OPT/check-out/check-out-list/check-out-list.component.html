@@ -10,8 +10,8 @@
 <div class="table-container large">
     <table mat-table [dataSource]="dataSource" matSort>
         <ng-container matColumnDef="reg">
-            <th class="td-text" mat-header-cell *matHeaderCellDef mat-sort-header>Reg No </th>
-            <td class="td-text" mat-cell *matCellDef="let element; let i = index">{{element.regNo}}</td>
+            <th class="td-text reg-column" mat-header-cell *matHeaderCellDef mat-sort-header>Reg No </th>
+            <td class="td-text reg-column" mat-cell *matCellDef="let element; let i = index">{{element.regNo}}</td>
         </ng-container>
         <ng-container matColumnDef="adm">
             <th class="td-text" mat-header-cell *matHeaderCellDef mat-sort-header>Adm No </th>
@@ -22,8 +22,8 @@
             <td class="td-text" mat-cell *matCellDef="let element">{{element.patientName}}</td>
         </ng-container>
         <ng-container matColumnDef="date">
-            <th class="td-text" mat-header-cell *matHeaderCellDef mat-sort-header>VisitDate</th>
-            <td class="td-text" mat-cell *matCellDef="let element">{{element.bkDate|date:'dd/MM/yyyy'}}</td>
+            <th class="td-text date-column" mat-header-cell *matHeaderCellDef mat-sort-header>VisitDate</th>
+            <td class="td-text date-column" mat-cell *matCellDef="let element">{{element.bkDate|date:'dd/MM/yyyy'}}</td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky:true"></tr>
         <tr mat-row *matRowDef="let row;columns:displayedColumns" (dblclick)="getRowData(row)"></tr>

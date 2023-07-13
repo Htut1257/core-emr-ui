@@ -1,12 +1,13 @@
 <div class="row">
-    <mat-form-field class="div-no-margin col-12 col-lg-10" appearance="outline">
+    <mat-form-field class="div-no-margin col-12 col-lg-10 col-sm-8" appearance="outline">
         <mat-label>Search</mat-label>
         <input matInput type="text" name="fromDate" (keyup)="applyFilter($event)">
     </mat-form-field>
-    <div class="col-12 col-lg-2 form-btn-group ">
-        <button mat-flat-button color="primary" type="button" class="col-12 col-lg-5 btn-small float-right" (click)="SSETest()">
+    <div class="col-12 col-lg-2 col-sm-4 form-btn-group ">
+        <button mat-flat-button color="primary" type="button" class="col-12 col-sm-5 col-lg-5 btn-small float-right"
+            (click)="SSETest()">
             Print</button>
-        <button mat-flat-button color="primary" type="button" class="col-12 col-lg-5 btn-small  float-right"
+        <button mat-flat-button color="primary" type="button" class="col-12 col-sm-5 col-lg-5 btn-small  float-right"
             (click)="searchBooking()">
             Filter</button>
     </div>
@@ -18,19 +19,19 @@
             <td mat-cell class="td-number position-column" *matCellDef="let i=index">{{i+1}}</td>
         </ng-container>
         <ng-container matColumnDef="date">
-            <th mat-header-cell class="td-text" *matHeaderCellDef>Date</th>
-            <td mat-cell class="td-text" *matCellDef="let element">{{element.bkDate|date:'dd/MM/yyyy '}}</td>
+            <th mat-header-cell class="td-text date-column" *matHeaderCellDef>Date</th>
+            <td mat-cell class="td-text date-column" *matCellDef="let element">{{element.bkDate|date:'dd/MM/yyyy '}}</td>
         </ng-container>
         <ng-container matColumnDef="regno">
-            <th mat-header-cell class="td-text" *matHeaderCellDef>Reg No</th>
-            <td mat-cell class="td-text" *matCellDef="let element">{{element.regNo}}</td>
+            <th mat-header-cell class="td-text reg-column" *matHeaderCellDef>Reg No</th>
+            <td mat-cell class="td-text reg-column" *matCellDef="let element">{{element.regNo}}</td>
         </ng-container>
         <ng-container matColumnDef="patient">
             <th mat-header-cell class="td-text" *matHeaderCellDef mat-sort-header>Patient</th>
             <td mat-cell class="td-text" *matCellDef="let element">{{element.patientName}}</td>
         </ng-container>
         <ng-container matColumnDef="doctor">
-            <th mat-header-cell class="td-text column-doc" *matHeaderCellDef mat-sort-header>Doctor</th>
+            <th mat-header-cell class="td-text" *matHeaderCellDef mat-sort-header>Doctor</th>
             <td mat-cell class="td-text" *matCellDef="let element">{{element.doctorName}}</td>
         </ng-container>
         <ng-container matColumnDef="phone">
@@ -38,8 +39,8 @@
             <td mat-cell class="td-text" *matCellDef="let element">{{element.bkPhone}}</td>
         </ng-container>
         <ng-container matColumnDef="serialno">
-            <th mat-header-cell class="td-number" *matHeaderCellDef="">Serial</th>
-            <td mat-cell class="td-number" *matCellDef="let element">{{element.bkSerialNo}}</td>
+            <th mat-header-cell class="td-number position-column" *matHeaderCellDef="">Se.no</th>
+            <td mat-cell class="td-number position-column" *matCellDef="let element">{{element.bkSerialNo}}</td>
         </ng-container>
         <ng-container matColumnDef="wl">
             <th mat-header-cell class="td-text" *matHeaderCellDef="">Status</th>

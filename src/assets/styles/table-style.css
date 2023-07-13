@@ -1,6 +1,6 @@
 .ag-header-cell {
     font-size: 16px !important;
-    
+
 }
 
 .table-container {
@@ -10,11 +10,11 @@
 }
 
 .table-container.large {
-    width:100%;
+    width: 100%;
     max-width: 100%;
 }
 
-.table-container.fit{
+.table-container.fit {
     height: 70vh;
 }
 
@@ -42,14 +42,14 @@ tr.mat-row {
 }
 
 tr.mat-row:nth-child(even) {
-    background-color: #fcfdfe ;
+    background-color: #fcfdfe;
 }
 
-tr.mat-row:hover{
+tr.mat-row:hover {
     background-color: #ecf0f1 !important;
 }
 
-.selected-row{
+.selected-row {
     background-color: #ecf0f1 !important;
 }
 
@@ -78,11 +78,20 @@ tr.mat-footer-row {
 }
 
 .position-column {
+    width: 10px !important;
     min-width: 10px !important;
 }
 
+.reg-column,.date-column{
+    width: 84px !important;
+    min-width: 30px !important;
+}
+
+
+
 .action-column {
-    min-width: 70px !important;
+    width: 30px !important;
+    min-width: 30px !important;
 }
 
 

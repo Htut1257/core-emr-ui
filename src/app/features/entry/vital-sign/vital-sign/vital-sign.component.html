@@ -10,8 +10,8 @@
 <div class="table-container large">
     <table mat-table [dataSource]="dataSource" matSort>
         <ng-component matColumnDef="no">
-            <th mat-header-cell class="td-number" *matHeaderCellDef="">No</th>
-            <td mat-cell class="td-number" *matCellDef="let i=index">{{i+1}}</td>
+            <th mat-header-cell class="td-number position-column" *matHeaderCellDef="">No</th>
+            <td mat-cell class="td-number position-column" *matCellDef="let i=index">{{i+1}}</td>
         </ng-component>
         <ng-component matColumnDef="date">
             <th mat-header-cell class="td-text" *matHeaderCellDef="">Date</th>
@@ -22,8 +22,8 @@
             <td mat-cell class="td-text" *matCellDef="let element">{{element.bookingId}}</td>
         </ng-component> -->
         <ng-component matColumnDef="regno">
-            <th mat-header-cell class="td-text" *matHeaderCellDef="">Reg No</th>
-            <td mat-cell class="td-text" *matCellDef="let element">{{element.regNo}}</td>
+            <th mat-header-cell class="td-text reg-column" *matHeaderCellDef="">Reg No</th>
+            <td mat-cell class="td-text reg-column" *matCellDef="let element">{{element.regNo}}</td>
         </ng-component>
         <ng-component matColumnDef="patient">
             <th mat-header-cell class="td-text" *matHeaderCellDef="" mat-sort-header>Patient</th>
@@ -46,8 +46,8 @@
             <td mat-cell class="td-number" *matCellDef="let element">{{element.bstatus}}</td>
         </ng-component>
         <ng-component matColumnDef="reg">
-            <th mat-header-cell class="td-object" *matHeaderCellDef="">Action</th>
-            <td mat-cell class="td-object" *matCellDef="let element">
+            <th mat-header-cell class="td-object action-vital-column" *matHeaderCellDef="">Action</th>
+            <td mat-cell class="td-object action-vital-column" *matCellDef="let element">
                 <div class="table-btn-group">
                     <button mat-raised-button color="primary" class="btn-small btn-table"
                         (click)="vitalBooking(element)">Check</button>

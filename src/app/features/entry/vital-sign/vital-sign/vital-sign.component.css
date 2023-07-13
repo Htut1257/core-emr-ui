@@ -6,3 +6,8 @@
     height: 26px;
     line-height: 30px;
 }
+
+.action-vital-column{
+    width: 30px !important;
+    min-width: 30px !important;
+}
