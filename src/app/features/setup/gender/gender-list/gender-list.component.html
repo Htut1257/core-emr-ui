@@ -13,6 +13,6 @@
             <td mat-cell class="td-text" *matCellDef="let element">{{element.description}}</td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayedColumn;sticky:true"></tr>
-        <tr mat-row *matRowDef="let row;columns:displayedColumn" (dblclick)="getRowData(row)"></tr>
+        <tr mat-row *matRowDef="let row;columns:displayedColumn" (dbclick)="getRowData(row)"></tr>
     </table>
 </div>

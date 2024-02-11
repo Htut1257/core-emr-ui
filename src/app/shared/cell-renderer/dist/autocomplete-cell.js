@@ -9,11 +9,13 @@ exports.__esModule = true;
 exports.AutocompleteCell = void 0;
 var core_1 = require("@angular/core");
 var AutocompleteCell = /** @class */ (function () {
-    function AutocompleteCell(autoService, patternService) {
+    function AutocompleteCell(autoService, patternService, opdService, weekService) {
         this.autoService = autoService;
         this.patternService = patternService;
+        this.opdService = opdService;
+        this.weekService = weekService;
         this.rowSelection = 'single';
-        this.gridHeight = 315;
+        this.gridHeight = 175;
         this.gridWidth = 500;
         this.isCanceled = true;
         this.selectedObject = {};
@@ -36,7 +38,6 @@ var AutocompleteCell = /** @class */ (function () {
         var _this = this;
         this.params = params;
         //to get witch field to use
-        //   console.log(params)
         this.columnObject = params.colDef.field;
         if (!params.rowData) {
             this.apiEndpoint = params.apiEndpoint;
@@ -123,7 +124,6 @@ var AutocompleteCell = /** @class */ (function () {
     };
     AutocompleteCell.prototype.processDataInput = function (event) {
         var _this = this;
-        console.log("called");
         if (this.useApi) {
             this.columnFilter = this.gridApi.getFilterInstance(this.propertyName);
             if (event.length == 0)
@@ -134,17 +134,27 @@ var AutocompleteCell = /** @class */ (function () {
                 });
             }
             ;
-            // if (event.length > 2) {
-            //     this.getApiData(event).subscribe(data => {
-            //         this.rowData = data;
-            //     });
-            // }
         }
         else {
             this.updateFilter();
         }
     };
     AutocompleteCell.prototype.getApiData = function (filter) {
+        //opdService
+        // switch(this.columnObject ){
+        //     case "cityObject":{
+        //         return this.autoService.getTreatmentData(filter)
+        //     }
+        //     case "examinationObj":{
+        //         return this.autoService.getExaminationData(filter)
+        //     }
+        //     case "patternObj":{
+        //         return this.patternService.getPattern()
+        //     }
+        //     case "opdFeeObj":{
+        //         return this.opdService.getOpdServicebyFilter("serviceName",filter)
+        //     }
+        // }
         if (this.columnObject == "cityObject") {
             return this.autoService.getTreatmentData(filter);
         }
@@ -154,6 +164,12 @@ var AutocompleteCell = /** @class */ (function () {
         else if (this.columnObject == "patternObj") {
             // return this.autoService.getTreatmentData(filter)
             return this.patternService.getPattern();
+        }
+        else if (this.columnObject == "opdFeeObj") {
+            return this.opdService.getOpdServicebyFilter("serviceName", filter);
+        }
+        else if (this.columnObject == "dayObj") {
+            return this.weekService.getWeekDay();
         }
         else {
             return this.autoService.getTreatmentData(filter);
@@ -198,9 +214,9 @@ var AutocompleteCell = /** @class */ (function () {
             selector: 'auto-complete',
             encapsulation: core_1.ViewEncapsulation.None,
             host: {
-                style: "position: absolute;\n\t\t\t\t\tleft: 0px; \n\t\t\t\t\ttop: 0px;\n\t\t\t\t\tbackground-color: transparant;\n\t\t\t\t\t"
+                style: "\n        position:absolute ;\n        left: 0px; \n        top: 0px;\n        background-color: transparent;\n\t\t\t\t\t"
             },
-            template: " \n\t\t<input #input [id]=\"'autoText'\"\n\t\t\t[(ngModel)]=\"inputValue\"\n\t\t\t(ngModelChange)=\"processDataInput($event)\"\n\t\t\tstyle=\" height: 28px; font-weight: 400; font-size: 12px;\"\n\t\t\t[style.width]=\"params.column.actualWidth + 'px'\">\n\t\t<ag-grid-angular\n\t\t\tstyle=\"font-weight: 150;\" \n\t\t\t[style.height]=\"gridHeight + 'px'\"\n\t\t\t[style.width]=\"gridWidth + 'px'\"\n\t\t\tclass=\"ag-theme-balham\"\n\t\t\t[rowData]=\"rowData\" \n\t\t\t[columnDefs]=\"columnDefs\"\n\t\t\t(gridReady)=\"onGridReady($event)\"\n\t\t\t(rowClicked)=\"rowClicked($event)\">\n\t\t</ag-grid-angular>\n\t"
+            template: " \n\t\t<input #input [id]=\"'autoText'\"\n\t\t\t[(ngModel)]=\"inputValue\"\n\t\t\t(ngModelChange)=\"processDataInput($event)\"\n\t\t\tstyle=\" height: 28px; font-weight: 400; font-size: 12px;\"\n\t\t\t[style.width]=\"params.column.actualWidth + 'px'\" autocomplete=\"off\">\n\t\t<ag-grid-angular\n\t\t\tstyle=\"font-weight: 150;\" \n\t\t\t[style.height]=\"gridHeight + 'px'\"\n\t\t\t[style.width]=\"gridWidth + 'px'\"\n\t\t\tclass=\"ag-theme-balham\"\n\t\t\t[rowData]=\"rowData\" \n\t\t\t[columnDefs]=\"columnDefs\"\n\t\t\t(gridReady)=\"onGridReady($event)\"\n\t\t\t(rowClicked)=\"rowClicked($event)\">\n\t\t</ag-grid-angular>\n\t"
         })
     ], AutocompleteCell);
     return AutocompleteCell;

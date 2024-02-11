@@ -2,6 +2,7 @@
     [ngClass]="{'active':item.route ?route.isActive(item.route,true):false,'expanded':expanded}" class="menu-list-item">
     {{item.displayName}}
     <span class="example-spacer" *ngIf="item.children && item.children.length">
+        <span class="example-spacer"></span>
         <mat-icon class="iconss" [@indicatorRotate]="expanded?'expanded':'collasped'">
             expand_more
         </mat-icon>

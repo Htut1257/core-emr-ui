@@ -28,7 +28,7 @@ export class UserService extends AbstractService<User>{
   ) {
     super(http, uri)
     this.userSubject$ = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('user')))
-    this.$user = this.userSubject$
+    this.$user = this.userSubject$.asObservable()
     this.apiConfig = this.apiService.getConfig()
     uri = `${this.apiConfig.UserApiEndPoint}`
   }

@@ -28,7 +28,7 @@ var AppointmentHistoryComponent = /** @class */ (function () {
         this.appointService.bookings$.subscribe(function (data) {
             _this.dataSource.data = data;
         });
-        this.getServer();
+        //this.getServer()
     }
     AppointmentHistoryComponent.prototype.ngOnInit = function () {
         var filter = {
@@ -39,7 +39,7 @@ var AppointmentHistoryComponent = /** @class */ (function () {
             status: '-'
         };
         this.getBooking(filter);
-        // this.getServerSideData();
+        this.getServerSideData();
     };
     AppointmentHistoryComponent.prototype.ngOnDestroy = function () {
         if (this.serverSubscription) {
@@ -69,23 +69,24 @@ var AppointmentHistoryComponent = /** @class */ (function () {
     //   // }
     // }
     AppointmentHistoryComponent.prototype.getServerSideData = function () {
+        var _this = this;
         var uri = '/opdBooking/getMessage';
-        // this.serverSubscription = this.serverService.getServerSource(uri).subscribe(data => {
-        //   let serverData = JSON.parse(data.data)
-        //   console.log(serverData)
-        //   if (serverData.actionStatus == "ADD") {
-        //     console.log("add")
-        //     this.bookings.push(serverData);
-        //     this.appointService.bookings.next(this.bookings)
-        //   }
-        //   if (serverData.actionStatus == "UPDATE") {
-        //     console.log("update")
-        //     let targetIndex = this.bookings.findIndex(data => data.bookingId == serverData.bookingId)
-        //     this.bookings[targetIndex] = serverData
-        //     this.appointService.bookings.next(this.bookings)
-        //     //this.bookings[this.bookings.indexOf(serverData.bookingId)] = serverData
-        //   }
-        // })
+        this.serverSubscription = this.serverService.getServerSource(uri).subscribe(function (data) {
+            var serverData = JSON.parse(data.data);
+            console.log(serverData);
+            if (serverData.actionStatus == "ADD") {
+                console.log("add");
+                _this.bookings.push(serverData.tranObject);
+                _this.appointService.bookings.next(_this.bookings);
+            }
+            if (serverData.actionStatus == "UPDATE") {
+                console.log("update");
+                var targetIndex = _this.bookings.findIndex(function (data) { return data.bookingId == serverData.tranObject.bookingId; });
+                _this.bookings[targetIndex] = serverData.tranObject;
+                _this.appointService.bookings.next(_this.bookings);
+                //this.bookings[this.bookings.indexOf(serverData.bookingId)] = serverData
+            }
+        });
     };
     //get Appointment
     AppointmentHistoryComponent.prototype.getBooking = function (filter) {

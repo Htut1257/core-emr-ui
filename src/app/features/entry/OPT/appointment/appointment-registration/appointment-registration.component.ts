@@ -180,7 +180,6 @@ export class AppointmentRegistrationComponent implements OnInit {
     booking.from = data.bkDate.fromTime
     booking.to = data.bkDate.fromTime
     booking.bkDate = moment(data.bkDate.schDate).format("yyyy-MM-DD")
-    console.log(booking)
     this.appointService.saveAppointment(booking).subscribe(data => {
       this.toastService.showSuccessToast("", "Success Adding new Appointment")
       this.onClear()

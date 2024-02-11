@@ -39,7 +39,7 @@ export class AppointmentPatientDialogComponent implements OnInit {
     let filter = {
       fromDate: this.todayDate,
       toDate:'2024-01-01',
-      doctorId: this.user.doctorId,
+      doctorId: "047",
       regNo: '-',
       //tatus: '-'
       status: '-'

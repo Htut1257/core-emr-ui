@@ -36,6 +36,7 @@ export class SpecialityService extends AbstractService<Speciality>{
   }
 
   getSpecialityByDescription(desc: string): Observable<Speciality[]> {
+    this.baseURL = `${uri}/opdSetup/getAllSpecialityByDesp`
     let httpParams = new HttpParams()
       .set('desp', desc)
     return this.getByParams(httpParams)

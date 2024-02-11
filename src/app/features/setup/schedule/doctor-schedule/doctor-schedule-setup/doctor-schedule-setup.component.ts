@@ -338,7 +338,6 @@ export class DoctorScheduleSetupComponent implements OnInit, OnDestroy {
     var firstEditCol = event.columnApi.getAllDisplayedColumns()[0];
     if (this.schApi.getFocusedCell()) {
       this.scheduleCellEvent(row, firstEditCol, columnField, this.schApi, rowData, [])
-
     }
   }
 

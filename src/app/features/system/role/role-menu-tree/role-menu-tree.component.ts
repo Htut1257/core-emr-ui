@@ -68,7 +68,7 @@ export class RoleMenuTreeComponent implements OnInit {
   }
 
   treeControl = new FlatTreeControl<ExampleFlatNode>(
-    node => node.level, node => node.expandable);
+node => node.level, node => node.expandable);
 
   treeFlattener = new MatTreeFlattener(
     this.transformer, node => node.level,

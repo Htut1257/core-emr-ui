@@ -200,6 +200,7 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
         //     }
         // }
 
+        
         if (this.columnObject == "cityObject") {
             return this.autoService.getTreatmentData(filter)
         } else if (this.columnObject == "examinationObj") {

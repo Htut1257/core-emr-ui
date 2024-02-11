@@ -40,7 +40,7 @@ export class AppointmentHistoryComponent implements OnInit, OnDestroy {
     this.appointService.bookings$.subscribe(data => {
       this.dataSource.data = data
     })
-    this.getServer()
+    //this.getServer()
   }
 
   ngOnInit(): void {
@@ -53,7 +53,7 @@ export class AppointmentHistoryComponent implements OnInit, OnDestroy {
     }
     this.getBooking(filter);
 
-    // this.getServerSideData();
+    this.getServerSideData();
   }
 
   ngOnDestroy(): void {
@@ -89,23 +89,25 @@ export class AppointmentHistoryComponent implements OnInit, OnDestroy {
 
   getServerSideData() {
     let uri = '/opdBooking/getMessage'
-    // this.serverSubscription = this.serverService.getServerSource(uri).subscribe(data => {
-    //   let serverData = JSON.parse(data.data)
-    //   console.log(serverData)
-    //   if (serverData.actionStatus == "ADD") {
-    //     console.log("add")
-    //     this.bookings.push(serverData);
-    //     this.appointService.bookings.next(this.bookings)
-    //   }
-    //   if (serverData.actionStatus == "UPDATE") {
-    //     console.log("update")
-    //     let targetIndex = this.bookings.findIndex(data => data.bookingId == serverData.bookingId)
-    //     this.bookings[targetIndex] = serverData
-    //     this.appointService.bookings.next(this.bookings)
-    //     //this.bookings[this.bookings.indexOf(serverData.bookingId)] = serverData
+    this.serverSubscription = this.serverService.getServerSource(uri).subscribe(data => {
+      let serverData = JSON.parse(data.data)
+      console.log(serverData)
+      if (serverData.actionStatus == "ADD") {
+        console.log("add")
+        this.bookings.push(serverData.tranObject
+        );
+        this.appointService.bookings.next(this.bookings)
+      }
+      if (serverData.actionStatus == "UPDATE") {
+        console.log("update")
+        let targetIndex = this.bookings.findIndex(data => data.bookingId == serverData.tranObject.bookingId)
+        this.bookings[targetIndex] = serverData.tranObject
 
-    //   }
-    // })
+        this.appointService.bookings.next(this.bookings)
+        //this.bookings[this.bookings.indexOf(serverData.bookingId)] = serverData
+
+      }
+    })
   }
 
   //get Appointment
@@ -180,7 +182,7 @@ export class AppointmentHistoryComponent implements OnInit, OnDestroy {
   }
 
   SSETest() {
-    this.appointService.SSETest().subscribe(data=>{
+    this.appointService.SSETest().subscribe(data => {
       console.log(data)
     })
   }

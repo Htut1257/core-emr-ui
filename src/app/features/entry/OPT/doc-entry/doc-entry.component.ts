@@ -125,12 +125,23 @@ export class DocEntryComponent implements OnInit {
       checkboxRenderer: CheckboxRenderer
     };
     this.examObj = {} as DrExamination
-    this.user = this.userService.getUserValue()
+
+    this.userService.$user.subscribe(data=>{
+      console.log(data)
+      this.user = this.userService.getUserValue()
+      this.user=data
+    })
+   
     if (this.user) {
+      console.log("called")
       this.doctorId = this.user.doctorId
       this.getDoctorCfFee(this.doctorId)
       this.getDoctorBookingStatus(this.doctorId, this.todayDate)
     }
+    this.doctorId="047"
+   // this.doctorId = this.user.doctorId
+      this.getDoctorCfFee("047")
+      this.getDoctorBookingStatus(this.doctorId, this.todayDate)
   }
 
   ngOnInit(): void {
@@ -139,11 +150,12 @@ export class DocEntryComponent implements OnInit {
     this.getTreatmentData();
     this.getNoteData();
     this.InitializeGridTable();
-    //this.getServerSideData();
+    this.getServerSideData();
     // this.getVisitDate()
   }
 
   onInitData(booking: Booking) {
+    console.log("called")
     this.booking = booking
     this.bookingId = booking.bookingId.toString()
     this.bookingDate = booking.bkDate.toString()
@@ -154,16 +166,21 @@ export class DocEntryComponent implements OnInit {
 
   getServerSideData() {
     let uri = '/opdBooking/getMessage'
-    // this.serverService.getServerSource(uri).subscribe(data => {
-    //   let serverData = JSON.parse(data.data)
-    //   this.booking = serverData
-    //   if (serverData.bstatus == "Doctor Room") {
-    //     if (this.doctorId == serverData.doctorId) {//
+    this.serverService.getServerSource(uri).subscribe(data => {
+      let serverData = JSON.parse(data.data)
+     // let serverData = JSON.parse(data.data)
+      console.log(serverData)
+      this.booking = serverData.tranObject
 
-    //       this.onInitData(this.booking)
-    //     }
-    //   }
-    // })
+      if (serverData.tranObject.bstatus == "Doctor Room") {
+        console.log(this.doctorId)
+        console.log( serverData.tranObject.doctorId)
+        console.log(this.doctorId == serverData.tranObject.doctorId)
+        if (this.doctorId == serverData.tranObject.doctorId) {//
+          this.onInitData(this.booking)
+        }
+      }
+    })
   }
 
   //get Booking status
@@ -668,7 +685,7 @@ export class DocEntryComponent implements OnInit {
         let treatRow: any = this.emptydrTreat()
         treatRow.day = this.pharmacyDays
         this.addNewRowtoTable(row, firstEditCol, this.treatmentApi, rowData, this.drTreatment, treatRow)
-        this.focusTableCell(row+1, firstEditCol, this.treatmentApi)
+        this.focusTableCell(row + 1, firstEditCol, this.treatmentApi)
       }
       if (columnField == "patternObj") {
         //debugger

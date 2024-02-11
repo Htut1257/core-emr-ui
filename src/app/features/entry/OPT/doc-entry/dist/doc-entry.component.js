@@ -28,6 +28,7 @@ var MY_DATE_FORMAT = {
 };
 var DocEntryComponent = /** @class */ (function () {
     function DocEntryComponent(route, docService, vitalService, entryService, autoService, appointService, userService, cfFeeService, visitDateService, serverService, dialog) {
+        var _this = this;
         this.route = route;
         this.docService = docService;
         this.vitalService = vitalService;
@@ -55,12 +56,21 @@ var DocEntryComponent = /** @class */ (function () {
             checkboxRenderer: checkbox_cell_1.CheckboxRenderer
         };
         this.examObj = {};
-        this.user = this.userService.getUserValue();
+        this.userService.$user.subscribe(function (data) {
+            console.log(data);
+            _this.user = _this.userService.getUserValue();
+            _this.user = data;
+        });
         if (this.user) {
+            console.log("called");
             this.doctorId = this.user.doctorId;
             this.getDoctorCfFee(this.doctorId);
             this.getDoctorBookingStatus(this.doctorId, this.todayDate);
         }
+        this.doctorId = "047";
+        // this.doctorId = this.user.doctorId
+        this.getDoctorCfFee("047");
+        this.getDoctorBookingStatus(this.doctorId, this.todayDate);
     }
     DocEntryComponent.prototype.ngOnInit = function () {
         this.reVisitDate = this.todayDate;
@@ -68,10 +78,11 @@ var DocEntryComponent = /** @class */ (function () {
         this.getTreatmentData();
         this.getNoteData();
         this.InitializeGridTable();
-        //this.getServerSideData();
+        this.getServerSideData();
         // this.getVisitDate()
     };
     DocEntryComponent.prototype.onInitData = function (booking) {
+        console.log("called");
         this.booking = booking;
         this.bookingId = booking.bookingId.toString();
         this.bookingDate = booking.bkDate.toString();
@@ -80,16 +91,22 @@ var DocEntryComponent = /** @class */ (function () {
         this.getVitalSign(booking.bookingId.toString());
     };
     DocEntryComponent.prototype.getServerSideData = function () {
+        var _this = this;
         var uri = '/opdBooking/getMessage';
-        // this.serverService.getServerSource(uri).subscribe(data => {
-        //   let serverData = JSON.parse(data.data)
-        //   this.booking = serverData
-        //   if (serverData.bstatus == "Doctor Room") {
-        //     if (this.doctorId == serverData.doctorId) {//
-        //       this.onInitData(this.booking)
-        //     }
-        //   }
-        // })
+        this.serverService.getServerSource(uri).subscribe(function (data) {
+            var serverData = JSON.parse(data.data);
+            // let serverData = JSON.parse(data.data)
+            console.log(serverData);
+            _this.booking = serverData.tranObject;
+            if (serverData.tranObject.bstatus == "Doctor Room") {
+                console.log(_this.doctorId);
+                console.log(serverData.tranObject.doctorId);
+                console.log(_this.doctorId == serverData.tranObject.doctorId);
+                if (_this.doctorId == serverData.tranObject.doctorId) { //
+                    _this.onInitData(_this.booking);
+                }
+            }
+        });
     };
     //get Booking status
     DocEntryComponent.prototype.getDoctorBookingStatus = function (id, date) {

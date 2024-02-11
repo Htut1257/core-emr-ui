@@ -243,7 +243,7 @@ export class CheckOutVoucherComponent implements OnInit {
       columnDefs: this.checkOutColumnDef,
       rowData: this.checkOutRow,
       suppressScrollOnNewData: true,
-      suppressHorizontalScroll:true,
+      suppressHorizontalScroll: true,
       defaultColDef: {
         resizable: true
       },
@@ -253,7 +253,7 @@ export class CheckOutVoucherComponent implements OnInit {
       columnDefs: this.paymentColumnDef,
       rowData: this.paymentRow,
       suppressScrollOnNewData: false,
-     
+
       onGridReady(event) {
         this.paymentApi = event.api
         this.paymentColumn = event.columnApi
@@ -512,14 +512,14 @@ export class CheckOutVoucherComponent implements OnInit {
 
     if (columnField == "qty") {
       data.amount = (data.price * data.qty) - data.discount
-     
-    
-      
+
+
+
       this.setRowDatatoTable(rowIndex, this.checkOutRow, rowData, this.checkOutApi, this.checkOutGridOption)
     }
 
     if (columnField == "price") {
-      data.amount =(data.price * data.qty) - data.discount
+      data.amount = (data.price * data.qty) - data.discount
       this.setRowDatatoTable(rowIndex, this.checkOutRow, rowData, this.checkOutApi, this.checkOutGridOption)
       if (itemType != "Pharmacy" && itemType != '') {
         this.focusTableCell(rowIndex + 1, firstColumn, gridApi)
@@ -527,9 +527,9 @@ export class CheckOutVoucherComponent implements OnInit {
     }
 
     if (columnField == "discount") {
-      data.amount =(data.price * data.qty) - data.discount
-      if(data.price===0 ||data.amount<0){
-        data.amount=0
+      data.amount = (data.price * data.qty) - data.discount
+      if (data.price === 0 || data.amount < 0) {
+        data.amount = 0
       }
       this.setRowDatatoTable(rowIndex, this.checkOutRow, rowData, this.checkOutApi, this.checkOutGridOption)
     }
@@ -720,7 +720,7 @@ export class CheckOutVoucherComponent implements OnInit {
           console.log(data)
           this.onClear()
         })
-       
+
       },
       error: err => {
         console.trace(err)

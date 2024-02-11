@@ -38,7 +38,7 @@ var UserService = /** @class */ (function (_super) {
         _this.users = new rxjs_1.BehaviorSubject([]);
         _this.users$ = _this.users.asObservable();
         _this.userSubject$ = new rxjs_1.BehaviorSubject(JSON.parse(localStorage.getItem('user')));
-        _this.$user = _this.userSubject$;
+        _this.$user = _this.userSubject$.asObservable();
         _this.apiConfig = _this.apiService.getConfig();
         uri = "" + _this.apiConfig.UserApiEndPoint;
         return _this;

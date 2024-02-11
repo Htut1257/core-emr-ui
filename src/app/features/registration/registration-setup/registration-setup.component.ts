@@ -121,8 +121,7 @@ export class RegistrationSetupComponent implements OnInit {
   }
 
   initializeFormData(data) {
-    console
-      .log(data)
+    console.log(data)
     this.regNo = data.regNo
     this.registrationForm.get('regNo').patchValue(data.regNo)
     this.registrationForm.get('regDate').patchValue(data.bkDate)

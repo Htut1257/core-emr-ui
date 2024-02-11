@@ -114,8 +114,8 @@
                 </mat-form-field>
                 <mat-form-field class='div-no-margin col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4' appearance="outline">
                     <mat-label>Address</mat-label>
-                    <textarea matInput placeholder="Ex. It makes me feel..." name="address"
-                        formControlName="address"></textarea>
+                    <textarea matInput placeholder="Ex. It makes me feel..." name="address" formControlName="address"
+                        (keyup.enter)="focusElement('address','ptType','text')"></textarea>
                 </mat-form-field>
                 <mat-form-field class='div-no-margin col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4' appearance="outline">
                     <mat-label>Type</mat-label>
