@@ -102,6 +102,7 @@ export class AutocompleteCell implements ICellEditorAngularComp, AfterViewInit {
         } else if (this.columnObject == "examinationObj") {
             this.gridWidth = 300
         }
+        console.log(this.propertyName)
         this.cellValue = params.value[this.propertyName];
         this.returnObject = params.returnObject;
         if (!params.charPress) {

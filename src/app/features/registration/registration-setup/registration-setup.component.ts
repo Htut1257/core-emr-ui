@@ -209,7 +209,7 @@ export class RegistrationSetupComponent implements OnInit {
     patient.sex = data.sex.genderId
     patient.doctor = data.doctor.doctorId
     patient.township = data.township.townshipId
-    patient.regDate = moment(data.regDate).format("yyyy-MM-DDTHH:mm:ss");
+    patient.regDate = moment(data.regDate).format("yyyy-MM-DDTHH:mm:ss");   
     patient.dob = moment(data.dob).format("yyyy-MM-DDTHH:mm:ss");
     patient.bookingId = this.booking != undefined ? this.booking.bookingId : null
     console.log(patient)

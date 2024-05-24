@@ -39,5 +39,4 @@ export class VitalSignService extends AbstractService<VitalSign>{
     return this.save(data)
   }
 
-
 }

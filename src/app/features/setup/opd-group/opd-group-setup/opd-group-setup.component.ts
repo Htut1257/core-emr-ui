@@ -31,9 +31,7 @@ export class OpdGroupSetupComponent implements OnInit {
           this.opdGroupId = this.opdGroup.groupId
           this.initializeFormData(this.opdGroup)
         }
-
       }
-
     })
   }
 

@@ -214,7 +214,6 @@ export class CheckOutVoucherComponent implements OnInit {
 
   //render data to grid table 
   renderTreatmentData(data: DoctorTreatment[]) {
-    console.log(data)
     this.checkOutRow = data.reduce(function (filtered: any, option: any) {
       var someValue = {
         cityObject: tableItem(option),
@@ -426,7 +425,7 @@ export class CheckOutVoucherComponent implements OnInit {
         despMM: '',
         factor: 0
       },
-      day: this.checkOutForm.get('pharmacyDay').value,
+      day: 1,
       qty: 0,
       price: 0,
       foc: false,
@@ -472,8 +471,9 @@ export class CheckOutVoucherComponent implements OnInit {
         gridApi.setFocusedCell(rowIndex, columnField);
         return
       }
-
+      
       data.qty = 1
+      data.day=1
       data.price = data.cityObject.fees
       data.amount = (data.price * data.qty) - data.discount
 
@@ -706,7 +706,6 @@ export class CheckOutVoucherComponent implements OnInit {
   }
 
   saveCheckOut(data: any) {
-
     this.saveCashierData(data)
     this.saveCashierHisData(data)
     console.log(this.checkOut)
